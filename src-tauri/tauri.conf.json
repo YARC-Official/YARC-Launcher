@@ -51,6 +51,8 @@
 				"title": "Yet Another Launcher",
 				"width": 1038,
 				"height": 505,
+				"minWidth": 0,
+				"minHeight": 0,
 				"decorations": false
 			}
 		]
