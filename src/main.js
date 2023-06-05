@@ -1,4 +1,5 @@
 const { invoke } = window.__TAURI__.tauri;
+const { appWindow } = window.__TAURI__.window;
 
 let greetInputEl;
 let greetMsgEl;
@@ -15,11 +16,23 @@ async function greet() {
 	}
 }
 
-window.addEventListener("DOMContentLoaded", () => {
+function init() {
 	greetInputEl = document.querySelector("#greet-input");
 	greetMsgEl = document.querySelector("#greet-msg");
 	document.querySelector("#greet-form").addEventListener("submit", (e) => {
 		e.preventDefault();
 		greet();
 	});
-});
+
+	document
+		.getElementById("titlebar-minimize")
+		.addEventListener("click", () => appWindow.minimize());
+	document
+		.getElementById("titlebar-maximize")
+		.addEventListener("click", () => appWindow.toggleMaximize());
+	document
+		.getElementById("titlebar-close")
+		.addEventListener("click", () => appWindow.close())
+}
+
+window.addEventListener("DOMContentLoaded", init);
