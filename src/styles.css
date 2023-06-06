@@ -1,3 +1,19 @@
+:root {
+	--titleBar_background: #000209;
+	--titleBar_primary: #fff;
+	--titleBar_accent: #868AA8;
+	--titleBar_height: 30px;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	padding-top: var(--titleBar_height);
+	margin: 0px;
+}
+
 .titlebar {
 	height: 30px;
 	background: #329ea3;
