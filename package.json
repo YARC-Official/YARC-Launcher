@@ -1,12 +1,30 @@
 {
-  "name": "YARG-Launcher",
+  "name": "yet_another_launcher",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "front:dev": "vite",
+    "front:preview": "vite preview",
+    "front:build": "tsc && vite build"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^1.3.1"
+    "@tauri-apps/cli": "^1.3.1",
+    "@types/node": "^20.2.5",
+    "@types/react": "^18.2.8",
+    "@types/react-dom": "^18.2.4",
+    "@vitejs/plugin-react": "^4.0.0",
+    "typescript": "^5.1.3",
+    "vite": "^4.3.9",
+    "vite-plugin-svgr": "^3.2.0",
+    "vite-tsconfig-paths": "^4.2.0"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^1.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }
