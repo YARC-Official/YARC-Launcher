@@ -1,10 +1,10 @@
 {
 	"build": {
-		"beforeDevCommand": "",
-		"beforeBuildCommand": "",
-		"devPath": "../src",
-		"distDir": "../src",
-		"withGlobalTauri": true
+		"beforeDevCommand": "npm run front:dev",
+		"beforeBuildCommand": "npm run front:build",
+		"devPath": "http://localhost:1420",
+		"distDir": "../dist",
+		"withGlobalTauri": false
 	},
 	"package": {
 		"productName": "YARG-Launcher",

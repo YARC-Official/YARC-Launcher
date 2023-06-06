@@ -5,6 +5,12 @@ use futures_util::StreamExt;
 use reqwest;
 use std::{fs::File, io::Write};
 
+// Just to test if Vite is returning
+#[tauri::command]
+fn greet(name: &str) -> String {
+    format!("Are you ready to YARG, {name}?")
+}
+
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
 async fn download(url: &str) -> Result<String, String> {
@@ -47,6 +53,7 @@ async fn download(url: &str) -> Result<String, String> {
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![download])
+        .invoke_handler(tauri::generate_handler![greet])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
