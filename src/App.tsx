@@ -7,7 +7,9 @@ function App() {
 
   async function download() {
     try {
-      setDownloadMsg(await invoke("download", {url: "https://github.com/YARC-Official/YARG/releases/download/v0.10.5/YARG_v0.10.5-Windows-x64.zip"}));
+      setDownloadMsg("Loading...");
+      await invoke("download_yarg");
+      setDownloadMsg("Done!");
     } catch (e) {
       setDownloadMsg(`FAILED: ${e}`);
     }
