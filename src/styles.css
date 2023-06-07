@@ -1,4 +1,12 @@
 :root {
+	--accent-rgb: 46, 217, 255
+	--accent: rgb(var(--accent-rgb));
+
+	--primary-rgb: 255,255,255;
+	--primary: rgb(var(--primary-rgb));
+	--primary-25: rgba(var(--primary-rgb), 0.25);
+	--primary-40: rgba(var(--primary-rgb), 0.4);
+
 	--titleBar_background: #000209;
 	--titleBar_primary: #fff;
 	--titleBar_accent: #868AA8;

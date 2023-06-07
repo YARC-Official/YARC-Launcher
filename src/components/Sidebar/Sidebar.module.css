@@ -1,8 +1,38 @@
 .sidebar {
     width: 300px;
+    padding: 15px;
+    
     background: var(--sideBar_background);
+    color: var(--primary);
 
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
+}
+
+.footer {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+}
+
+.footer > .credits {
+    color: var(--primary-25);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.footer > .socials {
+    display: flex;
+    gap: 15px;
+    margin-left: auto;
+}
+
+.socials > .link {
+    height: 20px;
+}
+
+.socials > .link > svg {
+    height: 100%;
+    color: var(--primary);
 }
