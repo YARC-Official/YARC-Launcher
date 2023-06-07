@@ -7,7 +7,7 @@ const RootLayout: React.FC = () => {
     return (<>
 
         <Sidebar />
-        <div className="content">
+        <div id="content">
             <Outlet />
         </div>
 
