@@ -1,0 +1,8 @@
+.sidebar {
+    width: 300px;
+    background: var(--sideBar_background);
+
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
