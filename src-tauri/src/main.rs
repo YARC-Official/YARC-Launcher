@@ -39,16 +39,16 @@ impl InnerState {
         Ok(())
     }
 
-    pub async fn download_yarg(&self) -> Result<(), String> {
+    pub async fn download_yarg(&self, zip_url: String, version_id: String) -> Result<(), String> {
         // Delete the old installation
         clear_folder(&self.yarg_folder)?;
 
         // Download the zip
         let zip_path = &self.temp_folder.join("update.zip");
-        download("https://github.com/YARC-Official/YARG/releases/download/v0.10.6/YARG_v0.10.6-Windows-x64.zip", &zip_path).await?;
+        download(&zip_url, &zip_path).await?;
 
         // Extract the zip to the game directory
-        extract(&zip_path, &self.yarg_folder)?;
+        extract(&zip_path, &self.yarg_folder.join(version_id))?;
 
         // Delete everything temp
         clear_folder(&self.temp_folder)?;
@@ -56,8 +56,8 @@ impl InnerState {
         Ok(())
     }
 
-    pub fn play_yarg(&self) -> Result<(), String> {
-        Command::new(&self.yarg_folder.join("YARG.exe"))
+    pub fn play_yarg(&self, version_id: String) -> Result<(), String> {
+        Command::new(&self.yarg_folder.join(version_id).join("YARG.exe"))
             .spawn()
             .map_err(|e| format!("Failed to start YARG. Is it installed?\n{:?}", e))?;
 
@@ -76,17 +76,21 @@ async fn init(state: tauri::State<'_, State>) -> Result<(), String> {
 }
 
 #[tauri::command]
-async fn download_yarg(state: tauri::State<'_, State>) -> Result<(), String> {
+async fn download_yarg(
+    state: tauri::State<'_, State>,
+    zip_url: String,
+    version_id: String,
+) -> Result<(), String> {
     let state_guard = state.0.lock().await;
-    state_guard.download_yarg().await?;
+    state_guard.download_yarg(zip_url, version_id).await?;
 
     Ok(())
 }
 
 #[tauri::command]
-async fn play_yarg(state: tauri::State<'_, State>) -> Result<(), String> {
+async fn play_yarg(state: tauri::State<'_, State>, version_id: String) -> Result<(), String> {
     let state_guard = state.0.lock().await;
-    state_guard.play_yarg()?;
+    state_guard.play_yarg(version_id)?;
 
     Ok(())
 }
@@ -147,6 +151,8 @@ async fn download(url: &str, output_path: &Path) -> Result<(), String> {
 }
 
 fn extract(from: &Path, to: &Path) -> Result<(), String> {
+    clear_folder(to)?;
+
     let file = File::open(from).map_err(|e| format!("Error while opening file.\n{:?}", e))?;
     zip_extract::extract(file, to, false)
         .map_err(|e| format!("Error while extracting zip.\n{:?}", e))?;

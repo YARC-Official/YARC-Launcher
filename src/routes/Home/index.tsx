@@ -7,7 +7,10 @@ function App() {
   async function download() {
     try {
       setDownloadMsg("Loading...");
-      await invoke("download_yarg");
+      await invoke("download_yarg", {
+        zipUrl: "https://github.com/EliteAsian123/YARG/releases/download/v0.10.6/YARG_v0.10.6-Windows-x64.zip",
+        versionId: "v0.10.6"
+      });
       setDownloadMsg("Done!");
     } catch (e) {
       setDownloadMsg(`FAILED: ${e}`);
@@ -17,7 +20,9 @@ function App() {
   async function play() {
     try {
       setDownloadMsg("Launching...");
-      await invoke("play_yarg");
+      await invoke("play_yarg", {
+        versionId: "v0.10.6"
+      });
       setDownloadMsg("Done!");
     } catch (e) {
       setDownloadMsg(`FAILED: ${e}`);
