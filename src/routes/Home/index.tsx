@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
-import "./styles.css";
 
 function App() {
   const [downloadMsg, setDownloadMsg] = useState("");

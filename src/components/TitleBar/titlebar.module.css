@@ -2,9 +2,6 @@
     background: var(--titleBar_background);
     color: var(--titleBar_primary);
     user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
 
     height: 30px;
     position: fixed;
