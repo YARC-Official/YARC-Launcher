@@ -14,11 +14,22 @@ function App() {
     }
   }
 
+  async function play() {
+    try {
+      setDownloadMsg("Launching...");
+      await invoke("play_yarg");
+      setDownloadMsg("Done!");
+    } catch (e) {
+      setDownloadMsg(`FAILED: ${e}`);
+    }
+  }
+
   return (
     <div className="container">
       <h1>Welcome to YAL!</h1>
 
       <button onClick={() => download()}>Download command</button>
+      <button onClick={() => play()}>Play command</button>
       <p>{downloadMsg}</p>
 
     </div>

@@ -2,43 +2,106 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use directories::BaseDirs;
+use futures_util::lock::Mutex;
 use futures_util::StreamExt;
 use reqwest;
-use std::path::Path;
+use std::path::{Path, PathBuf};
+use std::process::Command;
 use std::{fs::File, io::Write};
 
+pub struct InnerState {
+    pub yarc_folder: PathBuf,
+    pub temp_folder: PathBuf,
+    pub yarg_folder: PathBuf,
+}
+
+impl InnerState {
+    pub fn init(&mut self) -> Result<(), String> {
+        let dirs = BaseDirs::new().ok_or("Failed to get directories.")?;
+
+        self.yarc_folder = PathBuf::from(dirs.data_local_dir());
+        self.yarc_folder.push("YARC");
+
+        self.temp_folder = PathBuf::from(&self.yarc_folder);
+        self.temp_folder.push("Launcher");
+        self.temp_folder.push("Temp");
+
+        self.yarg_folder = PathBuf::from(&self.yarc_folder);
+        self.yarg_folder.push("YARG");
+
+        // Delete everything temp (just in case)
+        clear_folder(&self.temp_folder)?;
+
+        // Create the directories if they don't exist
+        std::fs::create_dir_all(&self.yarg_folder)
+            .map_err(|e| format!("Failed to create YARG directory.\n{:?}", e))?;
+
+        Ok(())
+    }
+
+    pub async fn download_yarg(&self) -> Result<(), String> {
+        // Delete the old installation
+        clear_folder(&self.yarg_folder)?;
+
+        // Download the zip
+        let zip_path = &self.temp_folder.join("update.zip");
+        download("https://github.com/YARC-Official/YARG/releases/download/v0.10.6/YARG_v0.10.6-Windows-x64.zip", &zip_path).await?;
+
+        // Extract the zip to the game directory
+        extract(&zip_path, &self.yarg_folder)?;
+
+        // Delete everything temp
+        clear_folder(&self.temp_folder)?;
+
+        Ok(())
+    }
+
+    pub fn play_yarg(&self) -> Result<(), String> {
+        Command::new(&self.yarg_folder.join("YARG.exe"))
+            .spawn()
+            .map_err(|e| format!("Failed to start YARG. Is it installed?\n{:?}", e))?;
+
+        Ok(())
+    }
+}
+
+pub struct State(pub Mutex<InnerState>);
+
 #[tauri::command]
-async fn download_yarg() -> Result<(), String> {
-    // Get the directories
-    let dirs = BaseDirs::new().ok_or("Failed to get directories.")?;
-    let yarc_folder = Path::new(dirs.data_local_dir()).join("YARC");
-    let temp_folder = yarc_folder.join("Launcher").join("Temp");
-    let yarg_folder = yarc_folder.join("YARG");
+async fn init(state: tauri::State<'_, State>) -> Result<(), String> {
+    let mut state_guard = state.0.lock().await;
+    state_guard.init()?;
 
-    // Delete everything temp (just in case)
-    std::fs::remove_dir_all(&temp_folder).ok();
+    Ok(())
+}
 
-    // Delete the old installation
-    std::fs::remove_dir_all(&yarg_folder).ok();
+#[tauri::command]
+async fn download_yarg(state: tauri::State<'_, State>) -> Result<(), String> {
+    let state_guard = state.0.lock().await;
+    state_guard.download_yarg().await?;
 
-    // Create them if they don't exist
-    std::fs::create_dir_all(&temp_folder)
-        .map_err(|e| format!("Failed to create launcher directory.\n{:?}", e))?;
-    std::fs::create_dir_all(&yarg_folder)
-        .map_err(|e| format!("Failed to create YARG directory.\n{:?}", e))?;
+    Ok(())
+}
 
-    // Download the zip
-    let zip_path = temp_folder.join("update.zip");
-    download("https://github.com/YARC-Official/YARG/releases/download/v0.10.5/YARG_v0.10.5-Windows-x64.zip", 
-		&zip_path).await?;
+#[tauri::command]
+async fn play_yarg(state: tauri::State<'_, State>) -> Result<(), String> {
+    let state_guard = state.0.lock().await;
+    state_guard.play_yarg()?;
 
-    // Extract the zip to the game directory
-    extract(&zip_path, &yarg_folder)?;
+    Ok(())
+}
 
-    // Delete everything temp
-    std::fs::remove_dir_all(&temp_folder).ok();
+fn clear_folder(path: &Path) -> Result<(), String> {
+    std::fs::remove_dir_all(path).ok();
+    std::fs::create_dir_all(path).map_err(|e| {
+        format!(
+            "Failed to re-create folder `{}`.\n{:?}",
+            path.to_string_lossy(),
+            e
+        )
+    })?;
 
-    return Ok(());
+    Ok(())
 }
 
 async fn download(url: &str, output_path: &Path) -> Result<(), String> {
@@ -80,7 +143,7 @@ async fn download(url: &str, output_path: &Path) -> Result<(), String> {
     }
 
     // Done!
-    return Ok(());
+    Ok(())
 }
 
 fn extract(from: &Path, to: &Path) -> Result<(), String> {
@@ -88,12 +151,17 @@ fn extract(from: &Path, to: &Path) -> Result<(), String> {
     zip_extract::extract(file, to, false)
         .map_err(|e| format!("Error while extracting zip.\n{:?}", e))?;
 
-    return Ok(());
+    Ok(())
 }
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![download_yarg])
+        .manage(State(Mutex::new(InnerState {
+            yarc_folder: PathBuf::new(),
+            temp_folder: PathBuf::new(),
+            yarg_folder: PathBuf::new(),
+        })))
+        .invoke_handler(tauri::generate_handler![init, download_yarg, play_yarg])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
