@@ -11,6 +11,6 @@ export const useYARGRelease = (version: "stable"|"nightly") => {
 
     return useQuery({
         queryKey: ["YARG", version],
-        queryFn: async (): Promise<ReleaseData> => await fetch("https://api.github.com/repos/YARC-Official/YARG/releases/latest").then(res => res.json())
+        queryFn: async (): Promise<ReleaseData> => await fetch(`https://api.github.com/repos/YARC-Official/${repositoryName[version]}/releases/latest`).then(res => res.json())
     });
 };
