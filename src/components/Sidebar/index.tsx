@@ -6,6 +6,7 @@ import { ReactComponent as NewsIcon } from '@app/assets/News.svg';
 import { ReactComponent as SettingsIcon } from '@app/assets/Settings.svg';
 import SidebarMenuButton from './SidebarMenuButton';
 import { Link } from 'react-router-dom';
+import VersionsList from './Versions/List';
 
 const Sidebar: React.FC = () => {
   return <div className={styles.sidebar}>
@@ -15,6 +16,8 @@ const Sidebar: React.FC = () => {
       <Link to="/news"><SidebarMenuButton icon={<NewsIcon />}>News</SidebarMenuButton></Link>
       <Link to="/settings"><SidebarMenuButton icon={<SettingsIcon />}>Settings</SidebarMenuButton></Link>      
     </div>
+
+    <VersionsList />
 
     <div className={styles.footer}>
       <div className={styles.credits}>YARC 2023</div>

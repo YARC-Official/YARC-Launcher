@@ -4,8 +4,14 @@
 
 	--primary-rgb: 255,255,255;
 	--primary: rgb(var(--primary-rgb));
+	--primary-05: rgba(var(--primary-rgb), 0.05);
 	--primary-25: rgba(var(--primary-rgb), 0.25);
 	--primary-40: rgba(var(--primary-rgb), 0.4);
+	--primary-75: rgba(var(--primary-rgb), 0.75);
+
+	--green-rgb: 70, 231, 79;
+	--green: rgb(var(--green-rgb));
+	--green-10: rgba(var(--green-rgb), .1);
 
 	--titleBar_background: #000209;
 	--titleBar_primary: #fff;
