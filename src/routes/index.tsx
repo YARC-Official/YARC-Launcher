@@ -4,6 +4,8 @@ import RootLayout from "@app/routes/root";
 import Home from "@app/routes/Home";
 import News from "@app/routes/News";
 import Settings from "@app/routes/Settings";
+import StableYARGPage from "./YARG/Stable";
+import NightlyYARGPage from "./YARG/Nightly";
 
 const Router = createBrowserRouter([
     {
@@ -23,6 +25,16 @@ const Router = createBrowserRouter([
             {
                 path: "/settings",
                 element: <Settings />
+            },
+
+            {
+                path: "/yarg/stable",
+                element: <StableYARGPage />
+            },
+
+            {
+                path: "/yarg/nightly",
+                element: <NightlyYARGPage />
             },
         ]
     },
