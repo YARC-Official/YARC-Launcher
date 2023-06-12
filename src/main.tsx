@@ -5,6 +5,15 @@ import TitleBar from "./components/TitleBar";
 import { RouterProvider } from "react-router-dom";
 import Router from "@app/routes";
 import { invoke } from "@tauri-apps/api/tauri";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 try {
   // Idk how react works, but this should show a loading screen or something
@@ -17,6 +26,8 @@ try {
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <TitleBar />
-    <RouterProvider router={Router} />
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={Router} />
+    </QueryClientProvider>
   </React.StrictMode>
 );
