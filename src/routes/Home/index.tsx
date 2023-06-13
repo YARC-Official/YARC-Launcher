@@ -29,12 +29,24 @@ function App() {
     }
   }
 
+  async function checkInstalled() {
+    try {
+      let installed = await invoke("version_exists_yarg", {
+        versionId: "v0.10.6"
+      });
+      setDownloadMsg(installed ? "Installed!" : "Not installed...");
+    } catch (e) {
+      setDownloadMsg(`FAILED: ${e}`);
+    }
+  }
+  
   return (
     <div className="container">
       <h1>Welcome to YAL!</h1>
 
       <button onClick={() => download()}>Download command</button>
       <button onClick={() => play()}>Play command</button>
+      <button onClick={() => checkInstalled()}>Check installed command</button>
       <p>{downloadMsg}</p>
 
     </div>

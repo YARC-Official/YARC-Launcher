@@ -27,7 +27,7 @@ impl InnerState {
         self.temp_folder.push("Temp");
 
         self.yarg_folder = PathBuf::from(&self.yarc_folder);
-        self.yarg_folder.push("YARG");
+        self.yarg_folder.push("YARG Installs");
 
         // Delete everything temp (just in case)
         clear_folder(&self.temp_folder)?;
@@ -40,15 +40,17 @@ impl InnerState {
     }
 
     pub async fn download_yarg(&self, zip_url: String, version_id: String) -> Result<(), String> {
+        let folder = self.yarg_folder.join(version_id);
+
         // Delete the old installation
-        clear_folder(&self.yarg_folder)?;
+        clear_folder(&folder)?;
 
         // Download the zip
         let zip_path = &self.temp_folder.join("update.zip");
         download(&zip_url, &zip_path).await?;
 
         // Extract the zip to the game directory
-        extract(&zip_path, &self.yarg_folder.join(version_id))?;
+        extract(&zip_path, &folder)?;
 
         // Delete everything temp
         clear_folder(&self.temp_folder)?;
@@ -62,6 +64,10 @@ impl InnerState {
             .map_err(|e| format!("Failed to start YARG. Is it installed?\n{:?}", e))?;
 
         Ok(())
+    }
+
+    pub fn version_exists_yarg(&self, version_id: String) -> bool {
+        Path::new(&self.yarg_folder.join(version_id)).exists()
     }
 }
 
@@ -93,6 +99,15 @@ async fn play_yarg(state: tauri::State<'_, State>, version_id: String) -> Result
     state_guard.play_yarg(version_id)?;
 
     Ok(())
+}
+
+#[tauri::command]
+async fn version_exists_yarg(
+    state: tauri::State<'_, State>,
+    version_id: String,
+) -> Result<bool, String> {
+    let state_guard = state.0.lock().await;
+    Ok(state_guard.version_exists_yarg(version_id))
 }
 
 fn clear_folder(path: &Path) -> Result<(), String> {
@@ -167,7 +182,12 @@ fn main() {
             temp_folder: PathBuf::new(),
             yarg_folder: PathBuf::new(),
         })))
-        .invoke_handler(tauri::generate_handler![init, download_yarg, play_yarg])
+        .invoke_handler(tauri::generate_handler![
+            init,
+            download_yarg,
+            play_yarg,
+            version_exists_yarg
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
