@@ -110,6 +110,11 @@ async fn version_exists_yarg(
     Ok(state_guard.version_exists_yarg(version_id))
 }
 
+#[tauri::command]
+fn get_os() -> String {
+    std::env::consts::OS.to_string()
+}
+
 fn clear_folder(path: &Path) -> Result<(), String> {
     std::fs::remove_dir_all(path).ok();
     std::fs::create_dir_all(path).map_err(|e| {
@@ -186,7 +191,8 @@ fn main() {
             init,
             download_yarg,
             play_yarg,
-            version_exists_yarg
+            version_exists_yarg,
+            get_os
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

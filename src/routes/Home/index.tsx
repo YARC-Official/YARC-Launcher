@@ -39,7 +39,16 @@ function App() {
       setDownloadMsg(`FAILED: ${e}`);
     }
   }
-  
+
+  async function getOs() {
+    // Can return:
+    // "windows"
+    // "macos"
+    // "linux"
+    let os = await invoke("get_os") as string;
+    setDownloadMsg(os);
+  }
+
   return (
     <div className="container">
       <h1>Welcome to YAL!</h1>
@@ -47,6 +56,7 @@ function App() {
       <button onClick={() => download()}>Download command</button>
       <button onClick={() => play()}>Play command</button>
       <button onClick={() => checkInstalled()}>Check installed command</button>
+      <button onClick={() => getOs()}>Get OS command</button>
       <p>{downloadMsg}</p>
 
     </div>
