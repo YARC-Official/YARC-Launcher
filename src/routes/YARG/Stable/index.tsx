@@ -1,20 +1,24 @@
-import { useYARGRelease } from "@app/hooks/useReleases";
+import { useYARGRelease, getYARGReleaseZip } from "@app/hooks/useReleases";
 import { invoke } from "@tauri-apps/api/tauri";
 import { useState } from "react";
 
 function StableYARGPage() {
     const [debugMsg, setDebugMsg] = useState("");
-    const { data } = useYARGRelease("stable");
+    const releaseData = useYARGRelease("stable");
 
-    async function download(version: string, zipUrl: string) {
+    async function download(version: string) {
         try {
             setDebugMsg("Loading...");
-    
+
+            // Get the zip url
+            let zipUrl = await getYARGReleaseZip(releaseData);
+
+            // Download it
             await invoke("download_yarg", {
                 zipUrl: zipUrl,
                 versionId: version
             });
-    
+
             setDebugMsg("Done!");
         } catch (e) {
             setDebugMsg(`FAILED: ${e}`);
@@ -39,20 +43,17 @@ function StableYARGPage() {
 
         <h1>YARG stable version page</h1>
         <p>this page is on /src/routes/YARG/stable/index.tsx</p>
-    
+
         <p>Debug message: {debugMsg}</p>
 
-        <p>Current version: {data?.tag_name}</p>
+        <p>Current version: {releaseData?.tag_name}</p>
 
         {
-            data ? <button onClick={() => play(data?.tag_name)}>Play YARG stable {data?.tag_name}</button> : ""
+            releaseData ? <button onClick={() => play(releaseData?.tag_name)}>Play YARG stable {releaseData?.tag_name}</button> : ""
         }
 
         <div>
-            <p>Download assets:</p>
-            {
-                data?.assets.map(asset => <button onClick={() => download(data.tag_name, asset.browser_download_url)}>{asset.name}</button>)
-            }
+            <button onClick={() => download(releaseData.tag_name)}>Download Release</button>
         </div>
 
     </>);

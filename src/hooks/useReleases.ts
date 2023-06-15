@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { Endpoints } from '@octokit/types';
+import { Endpoints } from "@octokit/types";
+import { invoke } from "@tauri-apps/api/tauri";
 
 type ReleaseData = Endpoints["GET /repos/{owner}/{repo}/releases/latest"]["response"]["data"];
 
-export const useYARGRelease = (version: "stable"|"nightly") => {
+export const useYARGRelease = (version: "stable" | "nightly") => {
     const repositoryName = {
         "stable": "YARG",
         "nightly": "YARG-BleedingEdge"
@@ -12,5 +13,46 @@ export const useYARGRelease = (version: "stable"|"nightly") => {
     return useQuery({
         queryKey: ["YARG", version],
         queryFn: async (): Promise<ReleaseData> => await fetch(`https://api.github.com/repos/YARC-Official/${repositoryName[version]}/releases/latest`).then(res => res.json())
-    });
+    }).data as ReleaseData;
+};
+
+export const getYARGReleaseZip = async (releaseData: ReleaseData) => {
+    let os = await invoke("get_os") as string;
+
+    // Get the zip suffix depending on the OS
+    let zipSuffixes: string[] = [];
+    switch (os) {
+        case "windows":
+            zipSuffixes = ["Windows-x64.zip"];
+            break;
+        case "macos":
+            zipSuffixes = ["MacOS-Universal.zip"];
+            break;
+        case "linux":
+            zipSuffixes = ["Linux-x86_64.zip", "Linux-x64.zip"];
+            break;
+    }
+
+    // Find the zip in the assets
+    for (let asset of releaseData.assets) {
+        // Check all of the suffixes
+        let skip = true;
+        for (let suffix of zipSuffixes) {
+            if (asset.name.endsWith(suffix)) {
+                skip = false;
+                break;
+            }
+        }
+
+        // If not found, continue
+        if (skip) {
+            continue;
+        }
+
+        // Done!
+        return asset.browser_download_url;
+    }
+
+    // Otherwise, the platform is not supported!
+    throw new Error(`Platform "${os}" is not supported in release "${releaseData.tag_name}"!`);
 };
