@@ -19,7 +19,7 @@ const Sidebar: React.FC = () => {
         })();
     });
 
-    return (<div className={styles.sidebar}>
+    return <div className={styles.sidebar}>
 
         <div className={styles.menus}>
             <Link to="/"><SidebarMenuButton>Home</SidebarMenuButton></Link>
@@ -32,12 +32,12 @@ const Sidebar: React.FC = () => {
         <div className={styles.footer}>
             <div className={styles.credits}>YAL v{launcherVersion}</div>
             <div className={styles.socials}>
-                <a href="https://discord.gg/YARG" target="_blank" className={styles.link}><DiscordIcon /></a>
-                <a href="https://twitter.com/EliteAsian123" target="_blank" className={styles.link}><TwitterIcon /></a>
-                <a href="https://github.com/YARC-Official/YARG" target="_blank" className={styles.link}><GithubIcon /></a>
+                <a href="https://discord.gg/YARG" target="_blank" className={styles.link} rel="noreferrer"><DiscordIcon /></a>
+                <a href="https://twitter.com/EliteAsian123" target="_blank" className={styles.link} rel="noreferrer"><TwitterIcon /></a>
+                <a href="https://github.com/YARC-Official/YARG" target="_blank" className={styles.link} rel="noreferrer"><GithubIcon /></a>
             </div>
         </div>
-    </div>);
-}
+    </div>;
+};
 
 export default Sidebar;

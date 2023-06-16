@@ -8,7 +8,7 @@ interface Props {
     updateAvailable?: boolean;
 }
 
-const BaseVersion: React.FC<Props> = ({ icon, programName, versionChannel, version, updateAvailable }) => {
+const BaseVersion: React.FC<Props> = ({ icon, programName, versionChannel, version, updateAvailable }: Props) => {
     return <div className={styles.selector}>
         <div className={styles.icon}>{icon}</div>
         <div className={styles.text}>
@@ -17,6 +17,6 @@ const BaseVersion: React.FC<Props> = ({ icon, programName, versionChannel, versi
         </div>
         <div className={styles.version} data-update-available={updateAvailable}>{version}</div>
     </div>;
-}
+};
 
 export default BaseVersion;

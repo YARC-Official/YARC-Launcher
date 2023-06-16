@@ -21,6 +21,6 @@ const TitleBar: React.FC = () => {
             </div>
         </div>
     </div>;
-}
+};
 
 export default TitleBar;

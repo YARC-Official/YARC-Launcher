@@ -17,6 +17,6 @@ const NightlyYARGVersion: React.FC = () => {
             />
         </Link>
     );
-}
+};
 
 export default NightlyYARGVersion;
