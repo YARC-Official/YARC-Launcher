@@ -7,8 +7,18 @@ import { ReactComponent as SettingsIcon } from "@app/assets/Settings.svg";
 import SidebarMenuButton from "./SidebarMenuButton";
 import { Link } from "react-router-dom";
 import VersionsList from "./Versions/List";
+import { useEffect, useState } from "react";
+import { getVersion } from "@tauri-apps/api/app";
 
 const Sidebar: React.FC = () => {
+    const [launcherVersion, setLauncherVersion] = useState("");
+
+    useEffect(() => {
+        (async () => {
+            setLauncherVersion(await getVersion());
+        })();
+    });
+
     return <div className={styles.sidebar}>
 
         <div className={styles.menus}>
@@ -20,7 +30,7 @@ const Sidebar: React.FC = () => {
         <VersionsList />
 
         <div className={styles.footer}>
-            <div className={styles.credits}>YARC 2023</div>
+            <div className={styles.credits}>YAL v{launcherVersion}</div>
             <div className={styles.socials}>
                 <a href="https://discord.gg/YARG" target="_blank" className={styles.link} rel="noreferrer"><DiscordIcon /></a>
                 <a href="https://twitter.com/EliteAsian123" target="_blank" className={styles.link} rel="noreferrer"><TwitterIcon /></a>
