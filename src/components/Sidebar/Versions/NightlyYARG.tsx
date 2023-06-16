@@ -1,6 +1,6 @@
 import { useYARGRelease } from "@app/hooks/useReleases";
 import BaseVersion from "./Base";
-import NightlyYARGIcon from '@app/assets/NightlyYARGIcon.png';
+import NightlyYARGIcon from "@app/assets/NightlyYARGIcon.png";
 import { Link } from "react-router-dom";
 
 const NightlyYARGVersion: React.FC = () => {

@@ -8,26 +8,26 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
+    defaultOptions: {
+        queries: {
+            refetchOnWindowFocus: false,
+        },
     },
-  },
 });
 
 try {
-  // Idk how react works, but this should show a loading screen or something
-  await invoke("init");
+    // Idk how react works, but this should show a loading screen or something
+    await invoke("init");
 } catch (e) {
-  // This should show an error alert popup
-  console.error(e);
+    // This should show an error alert popup
+    console.error(e);
 }
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <TitleBar />
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={Router} />
-    </QueryClientProvider>
-  </React.StrictMode>
+    <React.StrictMode>
+        <TitleBar />
+        <QueryClientProvider client={queryClient}>
+            <RouterProvider router={Router} />
+        </QueryClientProvider>
+    </React.StrictMode>
 );
