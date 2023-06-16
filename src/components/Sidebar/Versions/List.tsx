@@ -7,6 +7,6 @@ const VersionsList: React.FC = () => {
         <StableYARGVersion />
         <NightlyYARGVersion />
     </div>;
-}
+};
 
 export default VersionsList;

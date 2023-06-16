@@ -17,6 +17,6 @@ const StableYARGVersion: React.FC = () => {
             />
         </Link>
     );
-}
+};
 
 export default StableYARGVersion;

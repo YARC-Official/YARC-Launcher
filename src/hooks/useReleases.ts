@@ -8,7 +8,7 @@ export const useYARGRelease = (version: "stable" | "nightly") => {
     const repositoryName = {
         "stable": "YARG",
         "nightly": "YARG-BleedingEdge"
-    }
+    };
 
     return useQuery({
         queryKey: ["YARG", version],
@@ -17,27 +17,27 @@ export const useYARGRelease = (version: "stable" | "nightly") => {
 };
 
 export const getYARGReleaseZip = async (releaseData: ReleaseData) => {
-    let os = await invoke("get_os") as string;
+    const os = await invoke("get_os") as string;
 
     // Get the zip suffix depending on the OS
     let zipSuffixes: string[] = [];
     switch (os) {
-        case "windows":
-            zipSuffixes = ["Windows-x64.zip"];
-            break;
-        case "macos":
-            zipSuffixes = ["MacOS-Universal.zip"];
-            break;
-        case "linux":
-            zipSuffixes = ["Linux-x86_64.zip", "Linux-x64.zip"];
-            break;
+    case "windows":
+        zipSuffixes = ["Windows-x64.zip"];
+        break;
+    case "macos":
+        zipSuffixes = ["MacOS-Universal.zip"];
+        break;
+    case "linux":
+        zipSuffixes = ["Linux-x86_64.zip", "Linux-x64.zip"];
+        break;
     }
 
     // Find the zip in the assets
-    for (let asset of releaseData.assets) {
+    for (const asset of releaseData.assets) {
         // Check all of the suffixes
         let skip = true;
-        for (let suffix of zipSuffixes) {
+        for (const suffix of zipSuffixes) {
             if (asset.name.endsWith(suffix)) {
                 skip = false;
                 break;

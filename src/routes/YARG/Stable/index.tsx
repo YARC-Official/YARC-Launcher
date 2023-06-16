@@ -11,7 +11,7 @@ function StableYARGPage() {
             setDebugMsg("Loading...");
 
             // Get the zip url
-            let zipUrl = await getYARGReleaseZip(releaseData);
+            const zipUrl = await getYARGReleaseZip(releaseData);
 
             // Download it
             await invoke("download_yarg", {
@@ -23,7 +23,7 @@ function StableYARGPage() {
         } catch (e) {
             setDebugMsg(`FAILED: ${e}`);
         }
-    };
+    }
 
     async function play(version: string) {
         try {

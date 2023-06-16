@@ -31,7 +31,7 @@ function App() {
 
     async function checkInstalled() {
         try {
-            let installed = await invoke("version_exists_yarg", {
+            const installed = await invoke("version_exists_yarg", {
                 versionId: "v0.10.6"
             });
             setDownloadMsg(installed ? "Installed!" : "Not installed...");
@@ -45,7 +45,7 @@ function App() {
         // "windows"
         // "macos"
         // "linux"
-        let os = await invoke("get_os") as string;
+        const os = await invoke("get_os") as string;
         setDownloadMsg(os);
     }
 
