@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "tauri": "tauri",
-    "dev": "tauri dev",
+    "dev": "npm run lint:nofix && tauri dev",
     "build": "tauri build",
+    "lint:nofix": "eslint --ext .ts,.tsx .",
+    "lint": "eslint --fix --ext .ts,.tsx .",
     "front:dev": "vite",
     "front:preview": "vite preview",
     "front:build": "tsc && vite build"
