@@ -10,7 +10,6 @@ on:
 
 jobs:
   build-tauri:
-    needs: create-release
     permissions:
       contents: write
     strategy:
