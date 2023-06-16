@@ -12,5 +12,6 @@ The official repository for the YARG launcher (a.k.a., YAL or Yet Another Launch
 	1. If you already had a shell open, you must restart it for the below to work.
 3. Open the command prompt in the directory you want to store the repository.
 4. Type in `git clone https://github.com/YARC-Official/YARG-Launcher.git`.
-5. Then run `npm install`
-6. You're done! To run, type `npm run tauri dev`.
+5. Then run `npm install`.
+6. You're done! To run, type `npm run dev`.
+7. If you want to build an installer, run `npm run build` (YOU NEED AN UPDATER KEY).
