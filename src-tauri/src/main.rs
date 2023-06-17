@@ -1,10 +1,14 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod setlist_decrypt;
+
 use directories::BaseDirs;
 use futures_util::lock::Mutex;
 use futures_util::StreamExt;
 use reqwest;
+use setlist_decrypt::extract_setlist_part;
+use std::fs::remove_file;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::{fs::File, io::Write};
@@ -13,6 +17,7 @@ pub struct InnerState {
     pub yarc_folder: PathBuf,
     pub temp_folder: PathBuf,
     pub yarg_folder: PathBuf,
+    pub setlist_folder: PathBuf,
 }
 
 impl InnerState {
@@ -28,6 +33,9 @@ impl InnerState {
 
         self.yarg_folder = PathBuf::from(&self.yarc_folder);
         self.yarg_folder.push("YARG Installs");
+
+        self.yarg_folder = PathBuf::from(&self.yarc_folder);
+        self.yarg_folder.push("Setlists");
 
         // Delete everything temp (just in case)
         clear_folder(&self.temp_folder)?;
@@ -52,8 +60,8 @@ impl InnerState {
         // Extract the zip to the game directory
         extract(&zip_path, &folder)?;
 
-        // Delete everything temp
-        clear_folder(&self.temp_folder)?;
+        // Delete zip
+        let _ = remove_file(zip_path);
 
         Ok(())
     }
@@ -68,6 +76,25 @@ impl InnerState {
 
     pub fn version_exists_yarg(&self, version_id: String) -> bool {
         Path::new(&self.yarg_folder.join(version_id)).exists()
+    }
+
+    pub async fn download_setlist(&self, zip_url: String, id: String) -> Result<(), String> {
+        let folder = self.setlist_folder.join(id);
+
+        // Delete the old installation
+        clear_folder(&folder)?;
+
+        // Download the zip
+        let zip_path = &self.temp_folder.join("setlist.7z");
+        download(&zip_url, &zip_path).await?;
+
+        // Extract the zip to the game directory
+        extract_setlist_part(&zip_path, &folder)?;
+
+        // Delete zip
+        let _ = remove_file(zip_path);
+
+        Ok(())
     }
 }
 
@@ -186,6 +213,7 @@ fn main() {
             yarc_folder: PathBuf::new(),
             temp_folder: PathBuf::new(),
             yarg_folder: PathBuf::new(),
+            setlist_folder: PathBuf::new(),
         })))
         .invoke_handler(tauri::generate_handler![
             init,
