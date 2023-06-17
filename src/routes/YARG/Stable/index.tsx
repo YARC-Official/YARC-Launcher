@@ -1,59 +1,36 @@
-import { useYARGRelease, getYARGReleaseZip } from "@app/hooks/useReleases";
-import { invoke } from "@tauri-apps/api/tauri";
-import { useState } from "react";
+import { useYARGRelease } from "@app/hooks/useReleases";
+import { YARGStates, useYARGVersion } from "@app/hooks/useYARGVersion";
 
 function StableYARGPage() {
-    const [debugMsg, setDebugMsg] = useState("");
     const releaseData = useYARGRelease("stable");
-
-    async function download(version: string) {
-        try {
-            setDebugMsg("Loading...");
-
-            // Get the zip url
-            const zipUrl = await getYARGReleaseZip(releaseData);
-
-            // Download it
-            await invoke("download_yarg", {
-                zipUrl: zipUrl,
-                versionId: version
-            });
-
-            setDebugMsg("Done!");
-        } catch (e) {
-            setDebugMsg(`FAILED: ${e}`);
-        }
-    }
-
-    async function play(version: string) {
-        try {
-            setDebugMsg("Loading...");
-
-            await invoke("play_yarg", {
-                versionId: version
-            });
-
-            setDebugMsg("Done!");
-        } catch (e) {
-            setDebugMsg(`FAILED: ${e}`);
-        }
-    }
+    const { state, play, download } = useYARGVersion(releaseData);
 
     return (<>
 
         <h1>YARG stable version page</h1>
         <p>this page is on /src/routes/YARG/stable/index.tsx</p>
 
-        <p>Debug message: {debugMsg}</p>
+        <p>STATE: {
+        
+            // I SWEAR THIS IS ONLY FOR DEVELOPMENT
+            state === YARGStates.AVAILABLE ? "Available to play" : // eslint-disable-next-line indent
+            state === YARGStates.DOWNLOADING ? "Downloading new version" : // eslint-disable-next-line indent
+            state === YARGStates.ERROR ? "Error! Please check the DevTools log" : // eslint-disable-next-line indent
+            state === YARGStates.LOADING ? "Loading latest release information" :  // eslint-disable-next-line indent
+            state === YARGStates.NEW_UPDATE ? "New update available!" : // eslint-disable-next-line indent
+            state === YARGStates.PLAYING ? "YARGING" : // eslint-disable-next-line indent
+            "State not defined." // eslint-disable-next-line indent
+        
+        }</p>
 
         <p>Current version: {releaseData?.tag_name}</p>
 
         {
-            releaseData ? <button onClick={() => play(releaseData?.tag_name)}>Play YARG stable {releaseData?.tag_name}</button> : ""
+            releaseData ? <button onClick={() => play()}>Play YARG stable {releaseData?.tag_name}</button> : ""
         }
 
         <div>
-            <button onClick={() => download(releaseData.tag_name)}>Download Release</button>
+            <button onClick={() => download()}>Download Release</button>
         </div>
 
     </>);
