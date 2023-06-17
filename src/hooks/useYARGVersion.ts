@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { ReleaseData, getYARGReleaseZip } from "./useReleases";
 import { invoke } from "@tauri-apps/api/tauri";
+import { useYARGState } from "@app/stores/YARGStateStore";
 
 export enum YARGStates {
     "AVAILABLE",
@@ -12,8 +13,7 @@ export enum YARGStates {
 }
 
 export const useYARGVersion = (releaseData: ReleaseData) => {
-    // We might have to change to use something like zustand or maybe use the context api to manage state globally
-    const [state, setState] = useState<YARGStates>(YARGStates.LOADING);
+    const { state, setState } = useYARGState(releaseData?.tag_name);
 
     useEffect(() => {
         (
