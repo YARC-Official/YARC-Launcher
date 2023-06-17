@@ -17,7 +17,7 @@ const Sidebar: React.FC = () => {
         (async () => {
             setLauncherVersion(await getVersion());
         })();
-    });
+    }, []);
 
     return <div className={styles.sidebar}>
 

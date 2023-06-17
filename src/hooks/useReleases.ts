@@ -12,7 +12,9 @@ export const useYARGRelease = (version: "stable" | "nightly") => {
 
     return useQuery({
         queryKey: ["YARG", version],
-        queryFn: async (): Promise<ReleaseData> => await fetch(`https://api.github.com/repos/YARC-Official/${repositoryName[version]}/releases/latest`).then(res => res.json())
+        queryFn: async (): Promise<ReleaseData> => await fetch(
+            `https://api.github.com/repos/YARC-Official/${repositoryName[version]}/releases/latest`)
+            .then(res => res.json())
     }).data as ReleaseData;
 };
 
@@ -22,15 +24,15 @@ export const getYARGReleaseZip = async (releaseData: ReleaseData) => {
     // Get the zip suffix depending on the OS
     let zipSuffixes: string[] = [];
     switch (os) {
-    case "windows":
-        zipSuffixes = ["Windows-x64.zip"];
-        break;
-    case "macos":
-        zipSuffixes = ["MacOS-Universal.zip"];
-        break;
-    case "linux":
-        zipSuffixes = ["Linux-x86_64.zip", "Linux-x64.zip"];
-        break;
+        case "windows":
+            zipSuffixes = ["Windows-x64.zip"];
+            break;
+        case "macos":
+            zipSuffixes = ["MacOS-Universal.zip"];
+            break;
+        case "linux":
+            zipSuffixes = ["Linux-x86_64.zip", "Linux-x64.zip"];
+            break;
     }
 
     // Find the zip in the assets

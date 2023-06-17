@@ -1,11 +1,10 @@
-import NightlyYARGVersion from "./NightlyYARG";
-import StableYARGVersion from "./StableYARG";
+import YARGVersion from "./YARG";
 import styles from "./Versions.module.css";
 
 const VersionsList: React.FC = () => {
     return <div className={styles.list}>
-        <StableYARGVersion />
-        <NightlyYARGVersion />
+        <YARGVersion channel="stable" />
+        <YARGVersion channel="nightly" />
     </div>;
 };
 
