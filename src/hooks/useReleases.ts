@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Endpoints } from "@octokit/types";
 import { invoke } from "@tauri-apps/api/tauri";
 
-type ReleaseData = Endpoints["GET /repos/{owner}/{repo}/releases/latest"]["response"]["data"];
+export type ReleaseData = Endpoints["GET /repos/{owner}/{repo}/releases/latest"]["response"]["data"];
 
 export const useYARGRelease = (version: "stable" | "nightly") => {
     const repositoryName = {
