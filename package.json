@@ -33,7 +33,9 @@
     "vite-tsconfig-paths": "^4.2.0"
   },
   "dependencies": {
+    "@tanstack/query-sync-storage-persister": "^4.29.14",
     "@tanstack/react-query": "^4.29.12",
+    "@tanstack/react-query-persist-client": "^4.29.14",
     "@tauri-apps/api": "^1.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
