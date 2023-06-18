@@ -67,7 +67,19 @@ impl InnerState {
     }
 
     pub fn play_yarg(&self, version_id: String) -> Result<(), String> {
-        Command::new(&self.yarg_folder.join(version_id).join("YARG.exe"))
+        let mut path = self.yarg_folder.join(version_id);
+        path = match get_os().as_str() {
+            "windows" => path.join("YARG.exe"),
+            "linux" => path.join("YARG"),
+            "macos" => path
+                .join("YARG.app")
+                .join("Contents")
+                .join("MacOS")
+                .join("YARG"),
+            _ => Err("Unknown platform for launch!")?,
+        };
+
+        Command::new(&path)
             .spawn()
             .map_err(|e| format!("Failed to start YARG. Is it installed?\n{:?}", e))?;
 
