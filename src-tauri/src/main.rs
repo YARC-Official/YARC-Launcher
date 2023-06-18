@@ -12,6 +12,14 @@ use std::fs::remove_file;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::{fs::File, io::Write};
+use tauri::{AppHandle, Manager};
+
+#[derive(Clone, serde::Serialize)]
+struct ProgressPayload {
+    pub state: String,
+    pub total: u64,
+    pub current: u64,
+}
 
 pub struct InnerState {
     pub yarc_folder: PathBuf,
@@ -47,15 +55,30 @@ impl InnerState {
         Ok(())
     }
 
-    pub async fn download_yarg(&self, zip_url: String, version_id: String) -> Result<(), String> {
-        let folder = self.yarg_folder.join(version_id);
+    pub async fn download_yarg(
+        &self,
+        app: &AppHandle,
+        zip_url: String,
+        version_id: String,
+    ) -> Result<(), String> {
+        let folder = self.yarg_folder.join(&version_id);
 
         // Delete the old installation
         clear_folder(&folder)?;
 
         // Download the zip
         let zip_path = &self.temp_folder.join("update.zip");
-        download(&zip_url, &zip_path).await?;
+        download(app, &zip_url, &zip_path).await?;
+
+        // Emit the install
+        let _ = app.emit_all(
+            "progress_info",
+            ProgressPayload {
+                state: "installing".to_string(),
+                current: 0,
+                total: 0,
+            },
+        );
 
         // Extract the zip to the game directory
         extract(&zip_path, &folder)?;
@@ -90,15 +113,30 @@ impl InnerState {
         Path::new(&self.yarg_folder.join(version_id)).exists()
     }
 
-    pub async fn download_setlist(&self, zip_url: String, id: String) -> Result<(), String> {
-        let folder = self.setlist_folder.join(id);
+    pub async fn download_setlist(
+        &self,
+        app: &AppHandle,
+        zip_url: String,
+        id: String,
+    ) -> Result<(), String> {
+        let folder = self.setlist_folder.join(&id);
 
         // Delete the old installation
         clear_folder(&folder)?;
 
         // Download the zip
         let zip_path = &self.temp_folder.join("setlist.7z");
-        download(&zip_url, &zip_path).await?;
+        download(app, &zip_url, &zip_path).await?;
+
+        // Emit the install
+        let _ = app.emit_all(
+            "progress_info",
+            ProgressPayload {
+                state: "installing".to_string(),
+                current: 0,
+                total: 0,
+            },
+        );
 
         // Extract the zip to the game directory
         extract_setlist_part(&zip_path, &folder)?;
@@ -122,12 +160,13 @@ async fn init(state: tauri::State<'_, State>) -> Result<(), String> {
 
 #[tauri::command]
 async fn download_yarg(
+    app: AppHandle,
     state: tauri::State<'_, State>,
     zip_url: String,
     version_id: String,
 ) -> Result<(), String> {
     let state_guard = state.0.lock().await;
-    state_guard.download_yarg(zip_url, version_id).await?;
+    state_guard.download_yarg(&app, zip_url, version_id).await?;
 
     Ok(())
 }
@@ -167,7 +206,7 @@ fn clear_folder(path: &Path) -> Result<(), String> {
     Ok(())
 }
 
-async fn download(url: &str, output_path: &Path) -> Result<(), String> {
+async fn download(app: &AppHandle, url: &str, output_path: &Path) -> Result<(), String> {
     // Create the downloading client
     let client = reqwest::Client::new();
 
@@ -202,7 +241,15 @@ async fn download(url: &str, output_path: &Path) -> Result<(), String> {
             current_downloaded = total_size;
         }
 
-        // current_downloaded / total_size is progress
+        // Emit the download progress
+        let _ = app.emit_all(
+            "progress_info",
+            ProgressPayload {
+                state: "downloading".to_string(),
+                current: current_downloaded,
+                total: total_size,
+            },
+        );
     }
 
     // Done!
