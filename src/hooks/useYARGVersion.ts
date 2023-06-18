@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { ReleaseData, getYARGReleaseZip } from "./useReleases";
 import { invoke } from "@tauri-apps/api/tauri";
 import { useYARGState } from "@app/stores/YARGStateStore";
+import { useDownloadPayload } from "@app/stores/DownloadStore";
 
 export enum YARGStates {
     "AVAILABLE",
@@ -14,6 +15,7 @@ export enum YARGStates {
 
 export const useYARGVersion = (releaseData: ReleaseData) => {
     const { state, setState } = useYARGState(releaseData?.tag_name);
+    const { remove: removePayloadState } = useDownloadPayload(releaseData.tag_name);
 
     useEffect(() => {
         (
@@ -60,6 +62,7 @@ export const useYARGVersion = (releaseData: ReleaseData) => {
             });
 
             setState(YARGStates.AVAILABLE);
+            removePayloadState();
         } catch (e) {
             setState(YARGStates.ERROR);
         }

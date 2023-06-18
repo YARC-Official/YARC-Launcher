@@ -1,9 +1,11 @@
 import { useYARGRelease } from "@app/hooks/useReleases";
 import { YARGStates, useYARGVersion } from "@app/hooks/useYARGVersion";
+import { useDownloadPayload } from "@app/stores/DownloadStore";
 
 function NightlyYARGPage() {
     const releaseData = useYARGRelease("nightly");
     const { state, play, download } = useYARGVersion(releaseData);
+    const { payload } = useDownloadPayload(releaseData.tag_name);
 
     return (<>
 
@@ -30,7 +32,7 @@ function NightlyYARGPage() {
         }
 
         <div>
-            <button onClick={() => download()}>Download Release</button>
+            <button onClick={() => download()}>Download Release { payload ? `(${payload.current}/${payload.total})` : "" }</button>
         </div>
 
     </>);
