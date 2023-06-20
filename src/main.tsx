@@ -7,7 +7,7 @@ import Router from "@app/routes";
 import { invoke } from "@tauri-apps/api/tauri";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./query";
-import { DownloadListenerClient } from "./stores/DownloadStore";
+import { DownloadClientProvider } from "@app/utils/Download/provider";
 
 try {
     // Idk how react works, but this should show a loading screen or something
@@ -19,10 +19,11 @@ try {
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
-        <DownloadListenerClient />
-        <TitleBar />
-        <QueryClientProvider client={queryClient}>
-            <RouterProvider router={Router} />
-        </QueryClientProvider>
+        <DownloadClientProvider>
+            <TitleBar />
+            <QueryClientProvider client={queryClient}>
+                <RouterProvider router={Router} />
+            </QueryClientProvider>
+        </DownloadClientProvider>
     </React.StrictMode>
 );
