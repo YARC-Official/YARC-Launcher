@@ -59,4 +59,8 @@ export class DownloadClient {
     usePayload(uuid?: string) {
         return useStore(this.payloadHandler.payloadStore, (state) => uuid ? state[uuid] : undefined);
     }
+
+    useQueue() {
+        return useStore(this.queueHandler.queueStore, (store) => store.queue, (oldStore, newStore) => oldStore.size === newStore.size);
+    }
 }
