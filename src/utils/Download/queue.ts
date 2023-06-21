@@ -11,14 +11,14 @@ export class DownloadQueueHandler {
     current?: IBaseDownload;
 
     add(downloader: IBaseDownload) {
-        this.queueStore.setState((prev) => ({ queue: prev.queue.add(downloader) }), true);
+        this.queueStore.setState((prev) => ({ queue: new Set(prev.queue).add(downloader) }), true);
     }
 
     delete(downloader?: IBaseDownload) {
         if(!downloader) return;
         
         this.queueStore.setState((prev) => {
-            const newQueue = prev.queue;
+            const newQueue = new Set(prev.queue);
             newQueue.delete(downloader);
 
             return { queue: newQueue };
