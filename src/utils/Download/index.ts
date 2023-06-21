@@ -3,6 +3,7 @@ import { IBaseDownload } from "./Processors/base";
 import { listen } from "@tauri-apps/api/event";
 import { DownloadPayloadHandler } from "./payload";
 import { DownloadQueueHandler } from "./queue";
+import { throttle } from "lodash";
 
 export type DownloadState = "downloading"|"installing"|"waiting";
 
@@ -20,10 +21,16 @@ export class DownloadClient {
     constructor() {
         this.payloadHandler = new DownloadPayloadHandler();
         this.queueHandler = new DownloadQueueHandler();
+        
+        const throttleTime = 100;
 
-        listen("progress_info", ({payload}: {payload: DownloadPayload}) => {
-            this.update(payload);
-        });
+        listen("progress_info", 
+            throttle(
+                ({payload}: {payload: DownloadPayload}) => {
+                    this.update(payload);
+                }, throttleTime
+            )
+        );
     }
 
     add(downloader: IBaseDownload) {
