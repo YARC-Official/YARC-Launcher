@@ -2,6 +2,7 @@ import { useStore } from "zustand";
 import { IBaseDownload } from "./Processors/base";
 import { listen } from "@tauri-apps/api/event";
 import { DownloadPayloadHandler } from "./payload";
+import { DownloadQueueHandler } from "./queue";
 
 export type DownloadState = "downloading"|"installing"|"waiting";
 
@@ -14,12 +15,11 @@ export interface DownloadPayload {
 export class DownloadClient {
     
     private payloadHandler: DownloadPayloadHandler;
-
-    private queue: Set<IBaseDownload> = new Set();
-    private current?: IBaseDownload;
+    private queueHandler: DownloadQueueHandler;
 
     constructor() {
         this.payloadHandler = new DownloadPayloadHandler();
+        this.queueHandler = new DownloadQueueHandler();
 
         listen("progress_info", ({payload}: {payload: DownloadPayload}) => {
             this.update(payload);
@@ -27,27 +27,22 @@ export class DownloadClient {
     }
 
     add(downloader: IBaseDownload) {
-        this.queue.add(downloader);
+        this.queueHandler.add(downloader);
         this.payloadHandler.add(downloader);
 
-        if(!this.current) {
+        if(!this.queueHandler.current) {
             this.processNext();
         }
     }
 
     private async processNext() {
-        this.current = undefined;
-
-        const next: IBaseDownload = this.queue.values().next().value;
+        const next = this.queueHandler.next();
         if(!next) return;
-        
-        this.current = next;
-        this.queue.delete(next);
         
         try {
             await next.start();
 
-            this.payloadHandler.remove(this.current);
+            this.payloadHandler.remove(next);
             next.onFinish?.();
         } catch (e) {
             console.error(e);
@@ -57,8 +52,8 @@ export class DownloadClient {
     }
 
     update(payload: DownloadPayload) {
-        if(!this.current) return;
-        this.payloadHandler.update(this.current, payload);
+        if(!this.queueHandler.current) return;
+        this.payloadHandler.update(this.queueHandler.current, payload);
     }
 
     usePayload(uuid?: string) {
