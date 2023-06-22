@@ -13,6 +13,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::{fs::File, io::Write};
 use tauri::{AppHandle, Manager};
+use window_shadows::set_shadow;
 
 #[derive(Clone, serde::Serialize)]
 struct ProgressPayload {
@@ -238,13 +239,6 @@ async fn download(app: &AppHandle, url: &str, output_path: &Path) -> Result<(), 
         // Cap the downloaded at the total size
         current_downloaded += chunk.len() as u64;
 
-        // TODO: send a window.emit("download_progress") to front-end with:
-        // { 
-        //     downloadId: a string which will be the tag_name/version,
-        //     total: number = total_size,
-        //     current: number = current_downloaded,
-        // }
-
         if current_downloaded > total_size {
             current_downloaded = total_size;
         }
@@ -289,6 +283,11 @@ fn main() {
             version_exists_yarg,
             get_os
         ])
+        .setup(|app| {
+            let window = app.get_window("main").unwrap();
+            let _ = set_shadow(&window, true);
+            Ok(())
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
