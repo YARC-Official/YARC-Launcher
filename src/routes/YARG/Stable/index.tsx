@@ -3,7 +3,7 @@ import { YARGStates, useYARGVersion } from "@app/hooks/useYARGVersion";
 
 function StableYARGPage() {
     const releaseData = useYARGRelease("stable");
-    const { state, play, download } = useYARGVersion(releaseData);
+    const { state, play, download, payload } = useYARGVersion(releaseData);
 
     return (<>
 
@@ -30,7 +30,14 @@ function StableYARGPage() {
         }
 
         <div>
-            <button onClick={() => download()}>Download Release</button>
+            <button onClick={() => download()}>
+                {
+                    payload?.state === "waiting" ? "On queue" : // eslint-disable-next-line indent
+                    payload?.state === "downloading" ? `Downloading... (${payload.current}/${payload.total})` : // eslint-disable-next-line indent
+                    payload?.state === "installing" ? "Installing..." : // eslint-disable-next-line indent
+                    "Download release"
+                }
+            </button>
         </div>
 
     </>);

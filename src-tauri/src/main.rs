@@ -237,6 +237,14 @@ async fn download(app: &AppHandle, url: &str, output_path: &Path) -> Result<(), 
 
         // Cap the downloaded at the total size
         current_downloaded += chunk.len() as u64;
+
+        // TODO: send a window.emit("download_progress") to front-end with:
+        // { 
+        //     downloadId: a string which will be the tag_name/version,
+        //     total: number = total_size,
+        //     current: number = current_downloaded,
+        // }
+
         if current_downloaded > total_size {
             current_downloaded = total_size;
         }

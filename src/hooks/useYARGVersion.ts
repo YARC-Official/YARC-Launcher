@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { ReleaseData, getYARGReleaseZip } from "./useReleases";
 import { invoke } from "@tauri-apps/api/tauri";
 import { useYARGState } from "@app/stores/YARGStateStore";
+import { useDownloadClient } from "@app/utils/Download/provider";
+import { YARGDownload, generateYARGUUID } from "@app/utils/Download/Processors/YARG";
 
 export enum YARGStates {
     "AVAILABLE",
@@ -14,6 +16,9 @@ export enum YARGStates {
 
 export const useYARGVersion = (releaseData: ReleaseData) => {
     const { state, setState } = useYARGState(releaseData?.tag_name);
+
+    const downloadClient = useDownloadClient();
+    const payload = downloadClient.usePayload(generateYARGUUID(releaseData?.tag_name));
 
     useEffect(() => {
         (
@@ -47,24 +52,25 @@ export const useYARGVersion = (releaseData: ReleaseData) => {
     };
 
     const download = async () => {
-        if(!releaseData) return;
+        if(!releaseData || state === YARGStates.DOWNLOADING) return;
 
         setState(YARGStates.DOWNLOADING);
 
         try {
             const zipUrl = await getYARGReleaseZip(releaseData);
 
-            await invoke("download_yarg", {
-                zipUrl,
-                versionId: releaseData.tag_name
-            });
+            const downloader = new YARGDownload(
+                zipUrl, 
+                releaseData.tag_name, 
+                () => { setState(YARGStates.AVAILABLE); }
+            );
 
-            setState(YARGStates.AVAILABLE);
+            downloadClient.add(downloader);
         } catch (e) {
             setState(YARGStates.ERROR);
         }
     };
 
-    return { state, play, download };
+    return { state, play, download, payload };
 };
 

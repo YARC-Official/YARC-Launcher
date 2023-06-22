@@ -9,9 +9,13 @@ import { Link } from "react-router-dom";
 import VersionsList from "./Versions/List";
 import { useEffect, useState } from "react";
 import { getVersion } from "@tauri-apps/api/app";
+import { useDownloadClient } from "@app/utils/Download/provider";
 
 const Sidebar: React.FC = () => {
     const [launcherVersion, setLauncherVersion] = useState("");
+
+    const downloadClient = useDownloadClient();
+    const queue = downloadClient.useQueue();
 
     useEffect(() => {
         (async () => {
@@ -25,6 +29,7 @@ const Sidebar: React.FC = () => {
             <Link to="/"><SidebarMenuButton>Home</SidebarMenuButton></Link>
             <Link to="/news"><SidebarMenuButton icon={<NewsIcon />}>News</SidebarMenuButton></Link>
             <Link to="/settings"><SidebarMenuButton icon={<SettingsIcon />}>Settings</SidebarMenuButton></Link>
+            { queue.size > 0 ? <Link to="/queue"><SidebarMenuButton>Queue ({queue.size})</SidebarMenuButton></Link> : "" }
         </div>
 
         <VersionsList />
