@@ -8,7 +8,7 @@ use futures_util::lock::Mutex;
 use futures_util::StreamExt;
 use reqwest;
 use setlist_decrypt::extract_setlist_part;
-use std::fs::remove_file;
+use std::fs::{self, remove_file};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::{fs::File, io::Write};
@@ -43,8 +43,8 @@ impl InnerState {
         self.yarg_folder = PathBuf::from(&self.yarc_folder);
         self.yarg_folder.push("YARG Installs");
 
-        self.yarg_folder = PathBuf::from(&self.yarc_folder);
-        self.yarg_folder.push("Setlists");
+        self.setlist_folder = PathBuf::from(&self.yarc_folder);
+        self.setlist_folder.push("Setlists");
 
         // Delete everything temp (just in case)
         clear_folder(&self.temp_folder)?;
@@ -117,35 +117,59 @@ impl InnerState {
     pub async fn download_setlist(
         &self,
         app: &AppHandle,
-        zip_url: String,
+        zip_urls: Vec<String>,
         id: String,
+        version: String,
     ) -> Result<(), String> {
         let folder = self.setlist_folder.join(&id);
 
         // Delete the old installation
         clear_folder(&folder)?;
 
-        // Download the zip
-        let zip_path = &self.temp_folder.join("setlist.7z");
-        download(app, &zip_url, &zip_path).await?;
+        // Download the zip(s)
+        for (index, zip_url) in zip_urls.iter().enumerate() {
+            // Download the current zip
+            let zip_path = &self.temp_folder.join(format!("setlist_{}.7z", index));
+            download(app, &zip_url, &zip_path).await?;
 
-        // Emit the install
-        let _ = app.emit_all(
-            "progress_info",
-            ProgressPayload {
-                state: "installing".to_string(),
-                current: 0,
-                total: 0,
-            },
-        );
+            // Emit the install
+            let _ = app.emit_all(
+                "progress_info",
+                ProgressPayload {
+                    state: "installing".to_string(),
+                    current: 0,
+                    total: 0,
+                },
+            );
 
-        // Extract the zip to the game directory
-        extract_setlist_part(&zip_path, &folder)?;
+            // Extract the zip to the game directory
+            extract_setlist_part(&zip_path, &folder)?;
 
-        // Delete zip
-        let _ = remove_file(zip_path);
+            // Delete zip
+            let _ = remove_file(zip_path);
+        }
+
+        // Create a version.txt
+        let mut file = File::create(folder.join("version.txt"))
+            .map_err(|e| format!("Failed to create version file in `{:?}`.\n{:?}", folder, e))?;
+        file.write_all(version.as_bytes())
+            .map_err(|e| format!("Failed to write version file in `{:?}`.\n{:?}", folder, e))?;
 
         Ok(())
+    }
+
+    pub fn version_exists_setlist(&self, id: String, version: String) -> bool {
+        let path = self.setlist_folder.join(id);
+        if !Path::new(&path).exists() {
+            return false;
+        }
+
+        let contents = match fs::read_to_string(&path.join("version.txt")) {
+            Ok(contents) => contents,
+            _ => return false,
+        };
+
+        contents == version
     }
 }
 
@@ -187,6 +211,32 @@ async fn version_exists_yarg(
 ) -> Result<bool, String> {
     let state_guard = state.0.lock().await;
     Ok(state_guard.version_exists_yarg(version_id))
+}
+
+#[tauri::command]
+async fn download_setlist(
+    app: AppHandle,
+    state: tauri::State<'_, State>,
+    zip_urls: Vec<String>,
+    id: String,
+    version: String,
+) -> Result<(), String> {
+    let state_guard = state.0.lock().await;
+    state_guard
+        .download_setlist(&app, zip_urls, id, version)
+        .await?;
+
+    Ok(())
+}
+
+#[tauri::command]
+async fn version_exists_setlist(
+    state: tauri::State<'_, State>,
+    id: String,
+    version: String,
+) -> Result<bool, String> {
+    let state_guard = state.0.lock().await;
+    Ok(state_guard.version_exists_setlist(id, version))
 }
 
 #[tauri::command]
@@ -281,6 +331,8 @@ fn main() {
             download_yarg,
             play_yarg,
             version_exists_yarg,
+            download_setlist,
+            version_exists_setlist,
             get_os
         ])
         .setup(|app| {

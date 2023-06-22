@@ -5,23 +5,27 @@ function App() {
     const [downloadMsg, setDownloadMsg] = useState("");
 
     async function download() {
+        /*
+        
+        TODO: Tie this to the front-end!
+
+        You can get the data for the latest release here:
+        https://raw.githubusercontent.com/YARC-Official/Official-Setlist-Public/master/setlists/official.json
+        Let's call this data `SetlistData`
+
+        The downloading process *also* uses the `progress_info` emission.
+        
+        */
+
         try {
             setDownloadMsg("Loading...");
-            await invoke("download_yarg", {
-                zipUrl: "https://github.com/EliteAsian123/YARG/releases/download/v0.10.6/YARG_v0.10.6-Windows-x64.zip",
-                versionId: "v0.10.6"
-            });
-            setDownloadMsg("Done!");
-        } catch (e) {
-            setDownloadMsg(`FAILED: ${e}`);
-        }
-    }
-
-    async function play() {
-        try {
-            setDownloadMsg("Launching...");
-            await invoke("play_yarg", {
-                versionId: "v0.10.6"
+            await invoke("download_setlist", {
+                zipUrls: [ // SetlistData.downloads
+                    "https://github.com/YARC-Official/Official-Setlist-Public/releases/download/official-2023-06-17-0/official_0.7z",
+                    "https://github.com/YARC-Official/Official-Setlist-Public/releases/download/official-2023-06-17-0/official_1.7z"
+                ],
+                id: "official", // SetlistData.id
+                version: "2023-06-17-0" // SetlistData.version
             });
             setDownloadMsg("Done!");
         } catch (e) {
@@ -31,8 +35,9 @@ function App() {
 
     async function checkInstalled() {
         try {
-            const installed = await invoke("version_exists_yarg", {
-                versionId: "v0.10.6"
+            const installed = await invoke("version_exists_setlist", {
+                id: "official", // SetlistData.id
+                version: "2023-06-17-0" // SetlistData.version
             });
             setDownloadMsg(installed ? "Installed!" : "Not installed...");
         } catch (e) {
@@ -40,23 +45,12 @@ function App() {
         }
     }
 
-    async function getOs() {
-        // Can return:
-        // "windows"
-        // "macos"
-        // "linux"
-        const os = await invoke("get_os") as string;
-        setDownloadMsg(os);
-    }
-
     return (
         <div className="container">
             <h1>Welcome to YAL!</h1>
 
-            <button onClick={() => download()}>Download command</button>
-            <button onClick={() => play()}>Play command</button>
-            <button onClick={() => checkInstalled()}>Check installed command</button>
-            <button onClick={() => getOs()}>Get OS command</button>
+            <button onClick={() => download()}>Download Setlist</button>
+            <button onClick={() => checkInstalled()}>Check Setlist Installed</button>
             <p>{downloadMsg}</p>
 
         </div>
