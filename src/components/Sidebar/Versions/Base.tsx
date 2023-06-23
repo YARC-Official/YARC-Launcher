@@ -1,5 +1,5 @@
-import ApplicationStyles from "./Application.module.css";
-import SongStyles from "./Song.module.css";
+import ApplicationStyles from "./styles/Application.module.css";
+import SongStyles from "./styles/Song.module.css";
 
 export enum VersionType {
     "APPLICATION",
