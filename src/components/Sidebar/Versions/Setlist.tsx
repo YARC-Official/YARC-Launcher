@@ -2,6 +2,7 @@ import { SetlistID, useSetlistRelease } from "@app/hooks/useSetlistRelease";
 import { SetlistStates, useSetlistData } from "@app/hooks/useSetlistData";
 import BaseVersion, { VersionType } from "./Base";
 import { Link } from "react-router-dom";
+import OfficialIcon from "@app/assets/SourceIcons/Official.png";
 
 interface Props {
     channel: SetlistID;
@@ -14,7 +15,9 @@ const SetlistVersion: React.FC<Props> = ({ channel }: Props) => {
     return (
         <Link to={"/setlist/" + channel}>
             <BaseVersion
-                programName="Setlist"
+                icon={<img src={OfficialIcon} />} // TO-DO: create a util/sourceIcon to get source icon from 
+                type={VersionType.SONG}
+                programName={setlistData?.locales["en-US"].title} // TO-DO: catch the BCP 47 code
                 versionChannel={`${setlistData?.songCount} songs`}
                 version={setlistData?.version}
                 updateAvailable={state === SetlistStates.NEW_UPDATE}
