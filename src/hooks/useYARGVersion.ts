@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { ReleaseData, getYARGReleaseZip } from "./useReleases";
+import { ReleaseData, getYARGReleaseZip } from "./useYARGRelease";
 import { invoke } from "@tauri-apps/api/tauri";
 import { useYARGState } from "@app/stores/YARGStateStore";
 import { useDownloadClient } from "@app/utils/Download/provider";

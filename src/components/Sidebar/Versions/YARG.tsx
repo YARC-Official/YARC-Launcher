@@ -1,4 +1,4 @@
-import { useYARGRelease } from "@app/hooks/useReleases";
+import { useYARGRelease } from "@app/hooks/useYARGRelease";
 import { YARGStates, useYARGVersion } from "@app/hooks/useYARGVersion";
 import BaseVersion from "./Base";
 import NightlyYARGIcon from "@app/assets/NightlyYARGIcon.png";

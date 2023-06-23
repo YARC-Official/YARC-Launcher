@@ -1,4 +1,4 @@
-import { useYARGRelease } from "@app/hooks/useReleases";
+import { useYARGRelease } from "@app/hooks/useYARGRelease";
 import { YARGStates, useYARGVersion } from "@app/hooks/useYARGVersion";
 
 function NightlyYARGPage() {
