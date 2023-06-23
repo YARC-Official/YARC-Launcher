@@ -20,7 +20,7 @@ const styleType = {
     [VersionType.SONG]: SongStyles
 };
 
-const BaseVersion: React.FC<Props> = ({ type = VersionType.APPLICATION, icon, programName, versionChannel, updateAvailable }: Props) => {
+const BaseVersion: React.FC<Props> = ({ type = VersionType.APPLICATION, icon, programName, version, versionChannel, updateAvailable }: Props) => {
     const styles = styleType[type];
 
     return <div className={styles.selector}>
@@ -29,7 +29,7 @@ const BaseVersion: React.FC<Props> = ({ type = VersionType.APPLICATION, icon, pr
             <div className={styles.channel}>{versionChannel}</div>
             <div className={styles.name}>{programName}</div>
         </div>
-        <div className={styles.version} data-update-available={updateAvailable}></div>
+        <div className={styles.version} data-update-available={updateAvailable}>{version}</div>
     </div>;
 };
 

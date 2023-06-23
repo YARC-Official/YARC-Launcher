@@ -19,7 +19,6 @@ const SetlistVersion: React.FC<Props> = ({ channel }: Props) => {
                 type={VersionType.SONG}
                 programName={setlistData?.locales["en-US"].title} // TO-DO: catch the BCP 47 code
                 versionChannel={`${setlistData?.songCount} songs`}
-                version={setlistData?.version}
                 updateAvailable={state === SetlistStates.NEW_UPDATE}
             />
         </Link>
