@@ -54,8 +54,8 @@
         "fullscreen": false,
         "resizable": true,
         "title": "Yet Another Launcher",
-        "width": 1038,
-        "height": 505,
+        "width": 1000,
+        "height": 575,
         "minWidth": 0,
         "minHeight": 0,
         "decorations": false
