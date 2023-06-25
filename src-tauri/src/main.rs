@@ -6,6 +6,7 @@ mod setlist_decrypt;
 use directories::BaseDirs;
 use futures_util::lock::Mutex;
 use futures_util::StreamExt;
+use minisign::{PublicKeyBox, SignatureBox};
 use reqwest;
 use setlist_decrypt::extract_setlist_part;
 use std::fs::{self, remove_file};
@@ -14,6 +15,11 @@ use std::process::Command;
 use std::{fs::File, io::Write};
 use tauri::{AppHandle, Manager};
 use window_shadows::set_shadow;
+
+// TODO: Move this to a file or something
+const YARG_PUB_KEY: &str = "untrusted comment: minisign public key C26EBBBEC4C1DB81
+RWSB28HEvrtuwvPn3pweVBodgVi/d+UH22xDsL3K8VBgeRqaIrDdTvps
+";
 
 #[derive(Clone, serde::Serialize)]
 struct ProgressPayload {
@@ -60,6 +66,7 @@ impl InnerState {
         &self,
         app: &AppHandle,
         zip_url: String,
+        sig_url: Option<String>,
         version_id: String,
     ) -> Result<(), String> {
         let folder = self.yarg_folder.join(&version_id);
@@ -69,7 +76,38 @@ impl InnerState {
 
         // Download the zip
         let zip_path = &self.temp_folder.join("update.zip");
-        download(app, &zip_url, &zip_path).await?;
+        download(Some(app), &zip_url, &zip_path).await?;
+
+        // Verify (if signature is provided)
+        if let Some(sig_url) = sig_url {
+            // Emit the verification
+            let _ = app.emit_all(
+                "progress_info",
+                ProgressPayload {
+                    state: "verifying".to_string(),
+                    current: 0,
+                    total: 0,
+                },
+            );
+
+            // Download sig file (don't pass app so it doesn't emit an update)
+            let sig_path = &self.temp_folder.join("update.sig");
+            download(None, &sig_url, &sig_path).await?;
+
+            // Convert public key
+            let pk_box = PublicKeyBox::from_string(YARG_PUB_KEY).unwrap();
+            let pk = pk_box.into_public_key().unwrap();
+
+            // Create the signature box
+            let sig_box = SignatureBox::from_file(sig_path)
+                .map_err(|e| format!("Invalid signature file! Try reinstalling. If it keeps failing, let us know ASAP!\n{:?}", e))?;
+
+            // Verify
+            let zip_file = File::open(zip_path)
+                .map_err(|e| format!("Failed to open zip while verifying.\n{:?}", e))?;
+            minisign::verify(&pk, &sig_box, zip_file, true, false, false)
+                .map_err(|_| "Failed to verify downloaded zip file! Try reinstalling. If it keeps failing, let us know ASAP!")?;
+        }
 
         // Emit the install
         let _ = app.emit_all(
@@ -130,7 +168,7 @@ impl InnerState {
         for (index, zip_url) in zip_urls.iter().enumerate() {
             // Download the current zip
             let zip_path = &self.temp_folder.join(format!("setlist_{}.7z", index));
-            download(app, &zip_url, &zip_path).await?;
+            download(Some(app), &zip_url, &zip_path).await?;
 
             // Emit the install
             let _ = app.emit_all(
@@ -188,10 +226,14 @@ async fn download_yarg(
     app: AppHandle,
     state: tauri::State<'_, State>,
     zip_url: String,
+    sig_url: Option<String>,
     version_id: String,
 ) -> Result<(), String> {
     let state_guard = state.0.lock().await;
-    state_guard.download_yarg(&app, zip_url, version_id).await?;
+
+    state_guard
+        .download_yarg(&app, zip_url, sig_url, version_id)
+        .await?;
 
     Ok(())
 }
@@ -257,7 +299,7 @@ fn clear_folder(path: &Path) -> Result<(), String> {
     Ok(())
 }
 
-async fn download(app: &AppHandle, url: &str, output_path: &Path) -> Result<(), String> {
+async fn download(app: Option<&AppHandle>, url: &str, output_path: &Path) -> Result<(), String> {
     // Create the downloading client
     let client = reqwest::Client::new();
 
@@ -294,14 +336,16 @@ async fn download(app: &AppHandle, url: &str, output_path: &Path) -> Result<(), 
         }
 
         // Emit the download progress
-        let _ = app.emit_all(
-            "progress_info",
-            ProgressPayload {
-                state: "downloading".to_string(),
-                current: current_downloaded,
-                total: total_size,
-            },
-        );
+        if let Some(app) = app {
+            let _ = app.emit_all(
+                "progress_info",
+                ProgressPayload {
+                    state: "downloading".to_string(),
+                    current: current_downloaded,
+                    total: total_size,
+                },
+            );
+        }
     }
 
     // Done!

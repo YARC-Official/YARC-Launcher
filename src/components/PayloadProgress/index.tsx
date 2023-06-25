@@ -2,30 +2,44 @@ import { DownloadPayload } from "@app/utils/Download";
 
 interface Props {
     payload?: DownloadPayload;
+    defaultText?: string;
 }
 
-const PayloadProgress: React.FC<Props> = ({payload}: Props) => {
-    if(!payload) return <></>;
+const PayloadProgress: React.FC<Props> = ({ payload, defaultText }: Props) => {
+    if (!payload) {
+        return <span>{defaultText}</span>;
+    }
 
-    return payload.state === "downloading" ? <ProgressDownloading payload={payload} /> :
-        payload.state === "installing" ? <ProgressInstalling /> :
-            <ProgressWaiting />;
+    switch (payload.state) {
+        case "downloading":
+            return <ProgressDownloading payload={payload} />;
+        case "installing":
+            return <ProgressInstalling />;
+        case "verifying":
+            return <ProgressVerifying />;
+        default:
+            return <ProgressWaiting />;
+    }
 };
 
 const ProgressWaiting: React.FC = () => {
-    return (<span>On queue</span>);
+    return (<span>Queued</span>);
 };
 
 interface ProgressDownloadingProps {
     payload: DownloadPayload;
 }
 
-const ProgressDownloading: React.FC<ProgressDownloadingProps> = ({payload}: ProgressDownloadingProps) => {
-    return (<span>{(payload?.current / payload?.total) * 100}%</span>);
+const ProgressDownloading: React.FC<ProgressDownloadingProps> = ({ payload }: ProgressDownloadingProps) => {
+    return (<span>Downloading: {((payload?.current / payload?.total) * 100).toFixed(0)}%</span>);
 };
 
 const ProgressInstalling: React.FC = () => {
     return (<span>Installing</span>);
+};
+
+const ProgressVerifying: React.FC = () => {
+    return (<span>Verifying</span>);
 };
 
 export default PayloadProgress;

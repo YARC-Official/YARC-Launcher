@@ -58,3 +58,19 @@ export const getYARGReleaseZip = async (releaseData: ReleaseData) => {
     // Otherwise, the platform is not supported!
     throw new Error(`Platform "${os}" is not supported in release "${releaseData.tag_name}"!`);
 };
+
+export const getYARGReleaseSig = async (releaseData: ReleaseData) => {
+    const zip = await getYARGReleaseZip(releaseData);
+    const sig = zip.split("/").at(-1) + ".sig";
+
+    // Find the zip in the assets
+    for (const asset of releaseData.assets) {
+        if (asset.name == sig) {
+            return asset.browser_download_url;
+        }
+    }
+
+    // Otherwise, there's no signature
+    console.warn(`Failed to find signature file "${sig}" in release "${releaseData.tag_name}"!`);
+    return undefined;
+};
