@@ -1,19 +1,17 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-mod setlist_decrypt;
+mod utils;
 
 use directories::BaseDirs;
 use futures_util::lock::Mutex;
-use futures_util::StreamExt;
 use minisign::{PublicKeyBox, SignatureBox};
-use reqwest;
-use setlist_decrypt::extract_setlist_part;
 use std::fs::{self, remove_file};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::{fs::File, io::Write};
 use tauri::{AppHandle, Manager};
+use utils::{clear_folder, download, extract, extract_setlist_part};
 use window_shadows::set_shadow;
 
 // TODO: Move this to a file or something
@@ -284,82 +282,6 @@ async fn version_exists_setlist(
 #[tauri::command]
 fn get_os() -> String {
     std::env::consts::OS.to_string()
-}
-
-fn clear_folder(path: &Path) -> Result<(), String> {
-    std::fs::remove_dir_all(path).ok();
-    std::fs::create_dir_all(path).map_err(|e| {
-        format!(
-            "Failed to re-create folder `{}`.\n{:?}",
-            path.to_string_lossy(),
-            e
-        )
-    })?;
-
-    Ok(())
-}
-
-async fn download(app: Option<&AppHandle>, url: &str, output_path: &Path) -> Result<(), String> {
-    // Create the downloading client
-    let client = reqwest::Client::new();
-
-    // Send the initial request
-    let download = client
-        .get(url)
-        .send()
-        .await
-        .map_err(|e| format!("Failed to initialize download from `{}`.\n{:?}", &url, e))?;
-    let total_size = download.content_length().unwrap();
-
-    // Create the file to download into
-    let mut file = File::create(output_path).map_err(|e| {
-        format!(
-            "Failed to create file `{}`.\n{:?}",
-            &output_path.display(),
-            e
-        )
-    })?;
-    let mut current_downloaded: u64 = 0;
-    let mut stream = download.bytes_stream();
-
-    // Download into the file
-    while let Some(item) = stream.next().await {
-        let chunk = item.map_err(|e| format!("Error while downloading file.\n{:?}", e))?;
-        file.write_all(&chunk)
-            .map_err(|e| format!("Error while writing to file.\n{:?}", e))?;
-
-        // Cap the downloaded at the total size
-        current_downloaded += chunk.len() as u64;
-
-        if current_downloaded > total_size {
-            current_downloaded = total_size;
-        }
-
-        // Emit the download progress
-        if let Some(app) = app {
-            let _ = app.emit_all(
-                "progress_info",
-                ProgressPayload {
-                    state: "downloading".to_string(),
-                    current: current_downloaded,
-                    total: total_size,
-                },
-            );
-        }
-    }
-
-    // Done!
-    Ok(())
-}
-
-fn extract(from: &Path, to: &Path) -> Result<(), String> {
-    clear_folder(to)?;
-
-    let file = File::open(from).map_err(|e| format!("Error while opening file.\n{:?}", e))?;
-    zip_extract::extract(file, to, false)
-        .map_err(|e| format!("Error while extracting zip.\n{:?}", e))?;
-
-    Ok(())
 }
 
 fn main() {
