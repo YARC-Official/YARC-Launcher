@@ -20,22 +20,30 @@ RWSB28HEvrtuwvPn3pweVBodgVi/d+UH22xDsL3K8VBgeRqaIrDdTvps
 ";
 
 #[derive(Clone, serde::Serialize)]
-struct ProgressPayload {
+pub struct ProgressPayload {
     pub state: String,
     pub total: u64,
     pub current: u64,
 }
 
 #[derive(Clone, serde::Serialize)]
-struct ErrorPayload {
+pub struct ErrorPayload {
     pub error: String,
+}
+
+#[derive(Default, serde::Serialize, serde::Deserialize)]
+pub struct Settings {
+    pub download_location: String,
 }
 
 pub struct InnerState {
     pub yarc_folder: PathBuf,
+    pub launcher_folder: PathBuf,
     pub temp_folder: PathBuf,
     pub yarg_folder: PathBuf,
     pub setlist_folder: PathBuf,
+
+    pub settings: Settings,
 }
 
 impl InnerState {
@@ -45,9 +53,29 @@ impl InnerState {
         self.yarc_folder = PathBuf::from(dirs.data_local_dir());
         self.yarc_folder.push("YARC");
 
-        self.temp_folder = PathBuf::from(&self.yarc_folder);
-        self.temp_folder.push("Launcher");
+        self.launcher_folder = PathBuf::from(&self.yarc_folder);
+        self.launcher_folder.push("Launcher");
+
+        self.temp_folder = PathBuf::from(&self.launcher_folder);
         self.temp_folder.push("Temp");
+
+        // Load settings
+        let settings_path = self.launcher_folder.join("settings.json");
+        if settings_path.exists() {
+            // Get file
+            let settings_file = File::open(settings_path)
+                .map_err(|e| format!("Failed to open settings.json file.\n{:?}", e))?;
+
+            // Convert from json and save to settings
+            let settings: Result<Settings, _> = serde_json::from_reader(settings_file);
+            if let Ok(settings) = settings {
+                self.settings = settings;
+            } else {
+                self.create_new_settings_file();
+            }
+        } else {
+            self.create_new_settings_file();
+        }
 
         self.yarg_folder = PathBuf::from(&self.yarc_folder);
         self.yarg_folder.push("YARG Installs");
@@ -63,6 +91,26 @@ impl InnerState {
             .map_err(|e| format!("Failed to create YARG directory.\n{:?}", e))?;
 
         Ok(())
+    }
+
+    fn create_new_settings_file(&mut self) {
+        self.settings = Default::default();
+        self.settings.download_location = self
+            .yarc_folder
+            .clone()
+            .into_os_string()
+            .into_string()
+            .unwrap();
+
+        // Delete the old settings (if it exists)
+        let settings_path = self.launcher_folder.join("settings.json");
+        let _ = remove_file(&settings_path);
+
+        // Open settings file
+        let settings_file = File::create(settings_path).unwrap();
+
+        // Write to file
+        serde_json::to_writer(settings_file, &self.settings).unwrap();
     }
 
     pub async fn download_yarg(
@@ -317,9 +365,11 @@ fn main() {
     tauri::Builder::default()
         .manage(State(Mutex::new(InnerState {
             yarc_folder: PathBuf::new(),
+            launcher_folder: PathBuf::new(),
             temp_folder: PathBuf::new(),
             yarg_folder: PathBuf::new(),
             setlist_folder: PathBuf::new(),
+            settings: Default::default(),
         })))
         .invoke_handler(tauri::generate_handler![
             init,
