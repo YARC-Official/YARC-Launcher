@@ -6,12 +6,11 @@ mod utils;
 use directories::BaseDirs;
 use futures_util::lock::Mutex;
 use minisign::{PublicKeyBox, SignatureBox};
-use std::collections::VecDeque;
 use std::fs::{self, remove_file};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::{fs::File, io::Write};
-use tauri::{AppHandle, Manager};
+use tauri::{AppHandle, Manager, WindowBuilder, WindowUrl};
 use utils::{clear_folder, download, extract, extract_setlist_part};
 use window_shadows::set_shadow;
 
@@ -27,13 +26,16 @@ struct ProgressPayload {
     pub current: u64,
 }
 
+#[derive(Clone, serde::Serialize)]
+struct ErrorPayload {
+    pub error: String,
+}
+
 pub struct InnerState {
     pub yarc_folder: PathBuf,
     pub temp_folder: PathBuf,
     pub yarg_folder: PathBuf,
     pub setlist_folder: PathBuf,
-
-    pub error_queue: VecDeque<String>,
 }
 
 impl InnerState {
@@ -288,23 +290,25 @@ fn get_os() -> String {
 }
 
 #[tauri::command]
-async fn open_alert_window(
-    handle: tauri::AppHandle,
-    state: tauri::State<'_, State>,
-    error_string: String,
-) -> Result<(), String> {
-    let mut state_guard = state.0.lock().await;
-
-    // Push error (in case there is already one shown)
-    state_guard.error_queue.push_back(error_string);
-
-    // Get the alert window and see if its visible
-    if let Some(alert_window) = handle.windows().get("alert") {
-        let visible = alert_window.is_visible().unwrap();
-        if !visible {
-            let _ = alert_window.show();
-        }
+async fn open_alert_window(handle: tauri::AppHandle, error_string: String) -> Result<(), String> {
+    // Create an alert window if it isn't open
+    if handle.windows().get("alert") == None {
+        WindowBuilder::new(&handle, "alert", WindowUrl::App("alert.html".into()))
+            .title("Alert")
+            .resizable(false)
+            .inner_size(650.0, 375.0)
+            .decorations(false)
+            .build()
+            .unwrap();
     }
+
+    // Emit error (to be shown in alert window)
+    let _ = handle.emit_all(
+        "error",
+        ErrorPayload {
+            error: error_string,
+        },
+    );
 
     Ok(())
 }
@@ -316,8 +320,6 @@ fn main() {
             temp_folder: PathBuf::new(),
             yarg_folder: PathBuf::new(),
             setlist_folder: PathBuf::new(),
-
-            error_queue: VecDeque::new(),
         })))
         .invoke_handler(tauri::generate_handler![
             init,
@@ -339,7 +341,9 @@ fn main() {
                 // Close the alert window if the main one is closed
                 let win = event.window();
                 if win.label() == "main" {
-                    let _ = win.app_handle().windows().get("alert").unwrap().close();
+                    if let Some(alert_win) = win.app_handle().windows().get("alert") {
+                        let _ = alert_win.close();
+                    }
                 }
             }
             _ => {}

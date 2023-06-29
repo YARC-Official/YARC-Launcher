@@ -60,16 +60,6 @@
         "minWidth": 1000,
         "minHeight": 575,
         "decorations": false
-      },
-      {
-        "label": "alert",
-        "visible": false,
-        "fullscreen": false,
-        "resizable": false,
-        "title": "Alert",
-        "width": 650,
-        "height": 375,
-        "decorations": false
       }
     ],
     "updater": {
