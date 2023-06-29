@@ -6,6 +6,7 @@ mod utils;
 use directories::BaseDirs;
 use futures_util::lock::Mutex;
 use minisign::{PublicKeyBox, SignatureBox};
+use std::collections::VecDeque;
 use std::fs::{self, remove_file};
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -31,6 +32,8 @@ pub struct InnerState {
     pub temp_folder: PathBuf,
     pub yarg_folder: PathBuf,
     pub setlist_folder: PathBuf,
+
+    pub error_queue: VecDeque<String>,
 }
 
 impl InnerState {
@@ -284,6 +287,28 @@ fn get_os() -> String {
     std::env::consts::OS.to_string()
 }
 
+#[tauri::command]
+async fn open_alert_window(
+    handle: tauri::AppHandle,
+    state: tauri::State<'_, State>,
+    error_string: String,
+) -> Result<(), String> {
+    let mut state_guard = state.0.lock().await;
+
+    // Push error (in case there is already one shown)
+    state_guard.error_queue.push_back(error_string);
+
+    // Get the alert window and see if its visible
+    if let Some(alert_window) = handle.windows().get("alert") {
+        let visible = alert_window.is_visible().unwrap();
+        if !visible {
+            let _ = alert_window.show();
+        }
+    }
+
+    Ok(())
+}
+
 fn main() {
     tauri::Builder::default()
         .manage(State(Mutex::new(InnerState {
@@ -291,6 +316,8 @@ fn main() {
             temp_folder: PathBuf::new(),
             yarg_folder: PathBuf::new(),
             setlist_folder: PathBuf::new(),
+
+            error_queue: VecDeque::new(),
         })))
         .invoke_handler(tauri::generate_handler![
             init,
@@ -299,13 +326,24 @@ fn main() {
             version_exists_yarg,
             download_setlist,
             version_exists_setlist,
-            get_os
+            get_os,
+            open_alert_window
         ])
         .setup(|app| {
             let window = app.get_window("main").unwrap();
             let _ = set_shadow(&window, true);
             Ok(())
         })
+        .on_window_event(|event| match event.event() {
+            tauri::WindowEvent::Destroyed => {
+                // Close the alert window if the main one is closed
+                let win = event.window();
+                if win.label() == "main" {
+                    let _ = win.app_handle().windows().get("alert").unwrap().close();
+                }
+            }
+            _ => {}
+        })
         .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .expect("Error while running Tauri application.");
 }

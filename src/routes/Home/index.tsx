@@ -45,12 +45,19 @@ function App() {
         }
     }
 
+    async function showAlert() {
+        await invoke("open_alert_window", {
+            errorString: "ISSUE!"
+        });
+    }
+
     return (
         <div className="container">
             <h1>Welcome to YAL!</h1>
 
             <button onClick={() => download()}>Download Setlist</button>
             <button onClick={() => checkInstalled()}>Check Setlist Installed</button>
+            <button onClick={() => showAlert()}>Open Alert Window</button>
             <p>{downloadMsg}</p>
 
         </div>
