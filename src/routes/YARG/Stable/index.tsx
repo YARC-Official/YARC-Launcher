@@ -1,10 +1,11 @@
-import PayloadProgress from "@app/components/PayloadProgress";
+import MainButton from "@app/components/MainButton";
 import { useYARGRelease } from "@app/hooks/useYARGRelease";
 import { YARGStates, useYARGVersion } from "@app/hooks/useYARGVersion";
 
 function StableYARGPage() {
     const releaseData = useYARGRelease("stable");
-    const { state, play, download, payload } = useYARGVersion(releaseData);
+    const yargVersion = useYARGVersion(releaseData);
+    const { state } = yargVersion;
 
     return (<>
 
@@ -27,16 +28,7 @@ function StableYARGPage() {
 
         <p>Current version: {releaseData?.tag_name}</p>
 
-        {
-            releaseData ? <button onClick={() => play()}>Play YARG stable {releaseData?.tag_name}</button> : ""
-        }
-
-        <div>
-            <button onClick={() => download()}>
-                <PayloadProgress payload={payload} defaultText="Download" />
-            </button>
-        </div>
-
+        <MainButton version={yargVersion} />
     </>);
 }
 

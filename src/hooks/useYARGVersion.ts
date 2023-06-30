@@ -4,6 +4,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { useYARGState } from "@app/stores/YARGStateStore";
 import { useDownloadClient } from "@app/utils/Download/provider";
 import { YARGDownload, generateYARGUUID } from "@app/utils/Download/Processors/YARG";
+import { DownloadPayload } from "@app/utils/Download";
 
 export enum YARGStates {
     "AVAILABLE",
@@ -12,6 +13,13 @@ export enum YARGStates {
     "PLAYING",
     "LOADING",
     "NEW_UPDATE"
+}
+
+export type YARGVersion = {
+    state: YARGStates,
+    play: () => Promise<void>,
+    download: () => Promise<void>,
+    payload?: DownloadPayload
 }
 
 export const useYARGVersion = (releaseData: ReleaseData) => {
@@ -73,6 +81,5 @@ export const useYARGVersion = (releaseData: ReleaseData) => {
         }
     };
 
-    return { state, play, download, payload };
+    return { state, play, download, payload } as YARGVersion;
 };
-
