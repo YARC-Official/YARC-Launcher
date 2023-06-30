@@ -9,6 +9,8 @@
     flex-shrink: 0;
     border-radius: 8px;
     background: #2ED9FF;
+    border: none;
+    outline: none;
 }
 
 .play_text {
@@ -32,6 +34,8 @@
     flex-shrink: 0;
     border-radius: 8px;
     background: #46E74F;
+    border: none;
+    outline: none;
 }
 
 .update_text {
@@ -61,6 +65,8 @@
     flex-shrink: 0;
     border-radius: 8px;
     background: #FFB800;
+    border: none;
+    outline: none;
 }
 
 .installing_text {

@@ -16,15 +16,15 @@ const MainButton: React.FC<Props> = ({ version }: Props) => {
     if (!version.payload) {
         if (version.state === YARGStates.NEW_UPDATE) {
             // New update!
-            return <div className={styles.update_button} onClick={version.download}>
+            return <button className={styles.update_button} onClick={version.download}>
                 <img className={styles.update_icon} src={Update} alt="Update" />
                 <div className={styles.update_text}>UPDATE</div>
-            </div>;
+            </button>;
         } else {
             // Play
-            return <div className={styles.play_button} onClick={version.play}>
+            return <button className={styles.play_button} onClick={version.play}>
                 <div className={styles.play_text}>PLAY</div>
-            </div>;
+            </button>;
         }
     } else {
         // Get the display text for download/installing
@@ -41,10 +41,10 @@ const MainButton: React.FC<Props> = ({ version }: Props) => {
                 break;
         }
 
-        return <div className={styles.installing_button}>
+        return <button className={styles.installing_button}>
             <img className={styles.installing_icon} src={Installing} alt="Installing" />
             <div className={styles.installing_text}>{text}</div>
-        </div>;
+        </button>;
     }
 };
 

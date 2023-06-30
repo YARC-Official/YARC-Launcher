@@ -1,13 +1,21 @@
 import MainButton from "@app/components/MainButton";
 import { useYARGRelease } from "@app/hooks/useYARGRelease";
-import { YARGStates, useYARGVersion } from "@app/hooks/useYARGVersion";
+import { useYARGVersion } from "@app/hooks/useYARGVersion";
+import styles from "./styles.module.css";
 
 function NightlyYARGPage() {
     const releaseData = useYARGRelease("nightly");
     const yargVersion = useYARGVersion(releaseData);
-    const { state } = yargVersion;
 
     return (<>
+
+        <div className={styles.app}>
+            <div className={styles.actions}>
+                <MainButton version={yargVersion} />
+            </div>
+        </div>
+
+        {/*         
 
         <h1>YARG nightly version page</h1>
         <p>this page is on /src/routes/YARG/nightly/index.tsx</p>
@@ -28,7 +36,7 @@ function NightlyYARGPage() {
 
         <p>Current version: {releaseData?.tag_name}</p>
 
-        <MainButton version={yargVersion} />
+        <MainButton version={yargVersion} /> */}
     </>);
 }
 
