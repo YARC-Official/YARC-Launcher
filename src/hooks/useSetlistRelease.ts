@@ -1,8 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 
+export interface SetlistSong {
+    title: string,
+    artist: string,
+    length: number
+}
+
 export interface SetlistData {
     id: string,
-    songCount: number,
     version: string,
     downloads: string[],
     locales: {
@@ -10,7 +15,9 @@ export interface SetlistData {
             title: string,
             description: string,
         }
-    }
+    },
+    songs: SetlistSong[],
+    organizer: string[],
     credits: string[]
 }
 

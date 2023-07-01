@@ -18,7 +18,7 @@ const SetlistVersion: React.FC<Props> = ({ channel }: Props) => {
                 icon={<img src={OfficialIcon} />} // TO-DO: create a util/sourceIcon to get source icon from 
                 type={VersionType.SONG}
                 programName={setlistData?.locales["en-US"].title} // TO-DO: catch the BCP 47 code
-                versionChannel={`${setlistData?.songCount} songs`}
+                versionChannel={`${setlistData?.songs?.length} songs`}
                 updateAvailable={state === SetlistStates.NEW_UPDATE}
             />
         </Link>
