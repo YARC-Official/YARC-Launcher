@@ -1,36 +1,40 @@
-import PayloadProgress from "@app/components/PayloadProgress";
-import { SetlistStates, useSetlistData } from "@app/hooks/useSetlistData";
 import { SetlistID, useSetlistRelease } from "@app/hooks/useSetlistRelease";
+import styles from "./setlist.module.css";
+import { useSetlistData } from "@app/hooks/useSetlistData";
+import { SetlistBox, SetlistBoxHeader, SetlistBoxSlim } from "@app/components/Setlist/SetlistBox";
+import SongEntry from "@app/components/Setlist/SongEntry";
+import { ReactComponent as InfoIcon } from "@app/assets/Information.svg";
 
-type Props = {
+interface Props {
     setlistId: SetlistID
+}
+
+const SetlistPage: React.FC<Props> = ({ setlistId }: Props) => {
+    const setlistData = useSetlistRelease(setlistId);
+    const { download } = useSetlistData(setlistData);
+
+    // Get list of songs
+    const songList = [];
+    for (const song of setlistData.songs) {
+        songList.push(<SongEntry title={song.title} artist={song.artist} length={song.length} />);
+    }
+
+    return <div className={styles.main}>
+        <SetlistBoxSlim style={{ flex: "1 0 0" }}>
+            {songList}
+        </SetlistBoxSlim>
+        <div className={styles.sidebar}>
+            <button className={styles.download_button} onClick={() => download()}>Download</button>
+            <SetlistBox>
+                <SetlistBoxHeader>
+                    <InfoIcon />
+                    {setlistData.locales["en-US"].title}
+                </SetlistBoxHeader>
+
+                {setlistData.locales["en-US"].description}
+            </SetlistBox>
+        </div>
+    </div>;
 };
 
-export function Setlist({ setlistId }: Props) {
-    const setlistData = useSetlistRelease(setlistId);
-    const { state, payload, download } = useSetlistData(setlistData);
-
-    return (<>
-
-        <h1>Official setlist!!!!</h1>
-
-        <p>STATE: {
-
-            state === SetlistStates.AVAILABLE ? "Setlist available (aka installed, maybe i should rename the states for better understanding??)" :
-                state === SetlistStates.DOWNLOADING ? "Downloading setlist" :
-                    state === SetlistStates.ERROR ? "Error! Please check the DevlTools log" :
-                        state === SetlistStates.NEW_UPDATE ? "New update available!" :
-                            "State not defined"
-
-        }</p>
-
-        <p>Current version: {setlistData.version}</p>
-
-        <div>
-            <button onClick={() => download()}>
-                <PayloadProgress payload={payload} defaultText="Download" />
-            </button>
-        </div>
-
-    </>);
-}
+export default SetlistPage;

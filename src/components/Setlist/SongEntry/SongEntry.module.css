@@ -1,0 +1,49 @@
+.song {
+    display: flex;
+    padding: 15px;
+    justify-content: space-between;
+    align-items: center;
+    align-self: stretch;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.track_container {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.track_title {
+    color: #333;
+    font-size: 14px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.track_artist {
+    color: #333;
+    font-size: 14px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    opacity: 0.5;
+}
+
+.extra_container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.extra_length {
+    color: #333;
+    font-size: 12px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    opacity: 0.5;
+}

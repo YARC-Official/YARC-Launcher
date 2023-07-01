@@ -7,7 +7,7 @@ import Settings from "@app/routes/Settings";
 import StableYARGPage from "./YARG/Stable";
 import NightlyYARGPage from "./YARG/Nightly";
 import Queue from "@app/routes/Queue";
-import { Setlist } from "./Setlist";
+import SetlistPage from "./Setlist";
 
 const Router = createBrowserRouter([
     {
@@ -46,7 +46,7 @@ const Router = createBrowserRouter([
 
             {
                 path: "/setlist/official",
-                element: <Setlist setlistId="official" />
+                element: <SetlistPage setlistId="official" />
             },
         ]
     },

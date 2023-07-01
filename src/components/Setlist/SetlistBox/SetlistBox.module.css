@@ -1,0 +1,38 @@
+.box_slim {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+
+    color: #333;
+    font-size: 12px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.box {
+    padding: 10px;
+    gap: 15px;
+    align-self: stretch;
+}
+
+.box_header {
+    display: flex;
+    padding: 1px 5px 7px 5px;
+    align-items: center;
+    gap: 5px;
+    align-self: stretch;
+    border-bottom: 1px solid rgba(46, 52, 78, 0.10);
+
+    color: #2E344E;
+    font-size: 14px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    text-transform: uppercase;
+}

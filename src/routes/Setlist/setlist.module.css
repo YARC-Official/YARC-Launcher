@@ -1,0 +1,69 @@
+.main {
+    display: flex;
+    width: 100%;
+    min-height: 100%;
+    padding: 25px;
+    align-items: flex-start;
+    gap: 25px;
+    background: #F5F5F5;
+}
+
+.sidebar {
+    display: flex;
+    width: 300px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.song {
+    display: flex;
+    padding: 15px;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.song_title {
+    color: #333;
+    font-size: 14px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.song_artist {
+    color: #333;
+    font-size: 14px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    opacity: 0.5;
+}
+
+.download_button {
+    display: flex;
+    height: 45px;
+    padding: 15px;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+    border: none;
+    outline: none;
+    border-radius: 8px;
+    background: #17E289;
+
+    color: #053D24;
+    font-size: 14px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    text-transform: uppercase;
+
+    cursor: pointer;
+}
