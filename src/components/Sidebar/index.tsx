@@ -4,6 +4,7 @@ import { ReactComponent as TwitterIcon } from "@app/assets/Twitter.svg";
 import { ReactComponent as GithubIcon } from "@app/assets/Github.svg";
 import { ReactComponent as NewsIcon } from "@app/assets/News.svg";
 import { ReactComponent as SettingsIcon } from "@app/assets/Settings.svg";
+import { ReactComponent as HomeIcon } from "@app/assets/Home.svg";
 import SidebarMenuButton from "./SidebarMenuButton";
 import { Link } from "react-router-dom";
 import VersionsList from "./Versions/List";
@@ -24,12 +25,11 @@ const Sidebar: React.FC = () => {
     }, []);
 
     return <div className={styles.sidebar}>
-
         <div className={styles.menus}>
-            <Link to="/"><SidebarMenuButton>Home</SidebarMenuButton></Link>
+            <Link to="/"><SidebarMenuButton icon={<HomeIcon />}>Home</SidebarMenuButton></Link>
             <Link to="/news"><SidebarMenuButton icon={<NewsIcon />}>News</SidebarMenuButton></Link>
             <Link to="/settings"><SidebarMenuButton icon={<SettingsIcon />}>Settings</SidebarMenuButton></Link>
-            { queue.size > 0 ? <Link to="/queue"><SidebarMenuButton>Queue ({queue.size})</SidebarMenuButton></Link> : "" }
+            {queue.size > 0 ? <Link to="/queue"><SidebarMenuButton>Queue ({queue.size})</SidebarMenuButton></Link> : ""}
         </div>
 
         <VersionsList />
