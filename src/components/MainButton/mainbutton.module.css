@@ -1,86 +1,59 @@
-.play_button {
+.button {
     display: flex;
-    width: 150px;
-    height: 36px;
+    width: 200px;
+    height: 48px;
     padding: 10px;
     justify-content: center;
     align-items: center;
     gap: 10px;
     flex-shrink: 0;
     border-radius: 8px;
-    background: #2ED9FF;
     border: none;
     outline: none;
+    cursor: pointer;
+}
+
+.text {
+    font-size: 16px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    text-transform: uppercase;
+}
+
+.play_button {
+    background: #2ED9FF;
 }
 
 .play_text {
     color: #002A3D;
-    font-size: 12px;
-    font-family: Inter;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    text-transform: uppercase;
 }
 
 .update_button {
-    display: flex;
-    width: 150px;
-    height: 36px;
-    padding: 10px;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    flex-shrink: 0;
-    border-radius: 8px;
     background: #46E74F;
-    border: none;
-    outline: none;
 }
 
 .update_text {
     color: #003C03;
-    font-size: 12px;
-    font-family: Inter;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    text-transform: uppercase;
 }
 
 .update_icon {
-    width: 10px;
-    height: 10px;
+    width: 13.333px;
+    height: 13.333px;
     flex-shrink: 0;
 }
 
 .installing_button {
-    display: flex;
-    width: 150px;
-    height: 36px;
-    padding: 10px;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    flex-shrink: 0;
-    border-radius: 8px;
     background: #FFB800;
-    border: none;
-    outline: none;
 }
 
 .installing_text {
     color: #351A00;
-    font-size: 12px;
-    font-family: Inter;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    text-transform: uppercase;
 }
 
 .installing_icon {
-    width: 14.033px;
-    height: 14px;
+    width: 18.666px;
+    height: 18.666px;
     flex-shrink: 0;
 }
