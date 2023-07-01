@@ -4,10 +4,11 @@ import Update from "@app/assets/Update.svg";
 import { YARGStates, YARGVersion } from "@app/hooks/useYARGVersion";
 
 interface Props {
-    version: YARGVersion
+    version: YARGVersion,
+    playName: string,
 }
 
-const MainButton: React.FC<Props> = ({ version }: Props) => {
+const MainButton: React.FC<Props> = ({ version, playName }: Props) => {
     // If there isn't a version, something went wrong
     if (!version) {
         return <></>;
@@ -18,12 +19,12 @@ const MainButton: React.FC<Props> = ({ version }: Props) => {
             // New update!
             return <button className={styles.update_button} onClick={version.download}>
                 <img className={styles.update_icon} src={Update} alt="Update" />
-                <div className={styles.update_text}>UPDATE</div>
+                <div className={styles.update_text}>UPDATE {playName}</div>
             </button>;
         } else {
             // Play
             return <button className={styles.play_button} onClick={version.play}>
-                <div className={styles.play_text}>PLAY</div>
+                <div className={styles.play_text}>PLAY {playName}</div>
             </button>;
         }
     } else {
