@@ -46,65 +46,68 @@ const SetlistPage: React.FC<Props> = ({ setlistId }: Props) => {
         }
     }
 
-    return <div className={styles.main}>
-        <SetlistBoxSlim style={{ flex: "1 0 0" }}>
-            {setlistData.songs.map(i =>
-                <SongEntry title={i.title} artist={i.artist} length={i.length} key={i.title} />
-            )}
-        </SetlistBoxSlim>
-        <div className={styles.sidebar}>
-            {getButton()}
-            <SetlistBox>
-                <SetlistBoxHeader>
-                    <InfoIcon />
-                    {setlistData.locales["en-US"].title}
-                </SetlistBoxHeader>
+    return <>
+        <div className={styles.banner} />
+        <div className={styles.main}>
+            <SetlistBoxSlim style={{ flex: "1 0 0" }}>
+                {setlistData.songs.map(i =>
+                    <SongEntry title={i.title} artist={i.artist} length={i.length} key={i.title} />
+                )}
+            </SetlistBoxSlim>
+            <div className={styles.sidebar}>
+                {getButton()}
+                <SetlistBox>
+                    <SetlistBoxHeader>
+                        <InfoIcon />
+                        {setlistData.locales["en-US"].title}
+                    </SetlistBoxHeader>
 
-                {setlistData.locales["en-US"].description}
+                    {setlistData.locales["en-US"].description}
 
-                <div className={styles.info_list}>
-                    <div className={styles.info_entry}>
-                        <DateIcon />
-                        {new Intl.DateTimeFormat("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                        }).format(new Date(setlistData.releaseDate))}
+                    <div className={styles.info_list}>
+                        <div className={styles.info_entry}>
+                            <DateIcon />
+                            {new Intl.DateTimeFormat("en-US", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                            }).format(new Date(setlistData.releaseDate))}
+                        </div>
+
+                        <div className={styles.info_entry}>
+                            <SongIcon />
+                            {setlistData.songs.length} songs
+                        </div>
+
+                        <div className={styles.info_entry}>
+                            <TimeIcon />
+                            {millisToDisplayLength(setlistData.songs.reduce(
+                                (accumulator, currentValue) => accumulator + currentValue.length,
+                                0), true)}
+                        </div>
+
+                        <div className={styles.info_entry}>
+                            <OrganizerIcon />
+                            {setlistData.organizer}
+                        </div>
                     </div>
+                </SetlistBox>
 
-                    <div className={styles.info_entry}>
-                        <SongIcon />
-                        {setlistData.songs.length} songs
+                <SetlistBox>
+                    <SetlistBoxHeader>
+                        <CharterIcon />
+                        Charters
+                    </SetlistBoxHeader>
+
+                    <div className={styles.info_list}>
+                        {setlistData.credits.map(i =>
+                            <CreditEntry creditEntry={i} key={i.name} />
+                        )}
                     </div>
-
-                    <div className={styles.info_entry}>
-                        <TimeIcon />
-                        {millisToDisplayLength(setlistData.songs.reduce(
-                            (accumulator, currentValue) => accumulator + currentValue.length,
-                            0), true)}
-                    </div>
-
-                    <div className={styles.info_entry}>
-                        <OrganizerIcon />
-                        {setlistData.organizer}
-                    </div>
-                </div>
-            </SetlistBox>
-
-            <SetlistBox>
-                <SetlistBoxHeader>
-                    <CharterIcon />
-                    Charters
-                </SetlistBoxHeader>
-
-                <div className={styles.info_list}>
-                    {setlistData.credits.map(i =>
-                        <CreditEntry creditEntry={i} key={i.name} />
-                    )}
-                </div>
-            </SetlistBox>
+                </SetlistBox>
+            </div>
         </div>
-    </div>;
+    </>;
 };
 
 export default SetlistPage;

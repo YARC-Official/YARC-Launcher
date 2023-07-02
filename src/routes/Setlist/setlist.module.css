@@ -1,7 +1,21 @@
+.banner {
+    height: 250px;
+    flex-shrink: 0;
+    align-self: stretch;
+
+    background-image:
+        url("/src/assets/Banner/OfficialLogo.png"),
+        linear-gradient(0deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.00) 100%),
+        url("/src/assets/Banner/OfficialBanner.png");
+    background-repeat: no-repeat, repeat-x, no-repeat;
+    background-size: contain, contain, cover;
+    background-position: center, center, center;
+}
+
 .main {
     display: flex;
     width: 100%;
-    min-height: 100%;
+    min-height: calc(100% - 250px);
     padding: 25px;
     align-items: flex-start;
     gap: 25px;
