@@ -1,6 +1,6 @@
 import { YARGVersion } from "@app/hooks/useYARGVersion";
 import styles from "./styles.module.css";
-import MainButton from "../MainButton";
+import LaunchButton from "../LaunchButton";
 
 interface Props {
     version: YARGVersion,
@@ -15,7 +15,7 @@ const LaunchPage: React.FC<Props> = ({ version, playName }: Props) => {
 
     return <div className={styles.app}>
         <div className={styles.actions}>
-            <MainButton version={version} playName={playName} />
+            <LaunchButton version={version} playName={playName} />
         </div>
     </div>;
 };

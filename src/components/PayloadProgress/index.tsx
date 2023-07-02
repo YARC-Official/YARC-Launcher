@@ -31,7 +31,7 @@ interface ProgressDownloadingProps {
 }
 
 const ProgressDownloading: React.FC<ProgressDownloadingProps> = ({ payload }: ProgressDownloadingProps) => {
-    return (<span>Downloading: {((payload?.current / payload?.total) * 100).toFixed(0)}%</span>);
+    return (<span>{((payload?.current / payload?.total) * 100).toFixed(0)}%</span>);
 };
 
 const ProgressInstalling: React.FC = () => {

@@ -45,29 +45,6 @@
     opacity: 0.5;
 }
 
-.download_button {
-    display: flex;
-    height: 45px;
-    padding: 15px;
-    align-items: center;
-    gap: 10px;
-    align-self: stretch;
-    border: none;
-    outline: none;
-    border-radius: 8px;
-    background: #17E289;
-
-    color: #053D24;
-    font-size: 14px;
-    font-family: Inter;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    text-transform: uppercase;
-
-    cursor: pointer;
-}
-
 .info_list {
     display: flex;
     flex-direction: column;

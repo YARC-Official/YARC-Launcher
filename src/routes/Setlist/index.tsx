@@ -1,6 +1,6 @@
 import { SetlistID, useSetlistRelease } from "@app/hooks/useSetlistRelease";
 import styles from "./setlist.module.css";
-import { useSetlistData } from "@app/hooks/useSetlistData";
+import { SetlistStates, useSetlistData } from "@app/hooks/useSetlistData";
 import { SetlistBox, SetlistBoxHeader, SetlistBoxSlim } from "@app/components/Setlist/SetlistBox";
 import SongEntry from "@app/components/Setlist/SongEntry";
 import { ReactComponent as InfoIcon } from "@app/assets/Information.svg";
@@ -9,8 +9,13 @@ import { ReactComponent as OrganizerIcon } from "@app/assets/Organizer.svg";
 import { ReactComponent as DateIcon } from "@app/assets/Date.svg";
 import { ReactComponent as SongIcon } from "@app/assets/Song.svg";
 import { ReactComponent as TimeIcon } from "@app/assets/Time.svg";
+import { ReactComponent as UpdateIcon } from "@app/assets/Update.svg";
+import { ReactComponent as InstallingIcon } from "@app/assets/Installing.svg";
+import { ReactComponent as CheckmarkIcon } from "@app/assets/Checkmark.svg";
 import CreditEntry from "@app/components/Setlist/CreditEntry";
 import { millisToDisplayLength } from "@app/utils/timeFormat";
+import Button, { ButtonColor } from "@app/components/Button";
+import PayloadProgress from "@app/components/PayloadProgress";
 
 interface Props {
     setlistId: SetlistID
@@ -18,7 +23,28 @@ interface Props {
 
 const SetlistPage: React.FC<Props> = ({ setlistId }: Props) => {
     const setlistData = useSetlistRelease(setlistId);
-    const { download } = useSetlistData(setlistData);
+    const { state, download, payload } = useSetlistData(setlistData);
+
+    function getButton() {
+        if (state === SetlistStates.AVAILABLE) {
+            return <Button color={ButtonColor.BLUE}>
+                <CheckmarkIcon /> Downloaded
+            </Button>;
+        } else if (state === SetlistStates.DOWNLOADING) {
+            if (!payload) {
+                return <></>;
+            }
+
+            return <Button color={ButtonColor.YELLOW}>
+                <InstallingIcon />
+                <PayloadProgress payload={payload} />
+            </Button>;
+        } else {
+            return <Button color={ButtonColor.GREEN} onClick={() => download()}>
+                <UpdateIcon /> Download
+            </Button>;
+        }
+    }
 
     return <div className={styles.main}>
         <SetlistBoxSlim style={{ flex: "1 0 0" }}>
@@ -27,7 +53,7 @@ const SetlistPage: React.FC<Props> = ({ setlistId }: Props) => {
             )}
         </SetlistBoxSlim>
         <div className={styles.sidebar}>
-            <button className={styles.download_button} onClick={() => download()}>Download</button>
+            {getButton()}
             <SetlistBox>
                 <SetlistBoxHeader>
                     <InfoIcon />

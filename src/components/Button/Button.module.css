@@ -1,0 +1,35 @@
+.button {
+    display: flex;
+    padding: 15px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+    border: none;
+    outline: none;
+    border-radius: 8px;
+
+    font-size: 14px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    text-transform: uppercase;
+
+    cursor: pointer;
+}
+
+.colors_green {
+    background: var(--button_green);
+    color: var(--text_green);
+}
+
+.colors_blue {
+    background: var(--button_blue);
+    color: var(--text_blue);
+}
+
+.colors_yellow {
+    background: var(--button_yellow);
+    color: var(--text_yellow);
+}

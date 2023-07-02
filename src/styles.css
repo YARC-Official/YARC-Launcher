@@ -20,6 +20,14 @@
 
     --sideBar_background: #05060B;
     --sideBar_separator_color: #394452;
+
+    --button_green: #46E74F;
+    --button_blue: #2ED9FF;
+    --button_yellow: #FFB800;
+
+    --text_green: #003C03;
+    --text_blue: #002A3D;
+    --text_yellow: #351A00;
 }
 
 * {
