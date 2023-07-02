@@ -6,9 +6,15 @@ export interface SetlistSong {
     length: number
 }
 
+export interface SetlistCredit {
+    name: string,
+    url: string,
+}
+
 export interface SetlistData {
     id: string,
     version: string,
+    releaseDate: string,
     downloads: string[],
     locales: {
         [language: string]: {
@@ -17,8 +23,8 @@ export interface SetlistData {
         }
     },
     songs: SetlistSong[],
-    organizer: string[],
-    credits: string[]
+    organizer: string,
+    credits: SetlistCredit[]
 }
 
 export type SetlistID = "official";

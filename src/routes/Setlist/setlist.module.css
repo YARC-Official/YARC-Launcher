@@ -67,3 +67,24 @@
 
     cursor: pointer;
 }
+
+.info_list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.info_entry {
+    display: flex;
+    padding: 0px 1px;
+    align-items: center;
+    gap: 6px;
+
+    color: #333;
+    font-size: 12px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}

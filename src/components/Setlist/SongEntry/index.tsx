@@ -1,3 +1,5 @@
+import { millisToDisplayLength } from "@app/utils/timeFormat";
+import { ReactComponent as TimeIcon } from "@app/assets/Time.svg";
 import styles from "./SongEntry.module.css";
 
 interface Props {
@@ -13,7 +15,8 @@ const SongEntry: React.FC<Props> = ({ title, artist, length }: Props) => {
             <span className={styles.track_artist}>{artist}</span>
         </div>
         <div className={styles.extra_container}>
-            <span className={styles.extra_length}>{length}</span>
+            <TimeIcon className={styles.icon} />
+            <span className={styles.extra_length}>{millisToDisplayLength(length)}</span>
         </div>
     </div>;
 };

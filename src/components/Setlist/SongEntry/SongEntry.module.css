@@ -47,3 +47,9 @@
     line-height: normal;
     opacity: 0.5;
 }
+
+.icon {
+    width: 14px;
+    height: 14px;
+    opacity: 0.25;
+}

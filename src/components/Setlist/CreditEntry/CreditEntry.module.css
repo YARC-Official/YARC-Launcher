@@ -1,0 +1,12 @@
+.credit_entry {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    color: #333;
+    font-size: 14px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
