@@ -51,7 +51,7 @@ const SetlistPage: React.FC<Props> = ({ setlistId }: Props) => {
         <div className={styles.main}>
             <SetlistBoxSlim style={{ flex: "1 0 0" }}>
                 {setlistData.songs.map(i =>
-                    <SongEntry title={i.title} artist={i.artist} length={i.length} key={i.title} />
+                    <SongEntry title={i.title} artist={i.artist} length={i.length} newSong={!!i.new} key={i.title} />
                 )}
             </SetlistBoxSlim>
             <div className={styles.sidebar}>

@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 export interface SetlistSong {
     title: string,
     artist: string,
-    length: number
+    length: number,
+    new?: boolean
 }
 
 export interface SetlistCredit {

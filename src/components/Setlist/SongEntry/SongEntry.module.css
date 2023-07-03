@@ -53,3 +53,22 @@
     height: 14px;
     opacity: 0.25;
 }
+
+.new_badge {
+    display: flex;
+    padding: 3px 5px;
+    align-items: flex-start;
+    gap: 10px;
+    border-radius: 50px;
+    background: #FFE174;
+
+    color: #641E00;
+    font-size: 8px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    text-transform: uppercase;
+
+    transform: translateY(2px);
+}
