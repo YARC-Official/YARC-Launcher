@@ -42,7 +42,7 @@
     background: var(--background);
     color: var(--color);
     z-index: 2;
-    transition: width .3s ease;
+    transition: clip-path .3s ease;
     clip-path: inset(0 calc(100% - var(--progress)) 0 0);
 }
 

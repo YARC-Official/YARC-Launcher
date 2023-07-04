@@ -39,7 +39,7 @@ const Button: React.FC<Props> = (props: Props) => {
     }
 
     // Get the styles
-    const newStyles = { width: props.width, height: props.height, ...props.style, "--progress": `${props.progress}%` } as ButtonCSS;
+    const newStyles = { width: props.width, height: props.height, ...props.style, "--progress": props.progress ? `${props.progress}%` : undefined } as ButtonCSS;
 
     return <button className={[styles.button, colorClass, props.className].join(" ")} style={newStyles} onClick={props.onClick}>
         <div className={styles.top}>{props.children}</div>
