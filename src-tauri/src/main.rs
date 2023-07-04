@@ -59,6 +59,10 @@ impl InnerState {
         self.temp_folder = PathBuf::from(&self.launcher_folder);
         self.temp_folder.push("Temp");
 
+        // Create launcher directory (for the settings)
+        std::fs::create_dir_all(&self.launcher_folder)
+            .map_err(|e| format!("Failed to create launcher directory.\n{:?}", e))?;
+
         // Load settings
         let settings_path = self.launcher_folder.join("settings.json");
         if settings_path.exists() {
