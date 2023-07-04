@@ -3,6 +3,7 @@ export interface IBaseDownload {
     onFinish?: () => void;
 
     start(): Promise<void>;
+    getQueueEntry(): React.ReactNode;
 }
 
 export class BaseDownload {

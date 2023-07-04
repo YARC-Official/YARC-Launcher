@@ -1,5 +1,6 @@
 import { invoke } from "@tauri-apps/api/tauri";
 import { BaseDownload, IBaseDownload } from "./base";
+import YARGQueue from "@app/components/Queue/QueueDownload/YARG";
 
 export class YARGDownload extends BaseDownload implements IBaseDownload {
     zipUrl: string;
@@ -21,6 +22,10 @@ export class YARGDownload extends BaseDownload implements IBaseDownload {
             sigUrl: this.sigUrl,
             versionId: this.version,
         });
+    }
+
+    getQueueEntry(): React.ReactNode {
+        return <YARGQueue downloader={this} />;
     }
 }
 
