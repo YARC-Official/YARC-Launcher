@@ -12,6 +12,18 @@ const Sidebar: React.FC = () => {
 
     const downloadClient = useDownloadClient();
     const queue = downloadClient.useQueue();
+    const current = downloadClient.useCurrent();
+
+    function getDownloadCount() {
+        let count = 0;
+        if (current) {
+            count++;
+        }
+
+        count += queue.size;
+
+        return count;
+    }
 
     useEffect(() => {
         (async () => {
@@ -26,7 +38,7 @@ const Sidebar: React.FC = () => {
             <Link to="/settings"><SidebarMenuButton icon={<SettingsIcon />}>Settings</SidebarMenuButton></Link>
             <Link to="/queue">
                 <SidebarMenuButton icon={<QueueIcon />}>
-                    Downloads {queue.size <= 0 ? "" : `(${queue.size})`}
+                    Downloads {getDownloadCount() <= 0 ? "" : `(${getDownloadCount()})`}
                 </SidebarMenuButton>
             </Link>
         </div>
