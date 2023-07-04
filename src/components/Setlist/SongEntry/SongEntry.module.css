@@ -16,7 +16,6 @@
 .track_title {
     color: #333;
     font-size: 14px;
-    font-family: Inter;
     font-style: normal;
     font-weight: 600;
     line-height: normal;
@@ -25,7 +24,6 @@
 .track_artist {
     color: #333;
     font-size: 14px;
-    font-family: Inter;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -41,7 +39,6 @@
 .extra_length {
     color: #333;
     font-size: 12px;
-    font-family: Inter;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -64,7 +61,6 @@
 
     color: #641E00;
     font-size: 8px;
-    font-family: Inter;
     font-style: normal;
     font-weight: 700;
     line-height: normal;

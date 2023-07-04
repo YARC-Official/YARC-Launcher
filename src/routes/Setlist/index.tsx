@@ -8,6 +8,7 @@ import CreditEntry from "@app/components/Setlist/CreditEntry";
 import { millisToDisplayLength } from "@app/utils/timeFormat";
 import Button, { ButtonColor } from "@app/components/Button";
 import PayloadProgress from "@app/components/PayloadProgress";
+import TooltipWrapper from "@app/components/TooltipWrapper";
 
 interface Props {
     setlistId: SetlistID
@@ -57,31 +58,31 @@ const SetlistPage: React.FC<Props> = ({ setlistId }: Props) => {
                     {setlistData.locales["en-US"].description}
 
                     <div className={styles.info_list}>
-                        <div className={styles.info_entry}>
+                        <TooltipWrapper text="Release Date" className={styles.info_entry}>
                             <DateIcon />
                             {new Intl.DateTimeFormat("en-US", {
                                 year: "numeric",
                                 month: "long",
                                 day: "numeric",
                             }).format(new Date(setlistData.releaseDate))}
-                        </div>
+                        </TooltipWrapper>
 
-                        <div className={styles.info_entry}>
+                        <TooltipWrapper text="Song Count" className={styles.info_entry}>
                             <SongIcon />
                             {setlistData.songs.length} songs
-                        </div>
+                        </TooltipWrapper>
 
-                        <div className={styles.info_entry}>
+                        <TooltipWrapper text="Setlist Length" className={styles.info_entry}>
                             <TimeIcon />
                             {millisToDisplayLength(setlistData.songs.reduce(
                                 (accumulator, currentValue) => accumulator + currentValue.length,
                                 0), true)}
-                        </div>
+                        </TooltipWrapper>
 
-                        <div className={styles.info_entry}>
+                        <TooltipWrapper text="Organizer" className={styles.info_entry}>
                             <OrganizerIcon />
                             {setlistData.organizer}
-                        </div>
+                        </TooltipWrapper>
                     </div>
                 </SetlistBox>
 

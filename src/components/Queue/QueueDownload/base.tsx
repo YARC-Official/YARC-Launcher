@@ -24,5 +24,4 @@ const BaseQueue: React.FC<Props> = ({ icon, name, versionChannel, version, paylo
     </div>;
 };
 
-
 export default BaseQueue;

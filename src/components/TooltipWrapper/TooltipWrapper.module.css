@@ -1,0 +1,37 @@
+.TooltipContent {
+    border-radius: 6px;
+    padding: 8px;
+    font-size: 15px;
+    line-height: 1;
+    user-select: none;
+    animation-duration: 400ms;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity;
+
+    background-color: black;
+    box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px, hsl(206 22% 7% / 20%) 0px 10px 20px -15px;
+
+    color: white;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.TooltipArrow {
+    fill: black;
+}
+
+.TooltipContent[data-state="delayed-open"] {
+    animation-name: fade;
+}
+
+@keyframes fade {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

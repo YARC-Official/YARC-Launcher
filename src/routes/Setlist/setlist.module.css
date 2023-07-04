@@ -43,7 +43,6 @@
 .song_title {
     color: #333;
     font-size: 14px;
-    font-family: Inter;
     font-style: normal;
     font-weight: 600;
     line-height: normal;
@@ -52,7 +51,6 @@
 .song_artist {
     color: #333;
     font-size: 14px;
-    font-family: Inter;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -74,7 +72,6 @@
 
     color: #333;
     font-size: 12px;
-    font-family: Inter;
     font-style: normal;
     font-weight: 400;
     line-height: normal;

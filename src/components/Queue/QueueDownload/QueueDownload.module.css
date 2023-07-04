@@ -45,7 +45,6 @@
 
     color: rgba(0, 0, 0, 0.50);
     font-size: 12px;
-    font-family: Inter;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -54,7 +53,6 @@
 .info_header {
     color: #000;
     font-size: 14px;
-    font-family: Inter;
     font-style: normal;
     font-weight: 500;
     line-height: normal;
