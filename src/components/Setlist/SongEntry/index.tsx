@@ -1,5 +1,5 @@
 import { millisToDisplayLength } from "@app/utils/timeFormat";
-import { ReactComponent as TimeIcon } from "@app/assets/Icons/Time.svg";
+import { TimeIcon } from "@app/assets/Icons";
 import styles from "./SongEntry.module.css";
 
 interface Props {

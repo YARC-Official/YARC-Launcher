@@ -1,6 +1,6 @@
 import { SetlistCredit } from "@app/hooks/useSetlistRelease";
 import styles from "./CreditEntry.module.css";
-import { ReactComponent as LinkIcon } from "@app/assets/Icons/Link.svg";
+import { LinkIcon } from "@app/assets/Icons";
 
 interface Props {
     creditEntry: SetlistCredit,
