@@ -2,7 +2,7 @@ import YARGVersion from "./YARG";
 import styles from "./Versions.module.css";
 import SetlistVersion from "./Setlist";
 import VersionSeparator from "./Separator";
-import { ReactComponent as AddSign } from "@app/assets/Add.svg";
+import { ReactComponent as AddSign } from "@app/assets/Icons/Add.svg";
 
 const VersionsList: React.FC = () => {
     return <div className={styles.list}>

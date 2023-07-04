@@ -1,11 +1,11 @@
 import styles from "./Sidebar.module.css";
-import { ReactComponent as DiscordIcon } from "@app/assets/Discord.svg";
-import { ReactComponent as TwitterIcon } from "@app/assets/Twitter.svg";
-import { ReactComponent as GithubIcon } from "@app/assets/Github.svg";
-import { ReactComponent as NewsIcon } from "@app/assets/News.svg";
-import { ReactComponent as SettingsIcon } from "@app/assets/Settings.svg";
-import { ReactComponent as HomeIcon } from "@app/assets/Home.svg";
-import { ReactComponent as QueueIcon } from "@app/assets/Queue.svg";
+import { ReactComponent as DiscordIcon } from "@app/assets/Icons/Discord.svg";
+import { ReactComponent as TwitterIcon } from "@app/assets/Icons/Twitter.svg";
+import { ReactComponent as GithubIcon } from "@app/assets/Icons/Github.svg";
+import { ReactComponent as NewsIcon } from "@app/assets/Icons/News.svg";
+import { ReactComponent as SettingsIcon } from "@app/assets/Icons/Settings.svg";
+import { ReactComponent as HomeIcon } from "@app/assets/Icons/Home.svg";
+import { ReactComponent as QueueIcon } from "@app/assets/Icons/Queue.svg";
 import SidebarMenuButton from "./SidebarMenuButton";
 import { Link } from "react-router-dom";
 import VersionsList from "./Versions/List";

@@ -1,6 +1,6 @@
 import styles from "./LaunchButton.module.css";
-import { ReactComponent as InstallingIcon } from "@app/assets/Installing.svg";
-import { ReactComponent as UpdateIcon } from "@app/assets/Update.svg";
+import { ReactComponent as InstallingIcon } from "@app/assets/Icons/Installing.svg";
+import { ReactComponent as UpdateIcon } from "@app/assets/Icons/Update.svg";
 import { YARGStates, YARGVersion } from "@app/hooks/useYARGVersion";
 import Button, { ButtonColor } from "../Button";
 import PayloadProgress from "../PayloadProgress";
