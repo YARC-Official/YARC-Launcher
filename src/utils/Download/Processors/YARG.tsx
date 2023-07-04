@@ -24,8 +24,8 @@ export class YARGDownload extends BaseDownload implements IBaseDownload {
         });
     }
 
-    getQueueEntry(): React.ReactNode {
-        return <YARGQueue downloader={this} />;
+    getQueueEntry(bannerMode: boolean): React.ReactNode {
+        return <YARGQueue downloader={this} bannerMode={bannerMode} />;
     }
 }
 

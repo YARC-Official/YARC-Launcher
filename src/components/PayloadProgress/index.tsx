@@ -3,16 +3,17 @@ import { DownloadPayload } from "@app/utils/Download";
 interface Props {
     payload?: DownloadPayload;
     defaultText?: string;
+    fullMode?: boolean;
 }
 
-const PayloadProgress: React.FC<Props> = ({ payload, defaultText }: Props) => {
+const PayloadProgress: React.FC<Props> = ({ payload, defaultText, fullMode }: Props) => {
     if (!payload) {
         return <span>{defaultText}</span>;
     }
 
     switch (payload.state) {
         case "downloading":
-            return <ProgressDownloading payload={payload} />;
+            return <ProgressDownloading payload={payload} fullMode={fullMode} />;
         case "installing":
             return <ProgressInstalling />;
         case "verifying":
@@ -28,10 +29,16 @@ const ProgressWaiting: React.FC = () => {
 
 interface ProgressDownloadingProps {
     payload: DownloadPayload;
+    fullMode?: boolean;
 }
 
-const ProgressDownloading: React.FC<ProgressDownloadingProps> = ({ payload }: ProgressDownloadingProps) => {
-    return (<span>{((payload?.current / payload?.total) * 100).toFixed(0)}%</span>);
+const ProgressDownloading: React.FC<ProgressDownloadingProps> = ({ payload, fullMode }: ProgressDownloadingProps) => {
+    return <span>
+        {fullMode &&
+            "Downloading "
+        }
+        {((payload?.current / payload?.total) * 100).toFixed(0)}%
+    </span>;
 };
 
 const ProgressInstalling: React.FC = () => {

@@ -22,7 +22,7 @@ export class DownloadClient {
         this.payloadHandler = new DownloadPayloadHandler();
         this.queueHandler = new DownloadQueueHandler();
 
-        const throttleTime = 100;
+        const throttleTime = 25;
 
         listen("progress_info",
             throttle(

@@ -24,8 +24,8 @@ export class SetlistDownload extends BaseDownload implements IBaseDownload {
         });
     }
 
-    getQueueEntry(): React.ReactNode {
-        return <SetlistQueue downloader={this} />;
+    getQueueEntry(bannerMode: boolean): React.ReactNode {
+        return <SetlistQueue downloader={this} bannerMode={bannerMode} />;
     }
 }
 

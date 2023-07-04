@@ -15,12 +15,10 @@ const Sidebar: React.FC = () => {
     const current = downloadClient.useCurrent();
 
     function getDownloadCount() {
-        let count = 0;
+        let count = queue.size;
         if (current) {
             count++;
         }
-
-        count += queue.size;
 
         return count;
     }

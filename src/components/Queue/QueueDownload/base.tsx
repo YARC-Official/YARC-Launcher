@@ -1,16 +1,21 @@
-import { DownloadPayload } from "@app/utils/Download";
-import styles from "./QueueDownload.module.css";
-import PayloadProgress from "../../PayloadProgress";
+import stylesNormal from "./QueueDownload.module.css";
+import stylesBanner from "./QueueDownloadBanner.module.css";
 
 interface Props {
     icon?: React.ReactNode;
     name?: string;
     versionChannel?: string;
     version?: string;
-    payload?: DownloadPayload;
+    bannerMode: boolean;
 }
 
-const BaseQueue: React.FC<Props> = ({ icon, name, versionChannel, version, payload }: Props) => {
+const BaseQueue: React.FC<Props> = ({ icon, name, versionChannel, version, bannerMode }: Props) => {
+    // Choose the right style
+    let styles = stylesNormal;
+    if (bannerMode) {
+        styles = stylesBanner;
+    }
+
     return <div className={styles.item}>
         <div className={styles.main}>
             <div className={styles.icon}>{icon}</div>
