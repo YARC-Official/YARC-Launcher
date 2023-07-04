@@ -6,9 +6,12 @@ import { ReactComponent as QueueListIcon } from "@app/assets/Icons/QueueList.svg
 function Queue() {
     const downloadClient = useDownloadClient();
     const queue = downloadClient.useQueue();
+    const current = downloadClient.useCurrent();
 
     return <>
         <div className={styles.main}>
+            {current?.getQueueEntry()}
+
             <QueueSection icon={<QueueListIcon />} title="QUEUE">
                 {
                     Array.from(queue).map(downloader => downloader.getQueueEntry())

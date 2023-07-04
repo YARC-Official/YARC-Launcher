@@ -37,7 +37,7 @@ export class DownloadClient {
         this.queueHandler.add(downloader);
         this.payloadHandler.add(downloader);
 
-        if (!this.queueHandler.current) {
+        if (!this.queueHandler.currentStore.getState()) {
             this.processNext();
         }
     }
@@ -60,15 +60,32 @@ export class DownloadClient {
     }
 
     update(payload: DownloadPayload) {
-        if (!this.queueHandler.current) return;
-        this.payloadHandler.update(this.queueHandler.current, payload);
+        const current = this.queueHandler.currentStore.getState();
+
+        if (!current) return;
+        this.payloadHandler.update(current, payload);
     }
 
     usePayload(uuid?: string) {
-        return useStore(this.payloadHandler.payloadStore, (state) => uuid ? state[uuid] : undefined);
+        return useStore(
+            this.payloadHandler.payloadStore,
+            (state) => uuid ? state[uuid] : undefined
+        );
     }
 
     useQueue() {
-        return useStore(this.queueHandler.queueStore, (store) => store.queue, (oldStore, newStore) => oldStore.size === newStore.size);
+        return useStore(
+            this.queueHandler.queueStore,
+            (store) => store.queue,
+            (oldStore, newStore) => oldStore.size === newStore.size
+        );
+    }
+
+    useCurrent() {
+        return useStore(
+            this.queueHandler.currentStore,
+            (store) => store,
+            (oldStore, newStore) => oldStore?.uuid === newStore?.uuid
+        );
     }
 }

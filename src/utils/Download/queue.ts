@@ -7,8 +7,7 @@ type DownloadQueueStore = {
 
 export class DownloadQueueHandler {
     queueStore = createStore<DownloadQueueStore>(() => ({ queue: new Set() }));
-
-    current?: IBaseDownload;
+    currentStore = createStore<IBaseDownload | undefined>(() => undefined);
 
     add(downloader: IBaseDownload) {
         this.queueStore.setState((prev) => ({ queue: new Set(prev.queue).add(downloader) }), true);
@@ -28,7 +27,7 @@ export class DownloadQueueHandler {
     next() {
         const next: IBaseDownload | undefined = this.queueStore.getState().queue.values().next().value || undefined;
 
-        this.current = next;
+        this.currentStore.setState(() => next, true);
         this.delete(next);
 
         return next;
