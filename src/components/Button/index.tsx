@@ -1,9 +1,14 @@
 import styles from "./Button.module.css";
+import { CSSProperties } from "react";
 
 export enum ButtonColor {
     "GREEN",
     "BLUE",
     "YELLOW"
+}
+
+interface ButtonCSS extends CSSProperties {
+    "--progress": string
 }
 
 type Props = React.PropsWithChildren<{
@@ -12,6 +17,7 @@ type Props = React.PropsWithChildren<{
     onClick?: React.MouseEventHandler<HTMLButtonElement>,
 
     color?: ButtonColor,
+    progress?: number,
     width?: number,
     height?: number,
 }>;
@@ -33,10 +39,11 @@ const Button: React.FC<Props> = (props: Props) => {
     }
 
     // Get the styles
-    const newStyles = { ...props.style, width: props.width, height: props.height };
+    const newStyles = { width: props.width, height: props.height, ...props.style, "--progress": props.progress ? `${props.progress}%` : undefined } as ButtonCSS;
 
     return <button className={[styles.button, colorClass, props.className].join(" ")} style={newStyles} onClick={props.onClick}>
-        {props.children}
+        <div className={styles.top}>{props.children}</div>
+        <div className={styles.bottom}>{props.children}</div>
     </button>;
 };
 

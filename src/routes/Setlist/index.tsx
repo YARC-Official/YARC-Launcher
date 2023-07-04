@@ -9,18 +9,23 @@ import { millisToDisplayLength } from "@app/utils/timeFormat";
 import Button, { ButtonColor } from "@app/components/Button";
 import PayloadProgress from "@app/components/PayloadProgress";
 import TooltipWrapper from "@app/components/TooltipWrapper";
+import { calculatePayloadPercentage } from "@app/utils/Download/payload";
 
 interface Props {
     setlistId: SetlistID
+}
+
+interface SetlistButtonProps extends React.PropsWithChildren{
+    style?: React.CSSProperties
 }
 
 const SetlistPage: React.FC<Props> = ({ setlistId }: Props) => {
     const setlistData = useSetlistRelease(setlistId);
     const { state, download, payload } = useSetlistData(setlistData);
 
-    function getButton() {
+    function SetlistButton(props: SetlistButtonProps) {
         if (state === SetlistStates.AVAILABLE) {
-            return <Button color={ButtonColor.BLUE}>
+            return <Button style={props.style} color={ButtonColor.BLUE}>
                 <CheckmarkIcon /> Downloaded
             </Button>;
         } else if (state === SetlistStates.DOWNLOADING) {
@@ -28,12 +33,12 @@ const SetlistPage: React.FC<Props> = ({ setlistId }: Props) => {
                 return <></>;
             }
 
-            return <Button color={ButtonColor.YELLOW}>
+            return <Button style={props.style} progress={calculatePayloadPercentage(payload)} color={ButtonColor.YELLOW}>
                 <InstallingIcon />
                 <PayloadProgress payload={payload} />
             </Button>;
         } else {
-            return <Button color={ButtonColor.GREEN} onClick={() => download()}>
+            return <Button style={props.style} color={ButtonColor.GREEN} onClick={() => download()}>
                 <UpdateIcon /> Download
             </Button>;
         }
@@ -48,7 +53,7 @@ const SetlistPage: React.FC<Props> = ({ setlistId }: Props) => {
                 )}
             </SetlistBoxSlim>
             <div className={styles.sidebar}>
-                {getButton()}
+                <SetlistButton style={{width: "100%"}} />
                 <SetlistBox>
                     <SetlistBoxHeader>
                         <InformationIcon />
