@@ -1,4 +1,4 @@
-import LaunchPage from "@app/components/LaunchPage/Index";
+import LaunchPage from "@app/components/LaunchPage";
 import { useYARGRelease } from "@app/hooks/useYARGRelease";
 import { useYARGVersion } from "@app/hooks/useYARGVersion";
 
