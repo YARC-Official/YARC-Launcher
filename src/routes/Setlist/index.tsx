@@ -3,15 +3,7 @@ import styles from "./setlist.module.css";
 import { SetlistStates, useSetlistData } from "@app/hooks/useSetlistData";
 import { SetlistBox, SetlistBoxHeader, SetlistBoxSlim } from "@app/components/Setlist/SetlistBox";
 import SongEntry from "@app/components/Setlist/SongEntry";
-import { ReactComponent as InfoIcon } from "@app/assets/Icons/Information.svg";
-import { ReactComponent as CharterIcon } from "@app/assets/Icons/Charters.svg";
-import { ReactComponent as OrganizerIcon } from "@app/assets/Icons/Organizer.svg";
-import { ReactComponent as DateIcon } from "@app/assets/Icons/Date.svg";
-import { ReactComponent as SongIcon } from "@app/assets/Icons/Song.svg";
-import { ReactComponent as TimeIcon } from "@app/assets/Icons/Time.svg";
-import { ReactComponent as UpdateIcon } from "@app/assets/Icons/Update.svg";
-import { ReactComponent as InstallingIcon } from "@app/assets/Icons/Installing.svg";
-import { ReactComponent as CheckmarkIcon } from "@app/assets/Icons/Checkmark.svg";
+import { InformationIcon, ChartersIcon, OrganizerIcon, DateIcon, SongIcon, TimeIcon, UpdateIcon, InstallingIcon, CheckmarkIcon } from "@app/assets/Icons";
 import CreditEntry from "@app/components/Setlist/CreditEntry";
 import { millisToDisplayLength } from "@app/utils/timeFormat";
 import Button, { ButtonColor } from "@app/components/Button";
@@ -58,7 +50,7 @@ const SetlistPage: React.FC<Props> = ({ setlistId }: Props) => {
                 {getButton()}
                 <SetlistBox>
                     <SetlistBoxHeader>
-                        <InfoIcon />
+                        <InformationIcon />
                         {setlistData.locales["en-US"].title}
                     </SetlistBoxHeader>
 
@@ -95,7 +87,7 @@ const SetlistPage: React.FC<Props> = ({ setlistId }: Props) => {
 
                 <SetlistBox>
                     <SetlistBoxHeader>
-                        <CharterIcon />
+                        <ChartersIcon />
                         Charters
                     </SetlistBoxHeader>
 

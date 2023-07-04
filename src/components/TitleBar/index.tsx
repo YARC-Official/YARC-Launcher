@@ -1,8 +1,7 @@
 import { appWindow } from "@tauri-apps/api/window";
 
 import styles from "./titlebar.module.css";
-import { ReactComponent as MinimizeIcon } from "@app/assets/Icons/Minimize.svg";
-import { ReactComponent as CloseIcon } from "@app/assets/Icons/Close.svg";
+import { CloseIcon, MinimizeIcon } from "@app/assets/Icons";
 
 const TitleBar: React.FC = () => {
     return <div data-tauri-drag-region className={styles.title_bar}>
