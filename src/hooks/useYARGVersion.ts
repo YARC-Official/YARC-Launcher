@@ -31,7 +31,7 @@ export const useYARGVersion = (releaseData: ReleaseData) => {
     useEffect(() => {
         (
             async () => {
-                if (!releaseData) return;
+                if (state || !releaseData) return;
 
                 const exists = await invoke("version_exists_yarg", {
                     versionId: releaseData.tag_name

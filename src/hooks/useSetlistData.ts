@@ -21,7 +21,7 @@ export const useSetlistData = (setlistData: SetlistData) => {
     useEffect(() => {
         (
             async () => {
-                if(!setlistData) return;
+                if (state || !setlistData) return;
                 
                 const exists = await invoke("version_exists_setlist", {
                     id: setlistData.id,
