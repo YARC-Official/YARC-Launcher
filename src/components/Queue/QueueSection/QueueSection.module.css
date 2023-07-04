@@ -1,0 +1,33 @@
+.container {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    align-self: stretch;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.title {
+    display: flex;
+    padding: 15px;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+    background: #151515;
+
+    color: #FFF;
+    font-size: 14px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    text-transform: uppercase;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    align-self: stretch;
+}

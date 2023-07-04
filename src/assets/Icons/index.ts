@@ -13,6 +13,7 @@ import { ReactComponent as MinimizeIcon } from "./Minimize.svg";
 import { ReactComponent as NewsIcon } from "./News.svg";
 import { ReactComponent as OrganizerIcon } from "./Organizer.svg";
 import { ReactComponent as QueueIcon } from "./Queue.svg";
+import { ReactComponent as QueueListIcon } from "./QueueList.svg";
 import { ReactComponent as SettingsIcon } from "./Settings.svg";
 import { ReactComponent as SongIcon } from "./Song.svg";
 import { ReactComponent as TimeIcon } from "./Time.svg";
@@ -35,6 +36,7 @@ export {
     NewsIcon,
     OrganizerIcon,
     QueueIcon,
+    QueueListIcon,
     SettingsIcon,
     SongIcon,
     TimeIcon,
