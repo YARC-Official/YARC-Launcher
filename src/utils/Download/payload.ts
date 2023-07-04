@@ -29,3 +29,9 @@ export class DownloadPayloadHandler {
         return this.payloadStore.setState({[uuid]: undefined});
     }
 }
+
+export const calculatePayloadPercentage = (payload?: DownloadPayload): number | undefined => {
+    if(!payload) return undefined;
+
+    return payload.total > 0 ? (payload.current / payload.total) * 100 : undefined;
+};

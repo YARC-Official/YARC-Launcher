@@ -3,6 +3,7 @@ import { InstallingIcon, UpdateIcon } from "@app/assets/Icons";
 import { YARGStates, YARGVersion } from "@app/hooks/useYARGVersion";
 import Button, { ButtonColor } from "../Button";
 import PayloadProgress from "../PayloadProgress";
+import { calculatePayloadPercentage } from "@app/utils/Download/payload";
 
 interface Props {
     version: YARGVersion,
@@ -26,9 +27,7 @@ const LaunchButton: React.FC<Props> = ({ version, playName }: Props) => {
             return <></>;
         }
 
-        const progress = version.payload.total > 0 ? (version.payload.current / version.payload.total) * 100 : undefined;
-
-        return <Button width={200} height={48} progress={progress} color={ButtonColor.YELLOW}>
+        return <Button width={200} height={48} progress={calculatePayloadPercentage(version.payload)} color={ButtonColor.YELLOW}>
             <InstallingIcon />
             <span className={styles.text}>
                 <PayloadProgress payload={version.payload} />
