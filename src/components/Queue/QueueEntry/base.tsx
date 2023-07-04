@@ -1,5 +1,5 @@
-import stylesNormal from "./QueueDownload.module.css";
-import stylesBanner from "./QueueDownloadBanner.module.css";
+import stylesNormal from "./QueueEntry.module.css";
+import stylesBanner from "./QueueEntryBanner.module.css";
 
 interface Props {
     icon?: React.ReactNode;
