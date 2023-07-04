@@ -5,6 +5,7 @@ import { ReactComponent as GithubIcon } from "@app/assets/Github.svg";
 import { ReactComponent as NewsIcon } from "@app/assets/News.svg";
 import { ReactComponent as SettingsIcon } from "@app/assets/Settings.svg";
 import { ReactComponent as HomeIcon } from "@app/assets/Home.svg";
+import { ReactComponent as QueueIcon } from "@app/assets/Queue.svg";
 import SidebarMenuButton from "./SidebarMenuButton";
 import { Link } from "react-router-dom";
 import VersionsList from "./Versions/List";
@@ -29,7 +30,11 @@ const Sidebar: React.FC = () => {
             <Link to="/"><SidebarMenuButton icon={<HomeIcon />}>Home</SidebarMenuButton></Link>
             <Link to="/news"><SidebarMenuButton icon={<NewsIcon />}>News</SidebarMenuButton></Link>
             <Link to="/settings"><SidebarMenuButton icon={<SettingsIcon />}>Settings</SidebarMenuButton></Link>
-            {queue.size > 0 ? <Link to="/queue"><SidebarMenuButton>Queue ({queue.size})</SidebarMenuButton></Link> : ""}
+            <Link to="/queue">
+                <SidebarMenuButton icon={<QueueIcon />}>
+                    Downloads {queue.size <= 0 ? "" : `(${queue.size})`}
+                </SidebarMenuButton>
+            </Link>
         </div>
 
         <VersionsList />
