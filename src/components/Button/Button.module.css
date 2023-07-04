@@ -1,34 +1,57 @@
 .button {
-    display: flex;
+    background: none;
+
+    position: relative;
     padding: 15px;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    align-self: stretch;
+    overflow: hidden;
+    isolation: isolate;
+
     border: none;
-    outline: none;
     border-radius: 8px;
 
     font-size: 14px;
-    font-style: normal;
     font-weight: 700;
-    line-height: normal;
     text-transform: uppercase;
 
     cursor: pointer;
+    user-select: none;
+}
+
+.bottom, .top {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.bottom {
+    background: var(--sideBar_background);
+    color: var(--primary);
+    z-index: 1;
+}
+
+.top {
+    background: var(--background);
+    color: var(--color);
+    z-index: 2;
+    transition: width .3s ease;
+    clip-path: inset(0 calc(100% - var(--progress)) 0 0);
 }
 
 .colors_green {
-    background: var(--button_green);
-    color: var(--text_green);
+    --background: var(--button_green);
+    --color: var(--text_green);
 }
 
 .colors_blue {
-    background: var(--button_blue);
-    color: var(--text_blue);
+    --background: var(--button_blue);
+    --color: var(--text_blue);
 }
 
 .colors_yellow {
-    background: var(--button_yellow);
-    color: var(--text_yellow);
+    --background: var(--button_yellow);
+    --color: var(--text_yellow);
 }

@@ -26,7 +26,9 @@ const LaunchButton: React.FC<Props> = ({ version, playName }: Props) => {
             return <></>;
         }
 
-        return <Button width={200} height={48} color={ButtonColor.YELLOW}>
+        const progress = version.payload.total > 0 ? (version.payload.current / version.payload.total) * 100 : undefined;
+
+        return <Button width={200} height={48} progress={progress} color={ButtonColor.YELLOW}>
             <InstallingIcon />
             <span className={styles.text}>
                 <PayloadProgress payload={version.payload} />
