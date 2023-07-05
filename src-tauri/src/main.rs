@@ -10,7 +10,7 @@ use std::fs::{self, remove_file};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::{fs::File, io::Write};
-use tauri::{AppHandle, Manager, WindowBuilder, WindowUrl};
+use tauri::{AppHandle, Manager};
 use utils::{clear_folder, download, extract, extract_setlist_part};
 use window_shadows::set_shadow;
 
@@ -26,14 +26,10 @@ pub struct ProgressPayload {
     pub current: u64,
 }
 
-#[derive(Clone, serde::Serialize)]
-pub struct ErrorPayload {
-    pub error: String,
-}
-
 #[derive(Default, serde::Serialize, serde::Deserialize)]
 pub struct Settings {
     pub download_location: String,
+    pub download_location_set: bool,
 }
 
 pub struct InnerState {
@@ -75,29 +71,39 @@ impl InnerState {
             if let Ok(settings) = settings {
                 self.settings = settings;
             } else {
-                self.create_new_settings_file();
+                self.create_new_settings_file()?;
             }
         } else {
-            self.create_new_settings_file();
+            self.create_new_settings_file()?;
         }
 
+        // Set the rest of the folder locations based on settings
+        self.set_download_locations()?;
+
+        // Delete everything temp (just in case)
+        clear_folder(&self.temp_folder)?;
+
+        Ok(())
+    }
+
+    fn set_download_locations(&mut self) -> Result<(), String> {
         self.yarg_folder = PathBuf::from(&self.settings.download_location);
         self.yarg_folder.push("YARG Installs");
 
         self.setlist_folder = PathBuf::from(&self.settings.download_location);
         self.setlist_folder.push("Setlists");
 
-        // Delete everything temp (just in case)
-        clear_folder(&self.temp_folder)?;
-
         // Create the directories if they don't exist
         std::fs::create_dir_all(&self.yarg_folder)
             .map_err(|e| format!("Failed to create YARG directory.\n{:?}", e))?;
+        std::fs::create_dir_all(&self.setlist_folder)
+            .map_err(|e| format!("Failed to create setlist directory.\n{:?}", e))?;
 
         Ok(())
     }
 
-    fn create_new_settings_file(&mut self) {
+    fn create_new_settings_file(&mut self) -> Result<(), String> {
+        // Create new settings
         self.settings = Default::default();
         self.settings.download_location = self
             .yarc_folder
@@ -106,15 +112,26 @@ impl InnerState {
             .into_string()
             .unwrap();
 
+        // Then save
+        self.save_settings_file()?;
+
+        Ok(())
+    }
+
+    pub fn save_settings_file(&mut self) -> Result<(), String> {
         // Delete the old settings (if it exists)
         let settings_path = self.launcher_folder.join("settings.json");
         let _ = remove_file(&settings_path);
 
-        // Open settings file
-        let settings_file = File::create(settings_path).unwrap();
+        // Create settings file
+        let settings_file = File::create(settings_path)
+            .map_err(|e| format!("Failed to create settings file.\n{:?}", e))?;
 
         // Write to file
-        serde_json::to_writer(settings_file, &self.settings).unwrap();
+        serde_json::to_writer(settings_file, &self.settings)
+            .map_err(|e| format!("Failed to write to settings file.\n{:?}", e))?;
+
+        Ok(())
     }
 
     pub async fn download_yarg(
@@ -342,27 +359,35 @@ fn get_os() -> String {
 }
 
 #[tauri::command]
-async fn open_alert_window(handle: tauri::AppHandle, error_string: String) -> Result<(), String> {
-    // Create an alert window if it isn't open
-    if handle.windows().get("alert") == None {
-        WindowBuilder::new(&handle, "alert", WindowUrl::App("alert.html".into()))
-            .title("Alert")
-            .resizable(false)
-            .inner_size(650.0, 375.0)
-            .decorations(false)
-            .build()
-            .unwrap();
+async fn is_download_location_set(state: tauri::State<'_, State>) -> Result<bool, String> {
+    let state_guard = state.0.lock().await;
+    Ok(state_guard.settings.download_location_set)
+}
+
+#[tauri::command]
+async fn set_download_location(
+    state: tauri::State<'_, State>,
+    path: Option<String>,
+) -> Result<(), String> {
+    let mut state_guard = state.0.lock().await;
+
+    // If this is None, just use the default
+    if let Some(path) = path {
+        state_guard.settings.download_location = path.clone();
     }
 
-    // Emit error (to be shown in alert window)
-    let _ = handle.emit_all(
-        "error",
-        ErrorPayload {
-            error: error_string,
-        },
-    );
+    state_guard.settings.download_location_set = true;
+
+    state_guard.set_download_locations()?;
+    state_guard.save_settings_file()?;
 
     Ok(())
+}
+
+#[tauri::command]
+async fn get_download_location(state: tauri::State<'_, State>) -> Result<String, String> {
+    let state_guard = state.0.lock().await;
+    Ok(state_guard.settings.download_location.clone())
 }
 
 fn main() {
@@ -383,7 +408,9 @@ fn main() {
             download_setlist,
             version_exists_setlist,
             get_os,
-            open_alert_window
+            is_download_location_set,
+            set_download_location,
+            get_download_location
         ])
         .setup(|app| {
             let window = app.get_window("main").unwrap();

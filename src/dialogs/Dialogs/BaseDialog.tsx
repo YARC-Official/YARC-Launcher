@@ -1,12 +1,16 @@
-import { DialogManager } from "..";
+import React from "react";
 import styles from "./BaseDialog.module.css";
+import { DialogManagerContext } from "../DialogProvider";
 
-export abstract class BaseDialog {
-    protected dialogManager?: DialogManager = undefined;
+export abstract class BaseDialog<T> extends React.Component<Record<string, never>, T> {
+    static contextType = DialogManagerContext;
+    declare context: React.ContextType<typeof DialogManagerContext>;
 
-    render(dialogManager: DialogManager) {
-        this.dialogManager = dialogManager;
+    constructor(props: Record<string, never>) {
+        super(props);
+    }
 
+    render() {
         return <>
             <div className={styles.title}>
                 {this.getTitle()}

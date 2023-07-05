@@ -4,6 +4,8 @@ import { useDownloadClient } from "@app/utils/Download/provider";
 import { SetlistDownload, generateSetlistUUID } from "@app/utils/Download/Processors/Setlist";
 import { useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
+import { DialogManager } from "@app/dialogs";
+import { showInstallFolderDialog } from "@app/dialogs/dialogUtil";
 
 export enum SetlistStates {
     "AVAILABLE",
@@ -22,7 +24,7 @@ export const useSetlistData = (setlistData: SetlistData) => {
         (
             async () => {
                 if (state || !setlistData) return;
-                
+
                 const exists = await invoke("version_exists_setlist", {
                     id: setlistData.id,
                     version: setlistData.version
@@ -32,9 +34,15 @@ export const useSetlistData = (setlistData: SetlistData) => {
             }
         )();
     }, []);
-    
-    const download = async () => {
-        if(!setlistData || state === SetlistStates.DOWNLOADING) return;
+
+    const download = async (dialogManager: DialogManager) => {
+        if (!setlistData || state === SetlistStates.DOWNLOADING) return;
+
+        // Ask for a download location (if required)
+        if (!await showInstallFolderDialog(dialogManager)) {
+            // Skip if the dialog is closed or it errors
+            return;
+        }
 
         setState(SetlistStates.DOWNLOADING);
 

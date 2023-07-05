@@ -5,6 +5,8 @@ import { useYARGState } from "@app/stores/YARGStateStore";
 import { useDownloadClient } from "@app/utils/Download/provider";
 import { YARGDownload, generateYARGUUID } from "@app/utils/Download/Processors/YARG";
 import { DownloadPayload } from "@app/utils/Download";
+import { DialogManager } from "@app/dialogs";
+import { showInstallFolderDialog } from "@app/dialogs/dialogUtil";
 
 export enum YARGStates {
     "AVAILABLE",
@@ -18,7 +20,7 @@ export enum YARGStates {
 export type YARGVersion = {
     state: YARGStates,
     play: () => Promise<void>,
-    download: () => Promise<void>,
+    download: (dialogManager: DialogManager) => Promise<void>,
     payload?: DownloadPayload
 }
 
@@ -59,8 +61,14 @@ export const useYARGVersion = (releaseData: ReleaseData) => {
         }
     };
 
-    const download = async () => {
+    const download = async (dialogManager: DialogManager) => {
         if (!releaseData || state === YARGStates.DOWNLOADING) return;
+
+        // Ask for a download location (if required)
+        if (!await showInstallFolderDialog(dialogManager)) {
+            // Skip if the dialog is closed or it errors
+            return;
+        }
 
         setState(YARGStates.DOWNLOADING);
 

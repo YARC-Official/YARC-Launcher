@@ -1,0 +1,32 @@
+.folder_container {
+    display: flex;
+    padding: 25px;
+    justify-content: space-between;
+    align-items: center;
+    align-self: stretch;
+
+    border-radius: 8px;
+    border: 1px solid #DADADA;
+}
+
+.folder_info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    color: rgba(0, 0, 0, 0.75);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    text-transform: uppercase;
+}
+
+.folder_extra {
+    color: rgba(0, 0, 0, 0.25);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    text-transform: uppercase;
+}

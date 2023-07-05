@@ -4,6 +4,7 @@ import { YARGStates, YARGVersion } from "@app/hooks/useYARGVersion";
 import Button, { ButtonColor } from "../Button";
 import PayloadProgress from "../PayloadProgress";
 import { calculatePayloadPercentage } from "@app/utils/Download/payload";
+import { useDialogManager } from "@app/dialogs/DialogProvider";
 
 interface Props {
     version: YARGVersion,
@@ -16,9 +17,12 @@ const LaunchButton: React.FC<Props> = ({ version, playName }: Props) => {
         return <></>;
     }
 
+    // Get dialog manager
+    const dialogManager = useDialogManager();
+
     if (version.state === YARGStates.NEW_UPDATE) {
         // New update!
-        return <Button width={200} height={48} color={ButtonColor.GREEN} onClick={version.download}>
+        return <Button width={200} height={48} color={ButtonColor.GREEN} onClick={() => version.download(dialogManager)}>
             <UpdateIcon />
             <span className={styles.text}>UPDATE {playName}</span>
         </Button>;

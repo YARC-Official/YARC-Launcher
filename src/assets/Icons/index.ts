@@ -19,6 +19,7 @@ import { ReactComponent as SongIcon } from "./Song.svg";
 import { ReactComponent as TimeIcon } from "./Time.svg";
 import { ReactComponent as TwitterIcon } from "./Twitter.svg";
 import { ReactComponent as UpdateIcon } from "./Update.svg";
+import { ReactComponent as DriveIcon } from "./Drive.svg";
 
 export {
     AddIcon,
@@ -42,4 +43,5 @@ export {
     TimeIcon,
     TwitterIcon,
     UpdateIcon,
+    DriveIcon
 };

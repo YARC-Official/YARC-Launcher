@@ -4,7 +4,7 @@ import { DialogManager } from ".";
 import * as Dialog from "@radix-ui/react-dialog";
 import styles from "./DialogProvider.module.css";
 
-const DialogManagerContext = createContext<DialogManager>({} as DialogManager);
+export const DialogManagerContext = createContext<DialogManager>({} as DialogManager);
 
 function DialogContextInner() {
     const dialogManager = useDialogManager();
@@ -13,11 +13,13 @@ function DialogContextInner() {
         e.preventDefault();
     }
 
+    const CurrentDialog = dialogManager.useDialog();
+
     return <Dialog.Root open={dialogManager.useOpen()} onOpenChange={v => dialogManager.setOpen(v)}>
         <Dialog.Portal>
             <Dialog.Overlay className={styles.overlay} />
             <Dialog.Content className={styles.content} onPointerDownOutside={prevent} onInteractOutside={prevent}>
-                {dialogManager.useDialog()?.render(dialogManager)}
+                {CurrentDialog ? <CurrentDialog /> : "No dialog assigned!"}
             </Dialog.Content>
         </Dialog.Portal>
     </Dialog.Root>;

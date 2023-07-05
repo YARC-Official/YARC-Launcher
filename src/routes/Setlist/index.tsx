@@ -25,6 +25,8 @@ const SetlistPage: React.FC<Props> = ({ setlistId }: Props) => {
     const setlistData = useSetlistRelease(setlistId);
     const { state, download, payload } = useSetlistData(setlistData);
 
+    const dialogManager = useDialogManager();
+
     function SetlistButton(props: SetlistButtonProps) {
         if (state === SetlistStates.AVAILABLE) {
             return <Button style={props.style} color={ButtonColor.BLUE}>
@@ -40,8 +42,8 @@ const SetlistPage: React.FC<Props> = ({ setlistId }: Props) => {
                 <PayloadProgress payload={payload} />
             </Button>;
         } else {
-            return <Button style={props.style} color={ButtonColor.GREEN} onClick={() => download()}>
-                <UpdateIcon /> Download
+            return <Button style={props.style} color={ButtonColor.GREEN} onClick={() => download(dialogManager)}>
+                <UpdateIcon /> Update Setlist
             </Button>;
         }
     }
