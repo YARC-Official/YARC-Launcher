@@ -21,17 +21,17 @@ export class DownloadPayloadHandler {
 
     update(downloader: IBaseDownload, payload: DownloadPayload) {
         const uuid = downloader.uuid;
-        return this.payloadStore.setState({[uuid]: {...payload}});
+        return this.payloadStore.setState({ [uuid]: { ...payload } });
     }
 
     remove(downloader: IBaseDownload) {
         const uuid = downloader.uuid;
-        return this.payloadStore.setState({[uuid]: undefined});
+        return this.payloadStore.setState({ [uuid]: undefined });
     }
 }
 
 export const calculatePayloadPercentage = (payload?: DownloadPayload): number | undefined => {
-    if(!payload) return undefined;
+    if (!payload) return undefined;
 
     return payload.total > 0 ? (payload.current / payload.total) * 100 : undefined;
 };

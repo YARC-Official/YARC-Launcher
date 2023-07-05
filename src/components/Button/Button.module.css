@@ -18,7 +18,8 @@
     user-select: none;
 }
 
-.bottom, .top {
+.bottom,
+.top {
     padding: 15px;
 
     display: flex;
@@ -59,4 +60,9 @@
 .colors_yellow {
     --background: var(--button_yellow);
     --color: var(--text_yellow);
+}
+
+.colors_gray {
+    --background: var(--button_gray);
+    --color: var(--text_gray);
 }

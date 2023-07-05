@@ -24,10 +24,12 @@
     --button_green: #46E74F;
     --button_blue: #2ED9FF;
     --button_yellow: #FFB800;
+    --button_gray: #E6E6E6;
 
     --text_green: #003C03;
     --text_blue: #002A3D;
     --text_yellow: #351A00;
+    --text_gray: #737373;
 }
 
 * {

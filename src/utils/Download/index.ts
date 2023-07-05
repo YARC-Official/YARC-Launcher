@@ -14,7 +14,6 @@ export interface DownloadPayload {
 }
 
 export class DownloadClient {
-
     private payloadHandler: DownloadPayloadHandler;
     private queueHandler: DownloadQueueHandler;
 
@@ -82,10 +81,6 @@ export class DownloadClient {
     }
 
     useCurrent() {
-        return useStore(
-            this.queueHandler.currentStore,
-            (store) => store,
-            (oldStore, newStore) => oldStore?.uuid === newStore?.uuid
-        );
+        return useStore(this.queueHandler.currentStore);
     }
 }

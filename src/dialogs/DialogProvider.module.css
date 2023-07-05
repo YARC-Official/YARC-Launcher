@@ -1,0 +1,49 @@
+.overlay {
+    background: rgba(0, 0, 0, 0.6);
+    position: fixed;
+    inset: 0;
+    animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.content {
+    display: inline-flex;
+    padding: 25px 50px;
+    flex-direction: column;
+    align-items: center;
+
+    border-radius: 8px;
+    background: linear-gradient(360deg, rgba(255, 255, 255, 0.25) 0%, rgba(184, 184, 184, 0.25) 100%), #FFF;
+    box-shadow: 0px 10px 50px 0px rgba(0, 0, 0, 0.25);
+
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90vw;
+    max-width: 575px;
+    max-height: 85vh;
+
+    animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.content:focus {
+    outline: none;
+}
+
+.content > header {
+    color: #000;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+@keyframes overlayShow {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

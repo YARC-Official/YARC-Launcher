@@ -81,10 +81,10 @@ impl InnerState {
             self.create_new_settings_file();
         }
 
-        self.yarg_folder = PathBuf::from(&self.yarc_folder);
+        self.yarg_folder = PathBuf::from(&self.settings.download_location);
         self.yarg_folder.push("YARG Installs");
 
-        self.setlist_folder = PathBuf::from(&self.yarc_folder);
+        self.setlist_folder = PathBuf::from(&self.settings.download_location);
         self.setlist_folder.push("Setlists");
 
         // Delete everything temp (just in case)

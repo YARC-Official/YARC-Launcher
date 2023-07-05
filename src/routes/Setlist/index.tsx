@@ -10,12 +10,14 @@ import Button, { ButtonColor } from "@app/components/Button";
 import PayloadProgress from "@app/components/PayloadProgress";
 import TooltipWrapper from "@app/components/TooltipWrapper";
 import { calculatePayloadPercentage } from "@app/utils/Download/payload";
+import { useDialogManager } from "@app/dialogs/DialogProvider";
+import { InstallFolderDialog } from "@app/dialogs/Dialogs/InstallFolderDialog";
 
 interface Props {
     setlistId: SetlistID
 }
 
-interface SetlistButtonProps extends React.PropsWithChildren{
+interface SetlistButtonProps extends React.PropsWithChildren {
     style?: React.CSSProperties
 }
 
@@ -53,7 +55,7 @@ const SetlistPage: React.FC<Props> = ({ setlistId }: Props) => {
                 )}
             </SetlistBoxSlim>
             <div className={styles.sidebar}>
-                <SetlistButton style={{width: "100%"}} />
+                <SetlistButton style={{ width: "100%" }} />
                 <SetlistBox>
                     <SetlistBoxHeader>
                         <InformationIcon />

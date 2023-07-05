@@ -1,0 +1,25 @@
+.title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: #000;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    text-transform: uppercase;
+}
+
+.buttons {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    align-self: stretch;
+    padding-top: 10px;
+}
+
+.buttons > button {
+    display: flex;
+    flex: 1 0 0;
+}
