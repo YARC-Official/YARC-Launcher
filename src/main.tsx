@@ -10,23 +10,39 @@ import { queryClient } from "./query";
 import { DownloadClientProvider } from "@app/utils/Download/provider";
 import { DialogManagerProvider } from "./dialogs/DialogProvider";
 
+let error = undefined;
+
 try {
-    // Idk how react works, but this should show a loading screen or something
     await invoke("init");
 } catch (e) {
-    // This should show an error alert popup
+    error = e as string;
     console.error(e);
 }
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-    <React.StrictMode>
-        <DialogManagerProvider>
-            <DownloadClientProvider>
-                <TitleBar />
-                <QueryClientProvider client={queryClient}>
-                    <RouterProvider router={Router} />
-                </QueryClientProvider>
-            </DownloadClientProvider>
-        </DialogManagerProvider>
-    </React.StrictMode>
-);
+if (!error) {
+    ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+        <React.StrictMode>
+            <DialogManagerProvider>
+                <DownloadClientProvider>
+                    <TitleBar />
+                    <QueryClientProvider client={queryClient}>
+                        <RouterProvider router={Router} />
+                    </QueryClientProvider>
+                </DownloadClientProvider>
+            </DialogManagerProvider>
+        </React.StrictMode>
+    );
+} else {
+    ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+        <React.StrictMode>
+            <TitleBar />
+            <p>
+                A fatal error has occurred when attempted to initalize the launcher.
+                Please report this to our Discord or GitHub immediately.
+            </p>
+            <p>
+                {error}
+            </p>
+        </React.StrictMode>
+    );
+}

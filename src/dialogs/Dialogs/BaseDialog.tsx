@@ -2,11 +2,11 @@ import React from "react";
 import styles from "./BaseDialog.module.css";
 import { DialogManagerContext } from "../DialogProvider";
 
-export abstract class BaseDialog<T> extends React.Component<Record<string, never>, T> {
+export abstract class BaseDialog<T> extends React.Component<Record<string, unknown>, T> {
     static contextType = DialogManagerContext;
     declare context: React.ContextType<typeof DialogManagerContext>;
 
-    constructor(props: Record<string, never>) {
+    constructor(props: Record<string, unknown>) {
         super(props);
     }
 

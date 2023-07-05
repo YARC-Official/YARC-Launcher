@@ -5,7 +5,7 @@ import { SetlistDownload, generateSetlistUUID } from "@app/utils/Download/Proces
 import { useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { DialogManager } from "@app/dialogs";
-import { showInstallFolderDialog } from "@app/dialogs/dialogUtil";
+import { showErrorDialog, showInstallFolderDialog } from "@app/dialogs/dialogUtil";
 
 export enum SetlistStates {
     "AVAILABLE",
@@ -57,6 +57,8 @@ export const useSetlistData = (setlistData: SetlistData) => {
             downloadClient.add(downloader);
         } catch (e) {
             setState(SetlistStates.ERROR);
+
+            showErrorDialog(dialogManager, e as string);
             console.error(e);
         }
     };

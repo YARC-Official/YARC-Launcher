@@ -39,7 +39,7 @@ const LaunchButton: React.FC<Props> = ({ version, playName }: Props) => {
         </Button>;
     } else {
         // Play
-        return <Button width={200} height={48} color={ButtonColor.BLUE} onClick={version.play}>
+        return <Button width={200} height={48} color={ButtonColor.BLUE} onClick={() => version.play(dialogManager)}>
             <span className={styles.text}>PLAY {playName}</span>
         </Button>;
     }

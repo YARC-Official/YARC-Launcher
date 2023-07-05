@@ -1,6 +1,7 @@
 import { invoke } from "@tauri-apps/api";
 import { DialogManager } from ".";
 import { InstallFolderDialog } from "./Dialogs/InstallFolderDialog";
+import { ErrorDialog } from "./Dialogs/ErrorDialog";
 
 export async function showInstallFolderDialog(dialogManager: DialogManager) {
     if (!await invoke("is_download_location_set")) {
@@ -19,4 +20,8 @@ export async function showInstallFolderDialog(dialogManager: DialogManager) {
     }
 
     return true;
+}
+
+export async function showErrorDialog(dialogManager: DialogManager, error: string) {
+    await dialogManager.createAndShowDialog(ErrorDialog, { error: error });
 }

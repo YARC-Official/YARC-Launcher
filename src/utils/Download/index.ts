@@ -4,6 +4,8 @@ import { listen } from "@tauri-apps/api/event";
 import { DownloadPayloadHandler } from "./payload";
 import { DownloadQueueHandler } from "./queue";
 import { throttle } from "lodash";
+import { showErrorDialog } from "@app/dialogs/dialogUtil";
+import { DialogManager } from "@app/dialogs";
 
 export type DownloadState = "downloading" | "installing" | "verifying" | "waiting";
 
@@ -17,7 +19,11 @@ export class DownloadClient {
     private payloadHandler: DownloadPayloadHandler;
     private queueHandler: DownloadQueueHandler;
 
-    constructor() {
+    private dialogManager: DialogManager;
+
+    constructor(dialogManager: DialogManager) {
+        this.dialogManager = dialogManager;
+
         this.payloadHandler = new DownloadPayloadHandler();
         this.queueHandler = new DownloadQueueHandler();
 
@@ -47,12 +53,12 @@ export class DownloadClient {
 
         try {
             await next.start();
-
-            this.payloadHandler.remove(next);
             next.onFinish?.();
         } catch (e) {
-            // TODO: This should show a process, and cancel the payload
+            showErrorDialog(this.dialogManager, e as string);
             console.error(e);
+        } finally {
+            this.payloadHandler.remove(next);
         }
 
         this.processNext();

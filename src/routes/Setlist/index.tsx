@@ -11,7 +11,6 @@ import PayloadProgress from "@app/components/PayloadProgress";
 import TooltipWrapper from "@app/components/TooltipWrapper";
 import { calculatePayloadPercentage } from "@app/utils/Download/payload";
 import { useDialogManager } from "@app/dialogs/DialogProvider";
-import { InstallFolderDialog } from "@app/dialogs/Dialogs/InstallFolderDialog";
 
 interface Props {
     setlistId: SetlistID

@@ -14,12 +14,13 @@ function DialogContextInner() {
     }
 
     const CurrentDialog = dialogManager.useDialog();
+    const dialogProps = dialogManager.useProps();
 
     return <Dialog.Root open={dialogManager.useOpen()} onOpenChange={v => dialogManager.setOpen(v)}>
         <Dialog.Portal>
             <Dialog.Overlay className={styles.overlay} />
             <Dialog.Content className={styles.content} onPointerDownOutside={prevent} onInteractOutside={prevent}>
-                {CurrentDialog ? <CurrentDialog /> : "No dialog assigned!"}
+                {CurrentDialog ? <CurrentDialog {...dialogProps} /> : "No dialog assigned!"}
             </Dialog.Content>
         </Dialog.Portal>
     </Dialog.Root>;

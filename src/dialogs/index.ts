@@ -4,11 +4,12 @@ import { Component } from "react";
 
 export class DialogManager {
     private dialogStore = createStore<typeof Component | undefined>(() => undefined);
+    private propsStore = createStore<Record<string, unknown> | undefined>(() => undefined);
     private openStore = createStore<boolean>(() => false);
 
     dialogOut?: string;
 
-    async createAndShowDialog(dialog: typeof Component): Promise<string | undefined> {
+    async createAndShowDialog(dialog: typeof Component, props?: Record<string, unknown>): Promise<string | undefined> {
         console.log("Showing dialog!");
 
         // If there's already a dialog open, close the current one
@@ -18,6 +19,7 @@ export class DialogManager {
 
         // Open the dialog
         this.dialogStore.setState(() => dialog, true);
+        this.propsStore.setState(() => props, true);
         this.openStore.setState(() => true, true);
 
         // Subscribe to the close event
@@ -47,6 +49,10 @@ export class DialogManager {
 
     useOpen() {
         return useStore(this.openStore);
+    }
+
+    useProps() {
+        return useStore(this.propsStore);
     }
 
     setOpen(value: boolean) {

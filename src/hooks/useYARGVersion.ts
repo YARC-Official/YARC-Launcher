@@ -6,7 +6,7 @@ import { useDownloadClient } from "@app/utils/Download/provider";
 import { YARGDownload, generateYARGUUID } from "@app/utils/Download/Processors/YARG";
 import { DownloadPayload } from "@app/utils/Download";
 import { DialogManager } from "@app/dialogs";
-import { showInstallFolderDialog } from "@app/dialogs/dialogUtil";
+import { showErrorDialog, showInstallFolderDialog } from "@app/dialogs/dialogUtil";
 
 export enum YARGStates {
     "AVAILABLE",
@@ -19,7 +19,7 @@ export enum YARGStates {
 
 export type YARGVersion = {
     state: YARGStates,
-    play: () => Promise<void>,
+    play: (dialogManager: DialogManager) => Promise<void>,
     download: (dialogManager: DialogManager) => Promise<void>,
     payload?: DownloadPayload
 }
@@ -44,7 +44,7 @@ export const useYARGVersion = (releaseData: ReleaseData) => {
         )();
     }, [releaseData]);
 
-    const play = async () => {
+    const play = async (dialogManager: DialogManager) => {
         if (!releaseData) return;
 
         setState(YARGStates.LOADING);
@@ -57,6 +57,8 @@ export const useYARGVersion = (releaseData: ReleaseData) => {
             setState(YARGStates.PLAYING);
         } catch (e) {
             setState(YARGStates.ERROR);
+
+            showErrorDialog(dialogManager, e as string);
             console.error(e);
         }
     };
@@ -86,6 +88,9 @@ export const useYARGVersion = (releaseData: ReleaseData) => {
             downloadClient.add(downloader);
         } catch (e) {
             setState(YARGStates.ERROR);
+
+            showErrorDialog(dialogManager, e as string);
+            console.error(e);
         }
     };
 

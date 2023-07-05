@@ -1,7 +1,7 @@
 import Button, { ButtonColor } from "@app/components/Button";
 import { BaseDialog } from "./BaseDialog";
 import { open } from "@tauri-apps/api/dialog";
-import styles from "./InstallFolder.module.css";
+import styles from "./InstallFolderDialog.module.css";
 import { DriveIcon } from "@app/assets/Icons";
 import { invoke } from "@tauri-apps/api";
 
@@ -10,7 +10,7 @@ interface State {
 }
 
 export class InstallFolderDialog extends BaseDialog<State> {
-    constructor(props: Record<string, never>) {
+    constructor(props: Record<string, unknown>) {
         super(props);
         this.state = {
             path: undefined
