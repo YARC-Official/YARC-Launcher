@@ -140,11 +140,15 @@ impl InnerState {
         zip_url: String,
         sig_url: Option<String>,
         version_id: String,
+        profile: String,
     ) -> Result<(), String> {
-        let folder = self.yarg_folder.join(&version_id);
+        let mut folder = self.yarg_folder.join(&profile);
 
         // Delete the old installation
         clear_folder(&folder)?;
+
+        // Move into the version's folder
+        folder = folder.join(&version_id);
 
         // Download the zip
         let zip_path = &self.temp_folder.join("update.zip");
@@ -200,8 +204,8 @@ impl InnerState {
         Ok(())
     }
 
-    pub fn play_yarg(&self, version_id: String) -> Result<(), String> {
-        let mut path = self.yarg_folder.join(version_id);
+    pub fn play_yarg(&self, version_id: String, profile: String) -> Result<(), String> {
+        let mut path = self.yarg_folder.join(profile).join(version_id);
         path = match get_os().as_str() {
             "windows" => path.join("YARG.exe"),
             "linux" => path.join("YARG"),
@@ -220,8 +224,8 @@ impl InnerState {
         Ok(())
     }
 
-    pub fn version_exists_yarg(&self, version_id: String) -> bool {
-        Path::new(&self.yarg_folder.join(version_id)).exists()
+    pub fn version_exists_yarg(&self, version_id: String, profile: String) -> bool {
+        Path::new(&self.yarg_folder.join(profile).join(version_id)).exists()
     }
 
     pub async fn download_setlist(
@@ -300,20 +304,25 @@ async fn download_yarg(
     zip_url: String,
     sig_url: Option<String>,
     version_id: String,
+    profile: String,
 ) -> Result<(), String> {
     let state_guard = state.0.read().await;
 
     state_guard
-        .download_yarg(&app, zip_url, sig_url, version_id)
+        .download_yarg(&app, zip_url, sig_url, version_id, profile)
         .await?;
 
     Ok(())
 }
 
 #[tauri::command]
-async fn play_yarg(state: tauri::State<'_, State>, version_id: String) -> Result<(), String> {
+async fn play_yarg(
+    state: tauri::State<'_, State>,
+    version_id: String,
+    profile: String,
+) -> Result<(), String> {
     let state_guard = state.0.read().await;
-    state_guard.play_yarg(version_id)?;
+    state_guard.play_yarg(version_id, profile)?;
 
     Ok(())
 }
@@ -322,9 +331,10 @@ async fn play_yarg(state: tauri::State<'_, State>, version_id: String) -> Result
 async fn version_exists_yarg(
     state: tauri::State<'_, State>,
     version_id: String,
+    profile: String,
 ) -> Result<bool, String> {
     let state_guard = state.0.read().await;
-    Ok(state_guard.version_exists_yarg(version_id))
+    Ok(state_guard.version_exists_yarg(version_id, profile))
 }
 
 #[tauri::command]

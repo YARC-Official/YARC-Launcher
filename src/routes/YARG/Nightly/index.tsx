@@ -4,7 +4,7 @@ import { useYARGVersion } from "@app/hooks/useYARGVersion";
 
 function NightlyYARGPage() {
     const releaseData = useYARGRelease("nightly");
-    const yargVersion = useYARGVersion(releaseData);
+    const yargVersion = useYARGVersion(releaseData, "nightly");
 
     return (<>
         <LaunchPage version={yargVersion} playName="NIGHTLY" />

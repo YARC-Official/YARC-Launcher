@@ -24,7 +24,7 @@ export type YARGVersion = {
     payload?: DownloadPayload
 }
 
-export const useYARGVersion = (releaseData: ReleaseData) => {
+export const useYARGVersion = (releaseData: ReleaseData, profileName: string) => {
     const { state, setState } = useYARGState(releaseData?.tag_name);
 
     const downloadClient = useDownloadClient();
@@ -36,7 +36,8 @@ export const useYARGVersion = (releaseData: ReleaseData) => {
                 if (state || !releaseData) return;
 
                 const exists = await invoke("version_exists_yarg", {
-                    versionId: releaseData.tag_name
+                    versionId: releaseData.tag_name,
+                    profile: profileName
                 });
 
                 setState(exists ? YARGStates.AVAILABLE : YARGStates.NEW_UPDATE);
@@ -52,6 +53,7 @@ export const useYARGVersion = (releaseData: ReleaseData) => {
         try {
             await invoke("play_yarg", {
                 versionId: releaseData.tag_name,
+                profile: profileName
             });
 
             setState(YARGStates.PLAYING);
@@ -82,6 +84,7 @@ export const useYARGVersion = (releaseData: ReleaseData) => {
                 zipUrl,
                 sigUrl,
                 releaseData.tag_name,
+                profileName,
                 () => { setState(YARGStates.AVAILABLE); }
             );
 

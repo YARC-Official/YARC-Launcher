@@ -6,13 +6,15 @@ export class YARGDownload extends BaseDownload implements IBaseDownload {
     zipUrl: string;
     sigUrl?: string;
     version: string;
+    profile: string;
     onFinish: () => void;
 
-    constructor(zipUrl: string, sigUrl: string | undefined, version: string, onFinish: () => void) {
+    constructor(zipUrl: string, sigUrl: string | undefined, version: string, profile: string, onFinish: () => void) {
         super(generateYARGUUID(version));
         this.zipUrl = zipUrl;
         this.sigUrl = sigUrl;
         this.version = version;
+        this.profile = profile;
         this.onFinish = onFinish;
     }
 
@@ -21,6 +23,7 @@ export class YARGDownload extends BaseDownload implements IBaseDownload {
             zipUrl: this.zipUrl,
             sigUrl: this.sigUrl,
             versionId: this.version,
+            profile: this.profile
         });
     }
 

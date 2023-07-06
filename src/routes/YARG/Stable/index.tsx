@@ -4,7 +4,7 @@ import { useYARGVersion } from "@app/hooks/useYARGVersion";
 
 function StableYARGPage() {
     const releaseData = useYARGRelease("stable");
-    const yargVersion = useYARGVersion(releaseData);
+    const yargVersion = useYARGVersion(releaseData, "stable");
 
     return (<>
         <LaunchPage version={yargVersion} playName="STABLE" />

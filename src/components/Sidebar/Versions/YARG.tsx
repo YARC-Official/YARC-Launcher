@@ -11,7 +11,7 @@ interface Props {
 
 const YARGVersion: React.FC<Props> = ({ channel }: Props) => {
     const releaseData = useYARGRelease(channel);
-    const { state } = useYARGVersion(releaseData);
+    const { state } = useYARGVersion(releaseData, channel);
 
     function getChannelIcon() {
         switch (channel) {
