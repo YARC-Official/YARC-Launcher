@@ -4,7 +4,7 @@ import { InstallFolderDialog } from "./Dialogs/InstallFolderDialog";
 import { ErrorDialog } from "./Dialogs/ErrorDialog";
 
 export async function showInstallFolderDialog(dialogManager: DialogManager) {
-    if (!await invoke("is_download_location_set")) {
+    if (!await invoke("is_initialized")) {
         const dialogOutput = await dialogManager.createAndShowDialog(InstallFolderDialog);
         if (dialogOutput === "cancel") {
             return false;

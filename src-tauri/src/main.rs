@@ -4,12 +4,12 @@
 mod utils;
 
 use directories::BaseDirs;
-use futures_util::lock::Mutex;
 use minisign::{PublicKeyBox, SignatureBox};
 use std::fs::{self, remove_file};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::{fs::File, io::Write};
+use tauri::async_runtime::RwLock;
 use tauri::{AppHandle, Manager};
 use utils::{clear_folder, download, extract, extract_setlist_part};
 use window_shadows::set_shadow;
@@ -29,7 +29,7 @@ pub struct ProgressPayload {
 #[derive(Default, serde::Serialize, serde::Deserialize)]
 pub struct Settings {
     pub download_location: String,
-    pub download_location_set: bool,
+    pub initialized: bool,
 }
 
 pub struct InnerState {
@@ -283,11 +283,11 @@ impl InnerState {
     }
 }
 
-pub struct State(pub Mutex<InnerState>);
+pub struct State(pub RwLock<InnerState>);
 
 #[tauri::command]
 async fn init(state: tauri::State<'_, State>) -> Result<(), String> {
-    let mut state_guard = state.0.lock().await;
+    let mut state_guard = state.0.write().await;
     state_guard.init()?;
 
     Ok(())
@@ -301,7 +301,7 @@ async fn download_yarg(
     sig_url: Option<String>,
     version_id: String,
 ) -> Result<(), String> {
-    let state_guard = state.0.lock().await;
+    let state_guard = state.0.read().await;
 
     state_guard
         .download_yarg(&app, zip_url, sig_url, version_id)
@@ -312,7 +312,7 @@ async fn download_yarg(
 
 #[tauri::command]
 async fn play_yarg(state: tauri::State<'_, State>, version_id: String) -> Result<(), String> {
-    let state_guard = state.0.lock().await;
+    let state_guard = state.0.read().await;
     state_guard.play_yarg(version_id)?;
 
     Ok(())
@@ -323,7 +323,7 @@ async fn version_exists_yarg(
     state: tauri::State<'_, State>,
     version_id: String,
 ) -> Result<bool, String> {
-    let state_guard = state.0.lock().await;
+    let state_guard = state.0.read().await;
     Ok(state_guard.version_exists_yarg(version_id))
 }
 
@@ -335,7 +335,7 @@ async fn download_setlist(
     id: String,
     version: String,
 ) -> Result<(), String> {
-    let state_guard = state.0.lock().await;
+    let state_guard = state.0.read().await;
     state_guard
         .download_setlist(&app, zip_urls, id, version)
         .await?;
@@ -349,7 +349,7 @@ async fn version_exists_setlist(
     id: String,
     version: String,
 ) -> Result<bool, String> {
-    let state_guard = state.0.lock().await;
+    let state_guard = state.0.read().await;
     Ok(state_guard.version_exists_setlist(id, version))
 }
 
@@ -359,9 +359,9 @@ fn get_os() -> String {
 }
 
 #[tauri::command]
-async fn is_download_location_set(state: tauri::State<'_, State>) -> Result<bool, String> {
-    let state_guard = state.0.lock().await;
-    Ok(state_guard.settings.download_location_set)
+async fn is_initialized(state: tauri::State<'_, State>) -> Result<bool, String> {
+    let state_guard = state.0.read().await;
+    Ok(state_guard.settings.initialized)
 }
 
 #[tauri::command]
@@ -369,14 +369,14 @@ async fn set_download_location(
     state: tauri::State<'_, State>,
     path: Option<String>,
 ) -> Result<(), String> {
-    let mut state_guard = state.0.lock().await;
+    let mut state_guard = state.0.write().await;
 
     // If this is None, just use the default
     if let Some(path) = path {
         state_guard.settings.download_location = path.clone();
     }
 
-    state_guard.settings.download_location_set = true;
+    state_guard.settings.initialized = true;
 
     state_guard.set_download_locations()?;
     state_guard.save_settings_file()?;
@@ -386,13 +386,13 @@ async fn set_download_location(
 
 #[tauri::command]
 async fn get_download_location(state: tauri::State<'_, State>) -> Result<String, String> {
-    let state_guard = state.0.lock().await;
+    let state_guard = state.0.read().await;
     Ok(state_guard.settings.download_location.clone())
 }
 
 fn main() {
     tauri::Builder::default()
-        .manage(State(Mutex::new(InnerState {
+        .manage(State(RwLock::new(InnerState {
             yarc_folder: PathBuf::new(),
             launcher_folder: PathBuf::new(),
             temp_folder: PathBuf::new(),
@@ -408,7 +408,7 @@ fn main() {
             download_setlist,
             version_exists_setlist,
             get_os,
-            is_download_location_set,
+            is_initialized,
             set_download_location,
             get_download_location
         ])
