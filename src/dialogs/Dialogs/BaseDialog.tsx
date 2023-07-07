@@ -16,7 +16,9 @@ export abstract class BaseDialog<T> extends React.Component<Record<string, unkno
                 {this.getTitle()}
             </div>
 
-            {this.getInnerContents()}
+            <div className={styles.contents}>
+                {this.getInnerContents()}
+            </div>
 
             <div className={styles.buttons}>
                 {this.getButtons()}

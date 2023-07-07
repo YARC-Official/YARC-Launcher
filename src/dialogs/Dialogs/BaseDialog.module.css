@@ -11,6 +11,10 @@
     text-transform: uppercase;
 }
 
+.contents {
+    text-align: center;
+}
+
 .buttons {
     display: flex;
     align-items: flex-start;
