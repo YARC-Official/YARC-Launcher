@@ -1,5 +1,5 @@
 import styles from "./Sidebar.module.css";
-import { DiscordIcon, TwitterIcon, GithubIcon, NewsIcon, SettingsIcon, HomeIcon, QueueIcon } from "@app/assets/Icons";
+import { DiscordIcon, TwitterIcon, GithubIcon, SettingsIcon, HomeIcon, QueueIcon } from "@app/assets/Icons";
 import SidebarMenuButton from "./SidebarMenuButton";
 import { Link } from "react-router-dom";
 import VersionsList from "./Versions/List";
@@ -32,7 +32,6 @@ const Sidebar: React.FC = () => {
     return <div className={styles.sidebar}>
         <div className={styles.menus}>
             <Link to="/"><SidebarMenuButton icon={<HomeIcon />}>Home</SidebarMenuButton></Link>
-            <Link to="/news"><SidebarMenuButton icon={<NewsIcon />}>News</SidebarMenuButton></Link>
             <Link to="/settings"><SidebarMenuButton icon={<SettingsIcon />}>Settings</SidebarMenuButton></Link>
             <Link to="/queue">
                 <SidebarMenuButton icon={<QueueIcon />}>
