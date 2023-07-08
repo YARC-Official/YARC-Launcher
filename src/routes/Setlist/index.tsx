@@ -5,7 +5,7 @@ import { SetlistBox, SetlistBoxHeader, SetlistBoxSlim } from "@app/components/Se
 import SongEntry from "@app/components/Setlist/SongEntry";
 import { InformationIcon, ChartersIcon, OrganizerIcon, DateIcon, SongIcon, TimeIcon, UpdateIcon, InstallingIcon, CheckmarkIcon } from "@app/assets/Icons";
 import CreditEntry from "@app/components/Setlist/CreditEntry";
-import { millisToDisplayLength } from "@app/utils/timeFormat";
+import { isConsideredNewRelease, millisToDisplayLength } from "@app/utils/timeFormat";
 import Button, { ButtonColor } from "@app/components/Button";
 import PayloadProgress from "@app/components/PayloadProgress";
 import TooltipWrapper from "@app/components/TooltipWrapper";
@@ -47,12 +47,16 @@ const SetlistPage: React.FC<Props> = ({ setlistId }: Props) => {
         }
     }
 
+    const newestSongRelease = setlistData.songs.reduce((prev, curr) =>
+        new Date(prev.releaseDate).getTime() > new Date(curr.releaseDate).getTime() ? prev : curr);
+
     return <>
         <div className={styles.banner} />
         <div className={styles.main}>
             <SetlistBoxSlim style={{ flex: "1 0 0" }}>
                 {setlistData.songs.map(i =>
-                    <SongEntry title={i.title} artist={i.artist} length={i.length} newSong={!!i.new} key={i.title} />
+                    <SongEntry title={i.title} artist={i.artist} length={i.length}
+                        newSong={isConsideredNewRelease(i.releaseDate, newestSongRelease.releaseDate)} key={i.title} />
                 )}
             </SetlistBoxSlim>
             <div className={styles.sidebar}>

@@ -4,7 +4,8 @@ export interface SetlistSong {
     title: string,
     artist: string,
     length: number,
-    new?: boolean
+    releaseDate: string,
+    category?: string,
 }
 
 export interface SetlistCredit {
