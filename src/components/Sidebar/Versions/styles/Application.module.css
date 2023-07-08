@@ -1,9 +1,18 @@
-
 .selector {
     display: flex;
     gap: 10px;
     align-items: center;
     --border-radius: 8px;
+
+    padding: 5px;
+    background: rgba(255, 255, 255, 0);
+    border-radius: var(--border-radius);
+
+    transition: background 0.1s;
+}
+
+.selector:hover {
+    background: rgba(255, 255, 255, 0.025);
 }
 
 .selector > .icon {
@@ -42,6 +51,7 @@
     font-weight: 700;
 
     margin-left: auto;
+    margin-right: 2px;
     padding: 10px;
 
     color: var(--primary-75);
