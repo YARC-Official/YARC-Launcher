@@ -66,22 +66,6 @@
     align-self: stretch;
 }
 
-.badge {
-    display: flex;
-    padding: 3px 10px;
-    align-items: flex-start;
-    gap: 10px;
-
-    border-radius: 50px;
-    background: #032215;
-
-    color: #77FFC3;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-}
-
 .thumbnail {
     margin: 12px 0px 12px 0px;
     border-radius: 8px;

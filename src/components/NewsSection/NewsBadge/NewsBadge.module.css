@@ -1,0 +1,11 @@
+.badge {
+    max-width: fit-content;
+    padding: 3px 10px;
+    border-radius: 50px;
+    background: #032215;
+
+    color: #77FFC3;
+    font-size: 12px;
+    font-weight: 400;
+    text-transform: capitalize;
+}

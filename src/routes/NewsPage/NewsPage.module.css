@@ -1,0 +1,68 @@
+.header {
+    background: linear-gradient(8deg, #050609 0%, rgba(8, 10, 14, 0.00) 100%), var(--bannerURL), lightgray 50% / cover no-repeat;
+    display: flex;
+    padding: 100px 25px 25px 25px;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.title {
+    color: var(--primary);
+    font-size: 30px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    padding: 25px 50px 50px 50px;
+    color: #7A7A7A;
+    --primary: #7A7A7A;
+}
+
+.content a {
+    text-decoration: underline;
+}
+
+.info {
+    display: flex;
+    align-items: center;
+}
+
+.author {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.author .avatar {
+    height: 48px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+}
+
+.author .authorInformation {
+    color: #5A5A5A;
+}
+
+.author .authorInformation .authorName {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.author .authorInformation .authorRole {
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.releaseDate {
+    color: #ACACAC;
+    font-size: 12px;
+    font-weight: 400;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}

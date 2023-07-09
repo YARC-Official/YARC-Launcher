@@ -1,5 +1,6 @@
 import { UnknownUserIcon } from "@app/assets/Icons";
 import styles from "./NewsEntry.module.css";
+import NewsBadge from "../NewsBadge";
 
 interface Props {
     title: string;
@@ -13,9 +14,7 @@ const NewsEntry: React.FC<Props> = ({ title, postBadge, author }: Props) => {
         <div className={styles.main}>
             <div className={styles.top_container}>
                 <div className={styles.top}>
-                    <div className={styles.badge}>
-                        {postBadge}
-                    </div>
+                    <NewsBadge>{postBadge}</NewsBadge>
                 </div>
                 {title}
             </div>

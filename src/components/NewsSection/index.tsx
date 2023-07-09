@@ -20,7 +20,7 @@ const NewsSection: React.FC = () => {
             </div>
             {
                 Array.from(data.articles).map(article =>
-                    <Link to={`news/${article.md}`} key={article.md}>
+                    <Link to={`news/${article.md}`} key={article.md} style={{width: "100%"}}>
                         <NewsEntry title={article.title} postBadge={article.type} author={article.author} key={article.md} />
                     </Link>
                 )
