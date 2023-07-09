@@ -1,5 +1,6 @@
 .header {
-    background: linear-gradient(8deg, #050609 0%, rgba(8, 10, 14, 0.00) 100%), var(--bannerURL), lightgray 50% / cover no-repeat;
+    background: linear-gradient(8deg, #050609 0%, rgba(8, 10, 14, 0.00) 100%), var(--bannerURL), lightgray;
+    background-size: cover;
     display: flex;
     padding: 100px 25px 25px 25px;
     flex-direction: column;
