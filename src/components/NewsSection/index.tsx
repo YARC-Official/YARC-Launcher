@@ -2,6 +2,7 @@ import { NewsIcon } from "@app/assets/Icons";
 import styles from "./NewsSection.module.css";
 import NewsEntry from "./NewsEntry";
 import { useNews } from "@app/hooks/useNews";
+import { Link } from "react-router-dom";
 
 const NewsSection: React.FC = () => {
     const { data, error, isLoading, isSuccess } = useNews();
@@ -19,7 +20,9 @@ const NewsSection: React.FC = () => {
             </div>
             {
                 Array.from(data.articles).map(article =>
-                    <NewsEntry title={article.title} postBadge={article.type} author={article.author} key={article.md} />
+                    <Link to={`news/${article.md}`} key={article.md}>
+                        <NewsEntry title={article.title} postBadge={article.type} author={article.author} key={article.md} />
+                    </Link>
                 )
             }
         </div>;
