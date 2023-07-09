@@ -17,10 +17,10 @@
 .content {
     display: flex;
     flex-direction: column;
-    gap: 25px;
+    gap: 5px;
     padding: 25px 50px 50px 50px;
-    color: #7A7A7A;
-    --primary: #7A7A7A;
+    color: #333;
+    --primary: #333;
 }
 
 .content a {

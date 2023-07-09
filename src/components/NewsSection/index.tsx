@@ -2,7 +2,6 @@ import { NewsIcon } from "@app/assets/Icons";
 import styles from "./NewsSection.module.css";
 import NewsEntry from "./NewsEntry";
 import { useNews } from "@app/hooks/useNews";
-import { Link } from "react-router-dom";
 
 const NewsSection: React.FC = () => {
     const { data, error, isLoading, isSuccess } = useNews();
@@ -11,7 +10,7 @@ const NewsSection: React.FC = () => {
 
     if (error) return `An error has occurred: ${error}`;
 
-    if(isSuccess) {
+    if (isSuccess) {
         return <div className={styles.container}>
             <div className={styles.header_container}>
                 <div className={styles.header_text}>
@@ -19,11 +18,7 @@ const NewsSection: React.FC = () => {
                 </div>
             </div>
             {
-                Array.from(data.articles).map(article =>
-                    <Link to={`news/${article.md}`} key={article.md} style={{width: "100%"}}>
-                        <NewsEntry title={article.title} postBadge={article.type} author={article.author} key={article.md} />
-                    </Link>
-                )
+                Array.from(data.articles).map(article => <NewsEntry article={article} key={article.md} />)
             }
         </div>;
     }
