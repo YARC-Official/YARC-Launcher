@@ -5,7 +5,7 @@ import NewsSection from "@app/components/NewsSection";
 function Home() {
     return <>
         <div className={styles.banner}>
-            <h1>Welcome to the <b>YARG Launcher <span className={styles.blue}>Beta</span></b></h1>
+            <h1>Welcome to the <b>YARC Launcher <span className={styles.blue}>Beta</span></b></h1>
             <p>Here you can download and install YARG, and the official YARG setlist!</p>
             <p>If you encounter any bugs, please report it to us in our Discord.</p>
         </div>
