@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 import svgr from "vite-plugin-svgr";
 import topLevelAwait from "vite-plugin-top-level-await";
+import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
@@ -27,4 +28,16 @@ export default defineConfig(async () => ({
         // produce sourcemaps for debug builds
         sourcemap: !!process.env.TAURI_DEBUG,
     },
+    optimizeDeps: {
+        esbuildOptions: {
+            define: {
+                global: "globalThis"
+            },
+            plugins: [
+                NodeGlobalsPolyfillPlugin({
+                    buffer: true
+                })
+            ]
+        }
+    }
 }));
