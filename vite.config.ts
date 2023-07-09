@@ -3,11 +3,15 @@ import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 import svgr from "vite-plugin-svgr";
 import topLevelAwait from "vite-plugin-top-level-await";
-import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
-    plugins: [react(), tsconfigPaths(), svgr(), topLevelAwait()],
+    plugins: [react(), tsconfigPaths(), svgr(), topLevelAwait(), nodePolyfills({
+        globals: {
+            Buffer: true,
+        },
+    })],
 
     // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
     // prevent vite from obscuring rust errors
@@ -27,17 +31,5 @@ export default defineConfig(async () => ({
         minify: !process.env.TAURI_DEBUG ? "esbuild" : false,
         // produce sourcemaps for debug builds
         sourcemap: !!process.env.TAURI_DEBUG,
-    },
-    optimizeDeps: {
-        esbuildOptions: {
-            define: {
-                global: "globalThis"
-            },
-            plugins: [
-                NodeGlobalsPolyfillPlugin({
-                    buffer: true
-                })
-            ]
-        }
     }
 }));
