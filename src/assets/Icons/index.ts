@@ -21,6 +21,7 @@ import { ReactComponent as TwitterIcon } from "./Twitter.svg";
 import { ReactComponent as UpdateIcon } from "./Update.svg";
 import { ReactComponent as DriveIcon } from "./Drive.svg";
 import { ReactComponent as UnknownUserIcon } from "./UnknownUser.svg";
+import { ReactComponent as BackIcon } from "./Back.svg";
 
 export {
     AddIcon,
@@ -45,5 +46,6 @@ export {
     TwitterIcon,
     UpdateIcon,
     DriveIcon,
-    UnknownUserIcon
+    UnknownUserIcon,
+    BackIcon
 };

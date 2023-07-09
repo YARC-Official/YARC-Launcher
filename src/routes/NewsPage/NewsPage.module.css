@@ -1,10 +1,36 @@
 .header {
+    display: flex;
+    padding: 25px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 50px;
+    align-self: stretch;
+
     background: linear-gradient(8deg, #050609 0%, rgba(8, 10, 14, 0.00) 100%), var(--bannerURL), lightgray;
     background-size: cover;
+}
+
+.header_back {
     display: flex;
-    padding: 100px 25px 25px 25px;
-    flex-direction: column;
+    align-items: center;
     gap: 10px;
+
+    opacity: 0.5;
+
+    color: white;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    text-transform: uppercase;
+}
+
+.header_info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    align-self: stretch;
 }
 
 .title {

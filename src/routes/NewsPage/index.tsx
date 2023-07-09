@@ -1,12 +1,12 @@
 import { useNewsArticle } from "@app/hooks/useNewsArticle";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import matter from "gray-matter";
 import { marked } from "marked";
 import SanitizedHTML from "@app/components/SanitizedHTML";
 import styles from "./NewsPage.module.css";
 import NewsBadge from "@app/components/NewsSection/NewsBadge";
 import { CSSProperties } from "react";
-import { TimeIcon } from "@app/assets/Icons";
+import { BackIcon, TimeIcon } from "@app/assets/Icons";
 import { Img } from "react-image";
 import UnknownUserIcon from "@app/assets/Icons/UnknownUser.svg";
 
@@ -25,9 +25,15 @@ function NewsPage() {
 
         return <>
             <div className={styles.header} style={{ "--bannerURL": `url(https://raw.githubusercontent.com/YARC-Official/News/master/images/banners/${articleData.banner})` } as CSSProperties}>
-                <NewsBadge>{articleData.type}</NewsBadge>
-                <div className={styles.title}>{articleData.title}</div>
-            </div>
+                <Link to="/" className={styles.header_back}>
+                    <BackIcon />
+                    RETURN
+                </Link>
+                <div className={styles.header_info}>
+                    <NewsBadge>{articleData.type}</NewsBadge>
+                    <div className={styles.title}>{articleData.title}</div>
+                </div>
+            </div >
             <div className={styles.content}>
                 <div className={styles.info}>
                     <div className={styles.author}>
