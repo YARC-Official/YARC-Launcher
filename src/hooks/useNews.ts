@@ -20,5 +20,5 @@ export const useNews = () => {
         queryFn: async (): Promise<NewsData> => await fetch(
             "https://raw.githubusercontent.com/YARC-Official/News/master/index.json")
             .then(res => res.json())
-    }).data as NewsData;
+    });
 };
