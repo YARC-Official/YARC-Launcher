@@ -19,7 +19,7 @@
     padding: 25px;
     align-items: flex-start;
     gap: 25px;
-    background: #F5F5F5;
+    background: var(--white-background);
 }
 
 .sidebar {

@@ -9,6 +9,8 @@
     --primary-40: rgba(var(--primary-rgb), 0.4);
     --primary-75: rgba(var(--primary-rgb), 0.75);
 
+    --white-background: #F5F5F5;
+
     --green-rgb: 70, 231, 79;
     --green: rgb(var(--green-rgb));
     --green-10: rgba(var(--green-rgb), .1);
@@ -84,4 +86,20 @@ a {
     flex: 1;
     width: 100%;
     overflow-y: auto;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--white-background);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #666;
 }
