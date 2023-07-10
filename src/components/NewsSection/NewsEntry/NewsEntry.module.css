@@ -82,4 +82,9 @@
     display: flex;
     align-items: center;
     gap: 5px;
+    transition: margin-right 0.1s;
+}
+
+.container:hover .releaseDate {
+    margin-right: 1em;
 }
