@@ -1,6 +1,6 @@
-# 🚀 YARG Launcher
+# 🚀 YARC Launcher
 
-The official repository for the YARG launcher (a.k.a., YAL or Yet Another Launcher).
+The official repository for the YARC launcher (a.k.a., YAL or Yet Another Launcher).
 
 # 🔨 Building
 
