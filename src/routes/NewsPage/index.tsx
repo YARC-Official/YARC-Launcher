@@ -9,6 +9,7 @@ import { CSSProperties } from "react";
 import { BackIcon, TimeIcon } from "@app/assets/Icons";
 import { Img } from "react-image";
 import UnknownUserIcon from "@app/assets/Icons/UnknownUser.svg";
+import { intlFormatDistance } from "date-fns";
 
 function NewsPage() {
     const { md } = useParams();
@@ -49,10 +50,14 @@ function NewsPage() {
                             <div className={styles.authorRole}>{articleData.role}</div>
                         </div>
                     </div>
-                    {/* <div className={styles.releaseDate}>
-                        <TimeIcon />
-                        16 minutes ago
-                    </div> */}
+                    {
+                        articleData.release ? (
+                            <div className={styles.releaseDate}>
+                                <TimeIcon />
+                                { intlFormatDistance(new Date(articleData.release), new Date()) }
+                            </div>
+                        ) : ""
+                    }
                 </div>
                 <SanitizedHTML dirtyHTML={marked.parse(content)} />
             </div>
