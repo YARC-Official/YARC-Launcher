@@ -7,7 +7,8 @@
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
-    "plugin:react/jsx-runtime"
+    "plugin:react/jsx-runtime",
+    "plugin:import/typescript"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -16,7 +17,8 @@
   },
   "plugins": [
     "@typescript-eslint",
-    "react"
+    "react",
+    "import"
   ],
   "rules": {
     "indent": [
@@ -37,6 +39,15 @@
     "semi": [
       "error",
       "always"
+    ],
+    "import/no-unresolved": [
+      2
     ]
+  },
+  "settings": {
+    "import/resolver": {
+      "typescript": true,
+      "node": true
+    }
   }
 }
