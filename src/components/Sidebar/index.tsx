@@ -43,7 +43,7 @@ const Sidebar: React.FC = () => {
         <VersionsList />
 
         <div className={styles.footer}>
-            <div className={styles.credits}>YAL v{launcherVersion}</div>
+            <div className={styles.credits}>YARC Launcher v{launcherVersion}</div>
             <div className={styles.socials}>
                 <a href="https://discord.gg/sqpu4R552r" target="_blank" className={styles.link} rel="noreferrer"><DiscordIcon /></a>
                 <a href="https://twitter.com/EliteAsian123" target="_blank" className={styles.link} rel="noreferrer"><TwitterIcon /></a>
