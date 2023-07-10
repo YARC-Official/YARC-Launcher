@@ -73,7 +73,7 @@
     "updater": {
       "active": true,
       "endpoints": [
-        "https://gist.githubusercontent.com/EliteAsian123/7f0525ad6c1a8496b52ede4e41690fb7/raw/update.json"
+        "https://releases.yarg.in/launcher/update"
       ],
       "dialog": true,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDczMjdBMkM2RjYzRkExQ0MKUldUTW9ULzJ4cUluYzJTNG9VUis2azlaejYzcmc1SHRzT1Rtc0RUVWVCNEY2T0V1djlReENMV2gK",
