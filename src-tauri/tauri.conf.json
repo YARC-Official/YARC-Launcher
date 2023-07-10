@@ -7,7 +7,7 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "YARG-Launcher",
+    "productName": "YARC-Launcher",
     "version": "0.1.1"
   },
   "tauri": {
