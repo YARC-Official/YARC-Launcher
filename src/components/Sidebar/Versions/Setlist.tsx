@@ -1,7 +1,7 @@
 import { SetlistID, useSetlistRelease } from "@app/hooks/useSetlistRelease";
 import { SetlistStates, useSetlistData } from "@app/hooks/useSetlistData";
 import BaseVersion, { VersionType } from "./Base";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import OfficialIcon from "@app/assets/SourceIcons/Official.png";
 
 interface Props {
@@ -13,7 +13,7 @@ const SetlistVersion: React.FC<Props> = ({ channel }: Props) => {
     const { state } = useSetlistData(setlistData);
 
     return (
-        <Link to={"/setlist/" + channel}>
+        <NavLink to={"/setlist/" + channel}>
             <BaseVersion
                 icon={<img src={OfficialIcon} />} // TO-DO: create a util/sourceIcon to get source icon from 
                 type={VersionType.SONG}
@@ -21,7 +21,7 @@ const SetlistVersion: React.FC<Props> = ({ channel }: Props) => {
                 versionChannel={`${setlistData?.songs?.length} songs`}
                 updateAvailable={state === SetlistStates.NEW_UPDATE}
             />
-        </Link>
+        </NavLink>
     );
 };
 

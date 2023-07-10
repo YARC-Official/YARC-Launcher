@@ -7,7 +7,7 @@
     margin: 8px 0px 8px 0px;
 
     background: rgba(0, 0, 0, 0);
-    border-radius: 8px;
+    border-radius: 20px; /* 8px (internal border-radius) + 12px (padding) */
 
     transition: background 0.1s;
 }
@@ -73,4 +73,18 @@
     height: 100px;
     align-self: stretch;
     background: #D9D9D9;
+}
+
+.releaseDate {
+    color: #ACACAC;
+    font-size: 12px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: margin-right 0.1s;
+}
+
+.container:hover .releaseDate {
+    margin-right: 1em;
 }

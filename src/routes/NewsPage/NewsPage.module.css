@@ -68,6 +68,7 @@
     height: 48px;
     aspect-ratio: 1;
     border-radius: 50%;
+    overflow: hidden;
 }
 
 .author .authorInformation {

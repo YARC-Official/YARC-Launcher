@@ -2,20 +2,26 @@ import { useQuery } from "@tanstack/react-query";
 import { Endpoints } from "@octokit/types";
 import { invoke } from "@tauri-apps/api/tauri";
 
-export type ReleaseData = Endpoints["GET /repos/{owner}/{repo}/releases/latest"]["response"]["data"];
+export type YARGChannels = "stable"|"nightly";
 
-export const useYARGRelease = (version: "stable" | "nightly") => {
+type ReleaseData = Endpoints["GET /repos/{owner}/{repo}/releases/latest"]["response"]["data"];
+export type ExtendedReleaseData = ReleaseData & {
+    channel: YARGChannels
+};
+
+export const useYARGRelease = (channel: YARGChannels) => {
     const repositoryName = {
         "stable": "YARG",
         "nightly": "YARG-BleedingEdge"
     };
 
     return useQuery({
-        queryKey: ["YARG", version],
+        queryKey: ["YARG", channel],
         queryFn: async (): Promise<ReleaseData> => await fetch(
-            `https://api.github.com/repos/YARC-Official/${repositoryName[version]}/releases/latest`)
-            .then(res => res.json())
-    }).data as ReleaseData;
+            `https://api.github.com/repos/YARC-Official/${repositoryName[channel]}/releases/latest`)
+            .then(res => res.json()),
+        select: (data): ExtendedReleaseData => ({...data, channel: channel})
+    }).data as ExtendedReleaseData;
 };
 
 export const getYARGReleaseZip = async (releaseData: ReleaseData) => {
