@@ -25,6 +25,7 @@ const NewsEntry: React.FC<Props> = ({ article }: Props) => {
                         height={24}
                         alt={`${article.author}'s avatar`}
                         src={[`https://raw.githubusercontent.com/YARC-Official/News/master/images/avatars/${article.avatar}`, UnknownUserIcon]}
+                        style={{borderRadius: "50%"}}
                     />
                     <div>
                         By: <span className={styles.author}>{article.author}</span>
