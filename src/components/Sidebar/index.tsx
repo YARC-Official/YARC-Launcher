@@ -32,7 +32,7 @@ const Sidebar: React.FC = () => {
     return <div className={styles.sidebar}>
         <div className={styles.menus}>
             <Link to="/"><SidebarMenuButton icon={<HomeIcon />}>Home</SidebarMenuButton></Link>
-            <Link to="/settings"><SidebarMenuButton icon={<SettingsIcon />}>Settings</SidebarMenuButton></Link>
+            {/* <Link to="/settings"><SidebarMenuButton icon={<SettingsIcon />}>Settings</SidebarMenuButton></Link> */}
             <Link to="/queue">
                 <SidebarMenuButton icon={<QueueIcon />}>
                     Downloads {getDownloadCount() <= 0 ? "" : `(${getDownloadCount()})`}
