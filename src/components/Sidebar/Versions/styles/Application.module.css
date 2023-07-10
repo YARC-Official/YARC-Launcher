@@ -3,10 +3,11 @@
     gap: 10px;
     align-items: center;
     --border-radius: 8px;
+    --padding: 5px;
 
-    padding: 5px;
+    padding: var(--padding);
     background: rgba(255, 255, 255, 0);
-    border-radius: var(--border-radius);
+    border-radius: calc(var(--border-radius) + var(--padding));
 
     transition: background 0.1s;
 }

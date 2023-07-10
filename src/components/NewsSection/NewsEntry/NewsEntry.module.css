@@ -7,7 +7,7 @@
     margin: 8px 0px 8px 0px;
 
     background: rgba(0, 0, 0, 0);
-    border-radius: 8px;
+    border-radius: 20px; /* 8px (internal border-radius) + 12px (padding) */
 
     transition: background 0.1s;
 }
