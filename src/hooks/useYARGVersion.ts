@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { ReleaseData, getYARGReleaseZip, getYARGReleaseSig } from "./useYARGRelease";
+import { ExtendedReleaseData, getYARGReleaseZip, getYARGReleaseSig } from "./useYARGRelease";
 import { invoke } from "@tauri-apps/api/tauri";
 import { useYARGState } from "@app/stores/YARGStateStore";
 import { useDownloadClient } from "@app/utils/Download/provider";
@@ -24,7 +24,7 @@ export type YARGVersion = {
     payload?: DownloadPayload
 }
 
-export const useYARGVersion = (releaseData: ReleaseData, profileName: string) => {
+export const useYARGVersion = (releaseData: ExtendedReleaseData, profileName: string) => {
     const { state, setState } = useYARGState(releaseData?.tag_name);
 
     const downloadClient = useDownloadClient();
@@ -83,6 +83,7 @@ export const useYARGVersion = (releaseData: ReleaseData, profileName: string) =>
             const downloader = new YARGDownload(
                 zipUrl,
                 sigUrl,
+                releaseData.channel,
                 releaseData.tag_name,
                 profileName,
                 () => { setState(YARGStates.AVAILABLE); }
