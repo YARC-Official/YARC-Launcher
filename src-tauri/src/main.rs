@@ -208,7 +208,7 @@ impl InnerState {
         let mut path = self.yarg_folder.join(profile).join(version_id);
         path = match get_os().as_str() {
             "windows" => path.join("YARG.exe"),
-            "linux" => path.join("YARG"),
+            "linux" => path.join("YARG.x86_64"),
             "macos" => path
                 .join("YARG.app")
                 .join("Contents")
