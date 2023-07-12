@@ -7,7 +7,7 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "YARC-Launcher",
+    "productName": "YARC Launcher",
     "version": "0.1.2"
   },
   "tauri": {
@@ -41,7 +41,7 @@
       "active": true,
       "targets": [
         "appimage",
-        "nsis",
+        "msi",
         "app",
         "updater"
       ],
@@ -62,7 +62,7 @@
         "label": "main",
         "fullscreen": false,
         "resizable": true,
-        "title": "Yet Another Launcher",
+        "title": "YARC Launcher",
         "width": 1250,
         "height": 700,
         "minWidth": 1000,
