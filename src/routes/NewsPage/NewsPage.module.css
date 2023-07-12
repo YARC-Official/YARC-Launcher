@@ -94,3 +94,16 @@
     align-items: center;
     gap: 10px;
 }
+
+.video_container {
+    padding: 24px 0 12px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.video {
+    border: none;
+    border-radius: 8px;
+    aspect-ratio: calc(16 / 9);
+    height: 50vh;
+}

@@ -24,6 +24,17 @@ function NewsPage() {
     if (isSuccess) {
         const { data: articleData, content } = matter(data);
 
+        let videoElem = <></>;
+        if ("video" in articleData) {
+            videoElem = <div className={styles.video_container}>
+                <iframe
+                    className={styles.video}
+                    src="https://www.youtube.com/embed/Xk_HqhzvdgQ"
+                    title="YouTube video player"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" />
+            </div>;
+        }
+
         return <>
             <div className={styles.header} style={{ "--bannerURL": `url(https://raw.githubusercontent.com/YARC-Official/News/master/images/banners/${articleData.banner})` } as CSSProperties}>
                 <Link to="/" className={styles.header_back}>
@@ -54,11 +65,12 @@ function NewsPage() {
                         articleData.release ? (
                             <div className={styles.releaseDate}>
                                 <TimeIcon />
-                                { intlFormatDistance(new Date(articleData.release), new Date()) }
+                                {intlFormatDistance(new Date(articleData.release), new Date())}
                             </div>
                         ) : ""
                     }
                 </div>
+                {videoElem}
                 <SanitizedHTML dirtyHTML={marked.parse(content)} />
             </div>
         </>;
