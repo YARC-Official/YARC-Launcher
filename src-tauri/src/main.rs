@@ -6,6 +6,7 @@ mod utils;
 use directories::BaseDirs;
 use minisign::{PublicKeyBox, SignatureBox};
 use std::fs::{self, remove_file};
+use std::os::unix::prelude::PermissionsExt;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::{fs::File, io::Write};
@@ -199,16 +200,35 @@ impl InnerState {
         extract(&zip_path, &folder)?;
 
         // Delete zip
-        let _ = remove_file(zip_path);
+        let _ = remove_file(&zip_path);
+
+        // Change permissions (if on Linux)
+        if cfg!(target_os = "linux") {
+            let exec = self.get_yarg_exec(version_id, profile)?;
+
+            let mut perms = fs::metadata(&exec)
+                .map_err(|e| format!("Failed to get permissions of file.\n{:?}", e))?
+                .permissions();
+            perms.set_mode(0o7111);
+            fs::set_permissions(&exec, perms)
+                .map_err(|e| format!("Failed to set permissions of file.\n{:?}", e))?;
+        }
 
         Ok(())
     }
 
-    pub fn play_yarg(&self, version_id: String, profile: String) -> Result<(), String> {
+    fn get_yarg_exec(&self, version_id: String, profile: String) -> Result<PathBuf, String> {
         let mut path = self.yarg_folder.join(profile).join(version_id);
         path = match get_os().as_str() {
             "windows" => path.join("YARG.exe"),
-            "linux" => path.join("YARG.x86_64"),
+            "linux" => {
+                // Stable uses "YARG.x86_64", and nightly uses "YARG"
+                let mut p = path.join("YARG.x86_64");
+                if !p.exists() {
+                    p = path.join("YARG");
+                }
+                p
+            }
             "macos" => path
                 .join("YARG.app")
                 .join("Contents")
@@ -217,6 +237,11 @@ impl InnerState {
             _ => Err("Unknown platform for launch!")?,
         };
 
+        Ok(path)
+    }
+
+    pub fn play_yarg(&self, version_id: String, profile: String) -> Result<(), String> {
+        let path = self.get_yarg_exec(version_id, profile)?;
         Command::new(&path)
             .spawn()
             .map_err(|e| format!("Failed to start YARG. Is it installed?\n{:?}", e))?;
