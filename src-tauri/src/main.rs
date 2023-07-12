@@ -6,7 +6,6 @@ mod utils;
 use directories::BaseDirs;
 use minisign::{PublicKeyBox, SignatureBox};
 use std::fs::{self, remove_file};
-use std::os::unix::prelude::PermissionsExt;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::{fs::File, io::Write};
@@ -203,16 +202,28 @@ impl InnerState {
         let _ = remove_file(&zip_path);
 
         // Change permissions (if on Linux)
-        if cfg!(target_os = "linux") {
-            let exec = self.get_yarg_exec(version_id, profile)?;
+        self.set_permissions(version_id, profile)?;
 
-            let mut perms = fs::metadata(&exec)
-                .map_err(|e| format!("Failed to get permissions of file.\n{:?}", e))?
-                .permissions();
-            perms.set_mode(0o7111);
-            fs::set_permissions(&exec, perms)
-                .map_err(|e| format!("Failed to set permissions of file.\n{:?}", e))?;
-        }
+        Ok(())
+    }
+
+    #[cfg(not(target_os = "linux"))]
+    fn set_permissions(&self, _a: String, _b: String) -> Result<(), String> {
+        Ok(())
+    }
+
+    #[cfg(target_os = "linux")]
+    fn set_permissions(&self, version_id: String, profile: String) -> Result<(), String> {
+        use std::os::unix::prelude::PermissionsExt;
+
+        let exec = self.get_yarg_exec(version_id, profile)?;
+
+        let mut perms = fs::metadata(&exec)
+            .map_err(|e| format!("Failed to get permissions of file.\n{:?}", e))?
+            .permissions();
+        perms.set_mode(0o7111);
+        fs::set_permissions(&exec, perms)
+            .map_err(|e| format!("Failed to set permissions of file.\n{:?}", e))?;
 
         Ok(())
     }
