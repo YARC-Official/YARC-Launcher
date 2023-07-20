@@ -34,9 +34,9 @@ const LaunchPage: React.FC<Props> = ({ version, releaseTag, playName, descriptio
     const dialogManager = useDialogManager();
 
     function LaunchButton(props: LaunchButtonProps) {
-        if (version.state === YARGStates.AVAILABLE) {
-            return <Button style={props.style} color={ButtonColor.BLUE}>
-                Play {playName}
+        if (version.state === YARGStates.NEW_UPDATE) {
+            return <Button style={props.style} color={ButtonColor.GREEN} onClick={() => version.download(dialogManager)}>
+                <UpdateIcon /> Update {playName}
             </Button>;
         } else if (version.state === YARGStates.DOWNLOADING) {
             if (!version.payload) {
@@ -48,8 +48,8 @@ const LaunchPage: React.FC<Props> = ({ version, releaseTag, playName, descriptio
                 <PayloadProgress payload={version.payload} />
             </Button>;
         } else {
-            return <Button style={props.style} color={ButtonColor.GREEN} onClick={() => version.download(dialogManager)}>
-                <UpdateIcon /> Update {playName}
+            return <Button style={props.style} color={ButtonColor.BLUE} onClick={() => version.play(dialogManager)}>
+                Play {playName}
             </Button>;
         }
     }
