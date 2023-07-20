@@ -1,7 +1,7 @@
 import { SetlistID, useSetlistRelease } from "@app/hooks/useSetlistRelease";
 import styles from "./setlist.module.css";
 import { SetlistStates, useSetlistData } from "@app/hooks/useSetlistData";
-import { SetlistBox, SetlistBoxHeader, SetlistBoxSlim } from "@app/components/Setlist/SetlistBox";
+import { GenericBox, GenericBoxHeader, GenericBoxSlim } from "@app/components/GenericBox";
 import SongEntry from "@app/components/Setlist/SongEntry";
 import { InformationIcon, ChartersIcon, OrganizerIcon, DateIcon, SongIcon, TimeIcon, UpdateIcon, InstallingIcon, CheckmarkIcon } from "@app/assets/Icons";
 import CreditEntry from "@app/components/Setlist/CreditEntry";
@@ -53,19 +53,19 @@ const SetlistPage: React.FC<Props> = ({ setlistId }: Props) => {
     return <>
         <div className={styles.banner} />
         <div className={styles.main}>
-            <SetlistBoxSlim style={{ flex: "1 0 0" }}>
+            <GenericBoxSlim style={{ flex: "1 0 0" }}>
                 {setlistData.songs.map(i =>
                     <SongEntry title={i.title} artist={i.artist} length={i.length}
                         newSong={isConsideredNewRelease(i.releaseDate, newestSongRelease.releaseDate)} key={i.title} />
                 )}
-            </SetlistBoxSlim>
+            </GenericBoxSlim>
             <div className={styles.sidebar}>
                 <SetlistButton style={{ width: "100%" }} />
-                <SetlistBox>
-                    <SetlistBoxHeader>
+                <GenericBox>
+                    <GenericBoxHeader>
                         <InformationIcon />
                         {setlistData.locales["en-US"].title}
-                    </SetlistBoxHeader>
+                    </GenericBoxHeader>
 
                     {setlistData.locales["en-US"].description}
 
@@ -96,20 +96,20 @@ const SetlistPage: React.FC<Props> = ({ setlistId }: Props) => {
                             {setlistData.organizer}
                         </TooltipWrapper>
                     </div>
-                </SetlistBox>
+                </GenericBox>
 
-                <SetlistBox>
-                    <SetlistBoxHeader>
+                <GenericBox>
+                    <GenericBoxHeader>
                         <ChartersIcon />
                         Charters
-                    </SetlistBoxHeader>
+                    </GenericBoxHeader>
 
                     <div className={styles.info_list}>
                         {setlistData.credits.map(i =>
                             <CreditEntry creditEntry={i} key={i.name} />
                         )}
                     </div>
-                </SetlistBox>
+                </GenericBox>
             </div>
         </div>
     </>;
