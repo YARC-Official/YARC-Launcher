@@ -8,22 +8,23 @@ import { calculatePayloadPercentage } from "@app/utils/Download/payload";
 import { useDialogManager } from "@app/dialogs/DialogProvider";
 import TooltipWrapper from "../TooltipWrapper";
 import { intlFormatDistance } from "date-fns";
-import { ReactNode } from "react";
 
 const INITIAL_RELEASE_DATE = new Date("2023-03-09T05:00:00.000Z");
 
 interface Props {
     version: YARGVersion,
+    releaseTag: string,
     playName: string,
-    description: ReactNode,
+    description: React.ReactNode,
     websiteUrl: string,
+    icon: string,
 }
 
 interface LaunchButtonProps extends React.PropsWithChildren {
     style?: React.CSSProperties
 }
 
-const LaunchPage: React.FC<Props> = ({ version, playName, description, websiteUrl }: Props) => {
+const LaunchPage: React.FC<Props> = ({ version, releaseTag, playName, description, websiteUrl, icon }: Props) => {
     // If there isn't a version, something went wrong
     if (!version) {
         return <p>Error: No version.</p>;
@@ -53,7 +54,18 @@ const LaunchPage: React.FC<Props> = ({ version, playName, description, websiteUr
     }
 
     return <>
-        <div className={styles.banner} />
+        <div className={styles.header}>
+            <div className={styles.icon_container}>
+                <img className={styles.icon} src={icon} alt="YARG" />
+                <div className={styles.game_info}>
+                    YARG
+                    <div className={styles.version_badge}>
+                        {releaseTag}
+                    </div>
+                </div>
+            </div>
+            <div className={styles.actions} />
+        </div>
         <div className={styles.main}>
             <div className={styles.content}>
                 Don&apos;t eat the YARG gems...

@@ -1,12 +1,78 @@
-.banner {
+.header {
+    display: flex;
     height: 250px;
     flex-shrink: 0;
     align-self: stretch;
+    flex-direction: column-reverse;
 
     background-image: url("/src/assets/Background.png");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
+}
+
+.actions {
+    display: flex;
+    height: 65px;
+    padding: 15px 25px 15px 150px;
+    justify-content: space-between;
+    align-items: center;
+    align-self: stretch;
+
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    color: white;
+}
+
+.icon_container {
+    position: relative;
+    z-index: 100;
+}
+
+.icon {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    box-shadow: 0px 0px 30px 1px rgba(0, 0, 0, 0.75);
+
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+}
+
+.game_info {
+    position: absolute;
+    bottom: 70px;
+    left: 130px;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    color: white;
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    text-transform: uppercase;
+}
+
+.version_badge {
+    display: flex;
+    padding: 3px 10px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    border-radius: 50px;
+    background: white;
+
+    color: #7C7C7C;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    text-transform: none;
 }
 
 .main {
