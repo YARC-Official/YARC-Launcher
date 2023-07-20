@@ -18,12 +18,12 @@ const NewsEntry: React.FC<Props> = ({ article }: Props) => {
             <div className={styles.main}>
                 <div className={styles.top_container}>
                     <div className={styles.top}>
-                        <NewsBadge>{article.type}</NewsBadge>
+                        <NewsBadge badgeType={article.type} />
                         {
                             article.release ? (
                                 <div className={styles.releaseDate}>
-                                    <TimeIcon height={15}/>
-                                    { intlFormatDistance(new Date(article.release), new Date()) }
+                                    <TimeIcon height={15} />
+                                    {intlFormatDistance(new Date(article.release), new Date())}
                                 </div>
                             ) : ""
                         }
@@ -35,7 +35,7 @@ const NewsEntry: React.FC<Props> = ({ article }: Props) => {
                         height={24}
                         alt={`${article.author}'s avatar`}
                         src={[`https://raw.githubusercontent.com/YARC-Official/News/master/images/avatars/${article.avatar}`, UnknownUserIcon]}
-                        style={{borderRadius: "50%"}}
+                        style={{ borderRadius: "50%" }}
                     />
                     <div>
                         By: <span className={styles.author}>{article.author}</span>

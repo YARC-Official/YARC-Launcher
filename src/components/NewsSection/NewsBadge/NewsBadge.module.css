@@ -2,10 +2,23 @@
     max-width: fit-content;
     padding: 3px 10px;
     border-radius: 50px;
-    background: #032215;
 
-    color: #77FFC3;
     font-size: 12px;
     font-weight: 400;
     text-transform: capitalize;
+}
+
+.green {
+    background: #032215;
+    color: #77FFC3;
+}
+
+.blue {
+    background: #072126;
+    color: #2ED9FF;
+}
+
+.pink {
+    background: #261324;
+    color: #FF7CFA;
 }

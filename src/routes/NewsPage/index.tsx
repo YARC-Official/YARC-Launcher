@@ -42,7 +42,7 @@ function NewsPage() {
                     RETURN
                 </Link>
                 <div className={styles.header_info}>
-                    <NewsBadge>{articleData.type}</NewsBadge>
+                    <NewsBadge badgeType={articleData.type} />
                     <div className={styles.title}>{articleData.title}</div>
                 </div>
             </div >
