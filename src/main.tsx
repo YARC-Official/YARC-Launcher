@@ -9,6 +9,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./query";
 import { DownloadClientProvider } from "@app/utils/Download/provider";
 import { DialogManagerProvider } from "./dialogs/DialogProvider";
+import { ErrorBoundary } from "react-error-boundary";
+import { ErrorScreen, onError } from "./routes/ErrorScreen";
 
 let error = undefined;
 
@@ -22,14 +24,16 @@ try {
 if (!error) {
     ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <React.StrictMode>
-            <DialogManagerProvider>
-                <DownloadClientProvider>
-                    <TitleBar />
-                    <QueryClientProvider client={queryClient}>
-                        <RouterProvider router={Router} />
-                    </QueryClientProvider>
-                </DownloadClientProvider>
-            </DialogManagerProvider>
+            <ErrorBoundary FallbackComponent={ErrorScreen} onError={onError}>
+                <DialogManagerProvider>
+                    <DownloadClientProvider>
+                        <TitleBar />
+                        <QueryClientProvider client={queryClient}>
+                            <RouterProvider router={Router} />
+                        </QueryClientProvider>
+                    </DownloadClientProvider>
+                </DialogManagerProvider>
+            </ErrorBoundary>
         </React.StrictMode>
     );
 } else {
