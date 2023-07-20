@@ -1,0 +1,33 @@
+.error {
+    background: var(--titleBar_background);
+    color: var(--titleBar_accent);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    position: fixed;
+    inset: 0;
+    width: 100dvw;
+    height: 100dvh;
+    overflow: auto;
+}
+
+.error > code {
+    background: rgba(255,255,255,.1);
+    padding: 1em 2em;
+    border-radius: 5px;
+}
+
+.error > .closeButton {
+    padding: 1em 2em;
+    margin: 1em;
+    border-radius: 5px;
+    background: rgb(116, 34, 34);
+    font-weight: 700;
+    font-size: 0.8em;
+    text-transform: uppercase;
+    color: white;
+    cursor: pointer;
+}

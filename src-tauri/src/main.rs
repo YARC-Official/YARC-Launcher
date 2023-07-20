@@ -438,6 +438,7 @@ async fn get_download_location(state: tauri::State<'_, State>) -> Result<String,
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_log::Builder::default().build())
         .manage(State(RwLock::new(InnerState {
             yarc_folder: PathBuf::new(),
             launcher_folder: PathBuf::new(),
