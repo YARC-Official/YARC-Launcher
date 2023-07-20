@@ -12,6 +12,7 @@ import TooltipWrapper from "@app/components/TooltipWrapper";
 import { calculatePayloadPercentage } from "@app/utils/Download/payload";
 import { useDialogManager } from "@app/dialogs/DialogProvider";
 import { intlFormatDistance } from "date-fns";
+import NewsSection from "@app/components/NewsSection";
 
 interface Props {
     setlistId: SetlistID
@@ -54,12 +55,15 @@ const SetlistPage: React.FC<Props> = ({ setlistId }: Props) => {
     return <>
         <div className={styles.banner} />
         <div className={styles.main}>
-            <GenericBoxSlim style={{ flex: "1 0 0" }}>
-                {setlistData.songs.map(i =>
-                    <SongEntry title={i.title} artist={i.artist} length={i.length}
-                        newSong={isConsideredNewRelease(i.releaseDate, newestSongRelease.releaseDate)} key={i.title} />
-                )}
-            </GenericBoxSlim>
+            <div className={styles.content}>
+                <GenericBoxSlim >
+                    {setlistData.songs.map(i =>
+                        <SongEntry title={i.title} artist={i.artist} length={i.length}
+                            newSong={isConsideredNewRelease(i.releaseDate, newestSongRelease.releaseDate)} key={i.title} />
+                    )}
+                </GenericBoxSlim>
+                <NewsSection categoryFilter="setlist_official" startingEntries={2} />
+            </div>
             <div className={styles.sidebar}>
                 <SetlistButton style={{ width: "100%" }} />
                 <GenericBox>

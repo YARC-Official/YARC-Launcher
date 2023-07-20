@@ -23,6 +23,8 @@
     font-weight: 600;
     line-height: normal;
     text-transform: uppercase;
+
+    cursor: pointer;
 }
 
 .header_info {

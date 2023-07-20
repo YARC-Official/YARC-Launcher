@@ -8,6 +8,7 @@ import { calculatePayloadPercentage } from "@app/utils/Download/payload";
 import { useDialogManager } from "@app/dialogs/DialogProvider";
 import TooltipWrapper from "../TooltipWrapper";
 import { intlFormatDistance } from "date-fns";
+import NewsSection from "../NewsSection";
 
 const INITIAL_RELEASE_DATE = new Date("2023-03-09T05:00:00.000Z");
 
@@ -67,9 +68,7 @@ const LaunchPage: React.FC<Props> = ({ version, releaseTag, playName, descriptio
             <div className={styles.actions} />
         </div>
         <div className={styles.main}>
-            <div className={styles.content}>
-                Don&apos;t eat the YARG gems...
-            </div>
+            <NewsSection categoryFilter="yarg" />
             <div className={styles.sidebar}>
                 <LaunchButton style={{ width: "100%" }} />
                 <GenericBox>

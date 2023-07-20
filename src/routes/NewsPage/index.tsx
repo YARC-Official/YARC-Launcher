@@ -1,5 +1,5 @@
 import { useNewsArticle } from "@app/hooks/useNewsArticle";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import matter from "gray-matter";
 import { marked } from "marked";
 import SanitizedHTML from "@app/components/SanitizedHTML";
@@ -23,6 +23,7 @@ function NewsPage() {
 
     if (isSuccess) {
         const { data: articleData, content } = matter(data);
+        const navigate = useNavigate();
 
         let videoElem = <></>;
         if ("video" in articleData) {
@@ -37,10 +38,10 @@ function NewsPage() {
 
         return <>
             <div className={styles.header} style={{ "--bannerURL": `url(https://raw.githubusercontent.com/YARC-Official/News/master/images/banners/${articleData.banner})` } as CSSProperties}>
-                <Link to="/" className={styles.header_back}>
+                <div onClick={() => navigate(-1)} className={styles.header_back}>
                     <BackIcon />
                     RETURN
-                </Link>
+                </div>
                 <div className={styles.header_info}>
                     <NewsBadge badgeType={articleData.type} />
                     <div className={styles.title}>{articleData.title}</div>

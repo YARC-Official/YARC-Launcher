@@ -12,7 +12,7 @@ interface Props {
 }
 
 const NewsEntry: React.FC<Props> = ({ article }: Props) => {
-    return <Link to={`news/${article.md}`} key={article.md} style={{ width: "100%" }}>
+    return <Link to={`/news/${article.md}`} key={article.md} style={{ width: "100%" }}>
         <div className={styles.container}>
             <img className={styles.thumbnail} src={`https://raw.githubusercontent.com/YARC-Official/News/master/images/thumbs/${article.thumb}`} />
             <div className={styles.main}>

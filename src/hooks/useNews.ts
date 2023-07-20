@@ -7,7 +7,8 @@ export interface ArticleData {
     thumb: string,
     author: string,
     avatar: string,
-    release: string
+    release: string,
+    category: string
 }
 
 export interface NewsData {
