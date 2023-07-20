@@ -11,6 +11,7 @@ import PayloadProgress from "@app/components/PayloadProgress";
 import TooltipWrapper from "@app/components/TooltipWrapper";
 import { calculatePayloadPercentage } from "@app/utils/Download/payload";
 import { useDialogManager } from "@app/dialogs/DialogProvider";
+import { intlFormatDistance } from "date-fns";
 
 interface Props {
     setlistId: SetlistID
@@ -70,7 +71,10 @@ const SetlistPage: React.FC<Props> = ({ setlistId }: Props) => {
                     {setlistData.locales["en-US"].description}
 
                     <div className={styles.info_list}>
-                        <TooltipWrapper text="Release Date" className={styles.info_entry}>
+                        <TooltipWrapper
+                            text={`Release Date (${intlFormatDistance(new Date(setlistData.releaseDate), new Date())})`}
+                            className={styles.info_entry}>
+
                             <DateIcon />
                             {new Intl.DateTimeFormat("en-US", {
                                 year: "numeric",

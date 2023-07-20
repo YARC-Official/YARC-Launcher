@@ -28,10 +28,10 @@
     --button_yellow: #FFB800;
     --button_gray: #E6E6E6;
 
-    --text_green: #003C03;
-    --text_blue: #002A3D;
-    --text_yellow: #351A00;
-    --text_gray: #737373;
+    --buttonText_green: #003C03;
+    --buttonText_blue: #002A3D;
+    --buttonText_yellow: #351A00;
+    --buttonText_gray: #737373;
 }
 
 * {

@@ -1,19 +1,61 @@
-.app {
-    display: flex;
-    flex-direction: column-reverse;
-    width: 100%;
-    height: 100%;
-    background: url("/src/assets/Background.png");
+.banner {
+    height: 250px;
+    flex-shrink: 0;
+    align-self: stretch;
+
+    background-image: url("/src/assets/Background.png");
+    background-repeat: no-repeat;
     background-size: cover;
-    background-position: center center;
+    background-position: center;
 }
 
-.actions {
+.main {
     display: flex;
-    flex-direction: row-reverse;
-    padding: 15px;
-    align-items: center;
+    width: 100%;
+    min-height: calc(100% - 250px);
+    padding: 25px;
+    align-items: flex-start;
     gap: 25px;
-    align-self: stretch;
-    background: rgba(0, 0, 0, 0.5);
+    background: var(--white-background);
+
+    align-items: stretch;
+}
+
+.content {
+    flex: 1 0 0;
+    font-style: italic;
+
+    color: rgba(1, 1, 1, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar {
+    display: flex;
+    width: 300px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.info_list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.info_entry {
+    display: flex;
+    padding: 0px 1px;
+    align-items: center;
+    gap: 6px;
+
+    color: #333;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
 }

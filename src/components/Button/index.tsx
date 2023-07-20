@@ -5,7 +5,8 @@ export enum ButtonColor {
     "GREEN",
     "BLUE",
     "YELLOW",
-    "GRAY"
+    "GRAY",
+    "BLACK"
 }
 
 interface ButtonCSS extends CSSProperties {
@@ -38,6 +39,9 @@ const Button: React.FC<Props> = (props: Props) => {
             break;
         case ButtonColor.GRAY:
             colorClass = styles.colors_gray;
+            break;
+        case ButtonColor.BLACK:
+            colorClass = styles.colors_black;
             break;
         default:
             colorClass = styles.colors_blue;

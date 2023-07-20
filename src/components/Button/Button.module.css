@@ -49,20 +49,20 @@
 
 .colors_green {
     --background: var(--button_green);
-    --color: var(--text_green);
+    --color: var(--buttonText_green);
 }
 
 .colors_blue {
     --background: var(--button_blue);
-    --color: var(--text_blue);
+    --color: var(--buttonText_blue);
 }
 
 .colors_yellow {
     --background: var(--button_yellow);
-    --color: var(--text_yellow);
+    --color: var(--buttonText_yellow);
 }
 
 .colors_gray {
     --background: var(--button_gray);
-    --color: var(--text_gray);
+    --color: var(--buttonText_gray);
 }
