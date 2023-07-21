@@ -2,25 +2,28 @@ import Button, { ButtonColor } from "@app/components/Button";
 import { BaseDialog } from "./BaseDialog";
 import { open } from "@tauri-apps/api/dialog";
 import styles from "./InstallFolderDialog.module.css";
-import { DriveIcon } from "@app/assets/Icons";
+import { DriveIcon, WarningIcon } from "@app/assets/Icons";
 import { invoke } from "@tauri-apps/api";
 
 interface State {
     path?: string;
+    empty: boolean;
 }
 
 export class InstallFolderDialog extends BaseDialog<State> {
     constructor(props: Record<string, unknown>) {
         super(props);
         this.state = {
-            path: undefined
+            path: undefined,
+            empty: true
         };
 
         // Load the default path
         (async () => {
             const path = await invoke("get_download_location") as string;
             this.setState(() => ({
-                path: path
+                path: path,
+                empty: true
             }));
         })();
     }
@@ -40,6 +43,12 @@ export class InstallFolderDialog extends BaseDialog<State> {
 
                 </div>
             </div>
+            {!this.state.empty ?
+                <div className={styles.warning_box}>
+                    <WarningIcon /> The folder selected is not empty! Make sure it doesn&apos;t have any files in it.
+                </div>
+                : ""
+            }
         </>;
     }
 
@@ -49,8 +58,12 @@ export class InstallFolderDialog extends BaseDialog<State> {
         });
 
         if (typeof select === "string") {
+            const path: string = select;
+            const empty: boolean = await invoke("is_dir_empty", { path: path });
+
             this.setState(() => ({
-                path: select as string
+                path: path,
+                empty: empty
             }));
         }
     }
@@ -62,7 +75,13 @@ export class InstallFolderDialog extends BaseDialog<State> {
     getButtons() {
         return <>
             <Button color={ButtonColor.GRAY} onClick={() => this.context.closeDialog("cancel")}>Cancel</Button>
-            <Button color={ButtonColor.GREEN} onClick={() => this.context.closeDialog(this.state.path)}>Okay</Button>
+            <Button color={ButtonColor.GREEN} onClick={() => {
+                if (!this.state.empty) {
+                    return;
+                }
+
+                this.context.closeDialog(this.state.path);
+            }}>Okay</Button>
         </>;
     }
 }

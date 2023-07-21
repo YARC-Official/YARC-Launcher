@@ -436,6 +436,14 @@ async fn get_download_location(state: tauri::State<'_, State>) -> Result<String,
     Ok(state_guard.settings.download_location.clone())
 }
 
+#[tauri::command]
+fn is_dir_empty(path: String) -> bool {
+    match fs::read_dir(path) {
+        Ok(mut entries) => entries.next().is_none(),
+        Err(_) => false,
+    }
+}
+
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_log::Builder::default().build())
@@ -457,7 +465,8 @@ fn main() {
             get_os,
             is_initialized,
             set_download_location,
-            get_download_location
+            get_download_location,
+            is_dir_empty
         ])
         .setup(|app| {
             let window = app.get_window("main").unwrap();

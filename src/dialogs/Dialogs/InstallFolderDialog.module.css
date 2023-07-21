@@ -37,3 +37,23 @@
     line-height: normal;
     text-transform: uppercase;
 }
+
+.warning_box {
+    margin-top: 10px;
+
+    display: flex;
+    padding: 15px;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+
+    border-radius: var(--web-radius, 8px);
+    border: 1px solid #FFA800;
+    background: rgba(255, 168, 0, 0.10);
+
+    color: #7C5200;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}

@@ -22,6 +22,7 @@ import { ReactComponent as UpdateIcon } from "./Update.svg";
 import { ReactComponent as DriveIcon } from "./Drive.svg";
 import { ReactComponent as UnknownUserIcon } from "./UnknownUser.svg";
 import { ReactComponent as BackIcon } from "./Back.svg";
+import { ReactComponent as WarningIcon } from "./Warning.svg";
 
 export {
     AddIcon,
@@ -47,5 +48,6 @@ export {
     UpdateIcon,
     DriveIcon,
     UnknownUserIcon,
-    BackIcon
+    BackIcon,
+    WarningIcon
 };
