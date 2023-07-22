@@ -16,6 +16,7 @@ function NewsPage() {
     if (!md) return <></>;
 
     const { data, error, isLoading, isSuccess } = useNewsArticle(md);
+    const navigate = useNavigate();
 
     if (isLoading) return "Loading..";
 
@@ -23,7 +24,6 @@ function NewsPage() {
 
     if (isSuccess) {
         const { data: articleData, content } = matter(data);
-        const navigate = useNavigate();
 
         let videoElem = <></>;
         if ("video" in articleData) {
