@@ -8,7 +8,7 @@ function NightlyYARGPage() {
     const yargVersion = useYARGVersion(releaseData, "nightly");
 
     return (<>
-        <LaunchPage version={yargVersion} releaseTag={releaseData.tag_name} playName="NIGHTLY" description={<>
+        <LaunchPage version={yargVersion} releaseTag={releaseData?.tag_name} playName="NIGHTLY" description={<>
             YARG Nightly (a.k.a. YARG bleeding-edge) is an alternative version of YARG that is updated twice
             a day (if changes have been made). These builds are in an extremely early beta, so bugs are expected.
             If you do notice a bug, please be sure to report it on GitHub, or on our Discord.
