@@ -58,6 +58,11 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData, profileName: st
             });
 
             setState(YARGStates.PLAYING);
+
+            // As we don't have a way to check if the YARG game process is closed, we set a timer to avoid locking the state to PLAYING 
+            setTimeout(() => {
+                setState(YARGStates.AVAILABLE);
+            }, 10 * 1000);
         } catch (e) {
             setState(YARGStates.ERROR);
 
