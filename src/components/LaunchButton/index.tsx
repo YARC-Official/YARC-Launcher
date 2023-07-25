@@ -35,7 +35,7 @@ export function LaunchButton(props: LaunchButtonProps) {
     if(version.state === YARGStates.PLAYING) {
         return <Button color={ButtonColor.GRAY} style={props.style}>
             Opening YARG {playName}
-        </Button>
+        </Button>;
     }
 
     return <Button style={props.style}>
