@@ -1,10 +1,10 @@
 import { YARGVersion } from "@app/hooks/useYARGVersion";
 import styles from "./styles.module.css";
-import { GenericBox, GenericBoxHeader } from "../GenericBox";
+import { GenericBox, GenericBoxHeader } from "../../GenericBox";
 import { DateIcon, InformationIcon, LinkIcon } from "@app/assets/Icons";
-import TooltipWrapper from "../TooltipWrapper";
+import TooltipWrapper from "../../TooltipWrapper";
 import { intlFormatDistance } from "date-fns";
-import NewsSection from "../NewsSection";
+import NewsSection from "../../NewsSection";
 import { LaunchButton } from "../LaunchButton";
 
 const INITIAL_RELEASE_DATE = new Date("2023-03-09T05:00:00.000Z");

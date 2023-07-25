@@ -1,4 +1,4 @@
-import LaunchPage from "@app/components/LaunchPage";
+import LaunchPage from "@app/components/Launch/LaunchPage";
 import { useYARGRelease } from "@app/hooks/useYARGRelease";
 import { useYARGVersion } from "@app/hooks/useYARGVersion";
 import NightlyYARGIcon from "@app/assets/NightlyYARGIcon.png";
