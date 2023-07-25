@@ -6,7 +6,7 @@ interface Props {
     fullMode?: boolean;
 }
 
-const PayloadProgress: React.FC<Props> = ({ payload, defaultText, fullMode }: Props) => {
+const PayloadProgress: React.FC<Props> = ({ payload, defaultText = "Loading", fullMode }: Props) => {
     if (!payload) {
         return <span>{defaultText}</span>;
     }
