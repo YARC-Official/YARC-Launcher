@@ -5,8 +5,8 @@ import { useYARGState } from "@app/stores/YARGStateStore";
 import { useDownloadClient } from "@app/utils/Download/provider";
 import { YARGDownload, generateYARGUUID } from "@app/utils/Download/Processors/YARG";
 import { DownloadPayload } from "@app/utils/Download";
-import { DialogManager } from "@app/dialogs";
 import { showErrorDialog, showInstallFolderDialog } from "@app/dialogs/dialogUtil";
+import { useDialogManager } from "@app/dialogs/DialogProvider";
 
 export enum YARGStates {
     "AVAILABLE",
@@ -19,14 +19,15 @@ export enum YARGStates {
 
 export type YARGVersion = {
     state: YARGStates,
-    play: (dialogManager: DialogManager) => Promise<void>,
-    download: (dialogManager: DialogManager) => Promise<void>,
+    play: () => Promise<void>,
+    download: () => Promise<void>,
     payload?: DownloadPayload
 }
 
 export const useYARGVersion = (releaseData: ExtendedReleaseData, profileName: string) => {
     const { state, setState } = useYARGState(releaseData?.tag_name);
 
+    const dialogManager = useDialogManager();
     const downloadClient = useDownloadClient();
     const payload = downloadClient.usePayload(generateYARGUUID(releaseData?.tag_name));
 
@@ -45,7 +46,7 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData, profileName: st
         )();
     }, [releaseData]);
 
-    const play = async (dialogManager: DialogManager) => {
+    const play = async () => {
         if (!releaseData) return;
 
         setState(YARGStates.LOADING);
@@ -65,7 +66,7 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData, profileName: st
         }
     };
 
-    const download = async (dialogManager: DialogManager) => {
+    const download = async () => {
         if (!releaseData || state === YARGStates.DOWNLOADING) return;
 
         // Ask for a download location (if required)
