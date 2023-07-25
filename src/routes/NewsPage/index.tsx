@@ -1,5 +1,5 @@
 import { useNewsArticle } from "@app/hooks/useNewsArticle";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import matter from "gray-matter";
 import { marked } from "marked";
 import SanitizedHTML from "@app/components/SanitizedHTML";

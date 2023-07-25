@@ -1,5 +1,5 @@
 import styles from "./Sidebar.module.css";
-import { DiscordIcon, TwitterIcon, GithubIcon, SettingsIcon, HomeIcon, QueueIcon } from "@app/assets/Icons";
+import { DiscordIcon, TwitterIcon, GithubIcon, HomeIcon, QueueIcon } from "@app/assets/Icons";
 import SidebarMenuButton from "./SidebarMenuButton";
 import { Link } from "react-router-dom";
 import VersionsList from "./Versions/List";
