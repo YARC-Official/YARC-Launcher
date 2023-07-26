@@ -13,7 +13,7 @@ interface ButtonCSS extends CSSProperties {
     "--progress": string
 }
 
-type Props = React.PropsWithChildren<{
+export type ButtonProps = React.PropsWithChildren<{
     className?: string,
     style?: React.CSSProperties,
     onClick?: React.MouseEventHandler<HTMLButtonElement>,
@@ -24,7 +24,7 @@ type Props = React.PropsWithChildren<{
     height?: number,
 }>;
 
-const Button: React.FC<Props> = (props: Props) => {
+const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
     // Get the button color class
     let colorClass;
     switch (props.color) {
