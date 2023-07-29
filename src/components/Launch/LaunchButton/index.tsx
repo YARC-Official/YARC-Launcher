@@ -78,6 +78,20 @@ export function LaunchButton(props: LaunchButtonProps) {
         </DropdownButton>;
     }
 
+    if (version.state === YARGStates.ERROR) {
+        const buttonChildren = <>
+            Error!
+        </>;
+
+        return <DropdownButton
+            color={ButtonColor.RED}
+            style={props.style}
+            buttonChildren={buttonChildren}>
+
+            {dropdownContents}
+        </DropdownButton>;
+    }
+
     return <DropdownButton
         style={props.style}
         buttonChildren={<>Loading...</>}>
