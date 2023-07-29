@@ -66,3 +66,8 @@
     --background: var(--button_gray);
     --color: var(--buttonText_gray);
 }
+
+.colors_red {
+    --background: var(--button_red);
+    --color: var(--buttonText_red);
+}

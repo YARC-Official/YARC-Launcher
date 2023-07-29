@@ -27,11 +27,13 @@
     --button_blue: #2ED9FF;
     --button_yellow: #FFB800;
     --button_gray: #E6E6E6;
+    --button_red: #F32B37;
 
     --buttonText_green: #003C03;
     --buttonText_blue: #002A3D;
     --buttonText_yellow: #351A00;
     --buttonText_gray: #737373;
+    --buttonText_red: #fff;
 }
 
 * {
