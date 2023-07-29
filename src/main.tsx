@@ -11,6 +11,12 @@ import { DownloadClientProvider } from "@app/utils/Download/provider";
 import { DialogManagerProvider } from "./dialogs/DialogProvider";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorScreen, onError } from "./routes/ErrorScreen";
+import { error as LogError } from "tauri-plugin-log-api";
+import { serializeError } from "serialize-error";
+
+window.addEventListener("error", event => {
+    LogError(JSON.stringify(serializeError(event)));
+});
 
 let error = undefined;
 
