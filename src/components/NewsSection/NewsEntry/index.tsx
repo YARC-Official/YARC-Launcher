@@ -6,15 +6,23 @@ import { Img } from "react-image";
 import UnknownUserIcon from "@app/assets/Icons/UnknownUser.svg";
 import { TimeIcon } from "@app/assets/Icons";
 import { intlFormatDistance } from "date-fns";
+import { newsBaseURL } from "@app/utils/consts";
+import { useNewsAuthorSettings } from "@app/hooks/useNewsAuthor";
+import { useQueries } from "@tanstack/react-query";
 
 interface Props {
     article: ArticleData;
 }
 
 const NewsEntry: React.FC<Props> = ({ article }: Props) => {
+
+    const authors = useQueries({
+        queries: article?.authors?.map(authorId => useNewsAuthorSettings(authorId)) || []
+    });
+
     return <Link to={`/news/${article.md}`} key={article.md} style={{ width: "100%" }}>
         <div className={styles.container}>
-            <img className={styles.thumbnail} src={`https://raw.githubusercontent.com/YARC-Official/News/master/images/thumbs/${article.thumb}`} />
+            <img className={styles.thumbnail} src={`${newsBaseURL}/images/thumbs/${article.thumb}`} />
             <div className={styles.main}>
                 <div className={styles.top_container}>
                     <div className={styles.top}>
@@ -31,14 +39,24 @@ const NewsEntry: React.FC<Props> = ({ article }: Props) => {
                     {article.title}
                 </div>
                 <div className={styles.bottom_container}>
-                    <Img
-                        height={24}
-                        alt={`${article.author}'s avatar`}
-                        src={[`https://raw.githubusercontent.com/YARC-Official/News/master/images/avatars/${article.avatar}`, UnknownUserIcon]}
-                        style={{ borderRadius: "50%" }}
-                    />
+                    {
+                        authors
+                            .filter(({data}) => data?.avatar)
+                            .map(({data}) => (<Img
+                                key={`${data?.avatar}`}
+                                height={24}
+                                alt={`${data?.displayName}'s avatar`}
+                                src={[`${newsBaseURL}/images/avatars/${data?.avatar}`, UnknownUserIcon]}
+                                style={{ borderRadius: "50%" }}
+                            />))
+                    }
                     <div>
-                        By: <span className={styles.author}>{article.author}</span>
+                        By: <span className={styles.author}>{
+                            authors
+                                .map(({data}) => data?.displayName)
+                                .filter(authorName => authorName)
+                                .join(", ")
+                        }</span>
                     </div>
                 </div>
             </div>
