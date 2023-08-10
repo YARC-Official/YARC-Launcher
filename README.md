@@ -23,10 +23,10 @@ YARC Launcher is licensed under the YARG License - see the [`LICENSE`](../master
 
 # ⛔ Antivirus Warnings
 
+> [!NOTE]
+> If you don't trust us for whatever reason, the source code for the launcher is above, and you can see instructions on how to build the launcher above as well. Apologies for the inconvenience!
+
 The YARC Launcher may get some antivirus warnings from Windows Defender, along with other antiviruses. **This is a false-positive! YARC Launcher IS NOT a virus.** The main reason for this is that we are not certified with Microsoft, which immediately deems the program suspicious in some antiviruses. As this application increases in popularity, some antiviruses may start to trust the launcher more, and in which case, no issues will be found.
-
-If you don't trust us for whatever reason, the source code for the launcher is above, and you can see instructions on how to build the launcher above as well. Apologies for the inconvenience!
-
 
 <details>
 	<summary>If you get the following warning on Windows (click here to view), click on "More info" and then "Run anyway." This alert again happens because Microsoft does not recognize the launcher.</summary>
