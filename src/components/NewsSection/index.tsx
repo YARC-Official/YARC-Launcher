@@ -18,7 +18,6 @@ const NewsSection: React.FC<Props> = ({ categoryFilter, startingEntries }: Props
     if (error) return `An error has occurred: ${error}`;
 
     if (isSuccess) {
-        console.log(data);
         return <div className={styles.container}>
             <div className={styles.header_container}>
                 <div className={styles.header_text}>

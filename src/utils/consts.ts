@@ -1,1 +1,1 @@
-export const newsBaseURL = "http://127.0.0.1:5500";
+export const newsBaseURL = "https://raw.githubusercontent.com/YARC-Official/News/master";
