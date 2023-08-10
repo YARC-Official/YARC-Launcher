@@ -37,7 +37,7 @@ export class InstallFolderDialog extends BaseDialog<State> {
             <div className={styles.folder_container} onClick={() => this.askForFolder()}>
                 <div className={styles.folder_info}>
                     <DriveIcon />
-                    {this.state.path ? this.state.path : "Loading..."}
+                    {typeof this.state.path === "string" ? this.state.path : "Loading..."}
                 </div>
                 <div className={styles.folder_extra}>
 

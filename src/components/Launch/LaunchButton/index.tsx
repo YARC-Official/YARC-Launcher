@@ -3,7 +3,7 @@ import { ButtonColor } from "../../Button";
 import { InstallingIcon, UpdateIcon } from "@app/assets/Icons";
 import { calculatePayloadPercentage } from "@app/utils/Download/payload";
 import PayloadProgress from "../../PayloadProgress";
-import DropdownButton from "@app/components/DropdownButton";
+import Button from "@app/components/Button";
 
 interface LaunchButtonProps extends React.PropsWithChildren {
     version: YARGVersion,
@@ -14,23 +14,18 @@ interface LaunchButtonProps extends React.PropsWithChildren {
 export function LaunchButton(props: LaunchButtonProps) {
     const { version, playName } = props;
 
-    const dropdownContents = <>
-
-    </>;
-
     if (version.state === YARGStates.NEW_UPDATE) {
         const buttonChildren = <>
             <UpdateIcon /> Update {playName}
         </>;
 
-        return <DropdownButton
+        return <Button
             style={props.style}
             color={ButtonColor.GREEN}
-            onClick={() => version.download()}
-            buttonChildren={buttonChildren}>
+            onClick={() => version.download()}>
 
-            {dropdownContents}
-        </DropdownButton>;
+            {buttonChildren}
+        </Button>;
     }
 
     if (version.state === YARGStates.DOWNLOADING) {
@@ -39,14 +34,13 @@ export function LaunchButton(props: LaunchButtonProps) {
             <PayloadProgress payload={version.payload} />
         </>;
 
-        return <DropdownButton
+        return <Button
             style={props.style}
             progress={calculatePayloadPercentage(version.payload)}
-            color={ButtonColor.YELLOW}
-            buttonChildren={buttonChildren}>
+            color={ButtonColor.YELLOW}>
 
-            {dropdownContents}
-        </DropdownButton>;
+            {buttonChildren}
+        </Button>;
     }
 
     if (version.state === YARGStates.AVAILABLE) {
@@ -54,14 +48,13 @@ export function LaunchButton(props: LaunchButtonProps) {
             Play {playName}
         </>;
 
-        return <DropdownButton
+        return <Button
             style={props.style}
             color={ButtonColor.BLUE}
-            onClick={() => version.play()}
-            buttonChildren={buttonChildren}>
+            onClick={() => version.play()}>
 
-            {dropdownContents}
-        </DropdownButton>;
+            {buttonChildren}
+        </Button>;
     }
 
     if (version.state === YARGStates.PLAYING) {
@@ -69,13 +62,12 @@ export function LaunchButton(props: LaunchButtonProps) {
             Opening YARG {playName}
         </>;
 
-        return <DropdownButton
+        return <Button
             color={ButtonColor.GRAY}
-            style={props.style}
-            buttonChildren={buttonChildren}>
+            style={props.style}>
 
-            {dropdownContents}
-        </DropdownButton>;
+            {buttonChildren}
+        </Button>;
     }
 
     if (version.state === YARGStates.ERROR) {
@@ -83,19 +75,16 @@ export function LaunchButton(props: LaunchButtonProps) {
             Error!
         </>;
 
-        return <DropdownButton
+        return <Button
             color={ButtonColor.RED}
-            style={props.style}
-            buttonChildren={buttonChildren}>
+            style={props.style}>
 
-            {dropdownContents}
-        </DropdownButton>;
+            {buttonChildren}
+        </Button>;
     }
 
-    return <DropdownButton
-        style={props.style}
-        buttonChildren={<>Loading...</>}>
-
-        {dropdownContents}
-    </DropdownButton >;
+    return <Button
+        style={props.style}>
+        Loading...
+    </Button>;
 }
