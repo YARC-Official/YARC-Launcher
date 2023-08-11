@@ -89,6 +89,8 @@
 .video {
     border: none;
     border-radius: 8px;
-    aspect-ratio: calc(16 / 9);
+    aspect-ratio: 16 / 9;
     height: 50vh;
+    width: fit-content;
+    margin: 20px auto 10px;
 }

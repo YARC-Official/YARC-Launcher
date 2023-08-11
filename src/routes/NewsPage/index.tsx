@@ -12,6 +12,8 @@ import { newsBaseURL } from "@app/utils/consts";
 import { useQueries } from "@tanstack/react-query";
 import { useNewsAuthorSettings } from "@app/hooks/useNewsAuthor";
 import NewsAuthor from "@app/components/NewsSection/NewsAuthor";
+import urlParser from "js-video-url-parser/lib/base";
+import "js-video-url-parser/lib/provider/youtube";
 
 function NewsPage() {
     const { md } = useParams();
@@ -33,16 +35,7 @@ function NewsPage() {
             queries: articleData?.authors?.map((authorId) => useNewsAuthorSettings(authorId)) || []
         });
 
-        let videoElem = <></>;
-        if ("video" in articleData) {
-            videoElem = <div className={styles.video_container}>
-                <iframe
-                    className={styles.video}
-                    src="https://www.youtube.com/embed/Xk_HqhzvdgQ"
-                    title="YouTube video player"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" />
-            </div>;
-        }
+        const video = articleData.video ? urlParser.parse(articleData.video) : undefined;
 
         return <>
             <div className={styles.header} style={{ "--bannerURL": `url(${newsBaseURL}/images/banners/${articleData.banner})` } as CSSProperties}>
@@ -76,7 +69,16 @@ function NewsPage() {
                         ) : ""
                     }
                 </div>
-                {videoElem}
+
+                {
+                    video?.id ? <iframe
+                        className={styles.video}
+                        src={`https://www.youtube.com/embed/${video.id}`}
+                        title="YouTube video player"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    /> : ""
+                }
+
                 <SanitizedHTML dirtyHTML={marked.parse(content)} />
             </div>
         </>;
