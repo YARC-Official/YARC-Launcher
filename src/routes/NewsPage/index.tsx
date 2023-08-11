@@ -1,4 +1,4 @@
-import { useNewsArticle } from "@app/hooks/useNewsArticle";
+import { Article, useNewsArticle } from "@app/hooks/useNewsArticle";
 import { useNavigate, useParams } from "react-router-dom";
 import matter from "gray-matter";
 import { marked } from "marked";
@@ -7,9 +7,11 @@ import styles from "./NewsPage.module.css";
 import NewsBadge from "@app/components/NewsSection/NewsBadge";
 import { CSSProperties } from "react";
 import { BackIcon, TimeIcon } from "@app/assets/Icons";
-import { Img } from "react-image";
-import UnknownUserIcon from "@app/assets/Icons/UnknownUser.svg";
 import { intlFormatDistance } from "date-fns";
+import { newsBaseURL } from "@app/utils/consts";
+import { useQueries } from "@tanstack/react-query";
+import { useNewsAuthorSettings } from "@app/hooks/useNewsAuthor";
+import NewsAuthor from "@app/components/NewsSection/NewsAuthor";
 
 function NewsPage() {
     const { md } = useParams();
@@ -23,7 +25,13 @@ function NewsPage() {
     if (error) return `An error has occurred: ${error}`;
 
     if (isSuccess) {
-        const { data: articleData, content } = matter(data);
+        const article = matter(data);
+        const articleData = article.data as Article;
+        const content = article.content;
+
+        const authors = useQueries({
+            queries: articleData?.authors?.map((authorId) => useNewsAuthorSettings(authorId)) || []
+        });
 
         let videoElem = <></>;
         if ("video" in articleData) {
@@ -37,7 +45,7 @@ function NewsPage() {
         }
 
         return <>
-            <div className={styles.header} style={{ "--bannerURL": `url(https://raw.githubusercontent.com/YARC-Official/News/master/images/banners/${articleData.banner})` } as CSSProperties}>
+            <div className={styles.header} style={{ "--bannerURL": `url(${newsBaseURL}/images/banners/${articleData.banner})` } as CSSProperties}>
                 <div onClick={() => navigate(-1)} className={styles.header_back}>
                     <BackIcon />
                     RETURN
@@ -49,18 +57,15 @@ function NewsPage() {
             </div >
             <div className={styles.content}>
                 <div className={styles.info}>
-                    <div className={styles.author}>
-                        <div className={styles.avatar}>
-                            <Img
-                                height={48}
-                                alt={`${articleData.author}'s avatar`}
-                                src={[`https://raw.githubusercontent.com/YARC-Official/News/master/images/avatars/${articleData.avatar}`, UnknownUserIcon]}
-                            />
-                        </div>
-                        <div className={styles.authorInformation}>
-                            <div className={styles.authorName}>{articleData.author}</div>
-                            <div className={styles.authorRole}>{articleData.role}</div>
-                        </div>
+                    <div className={styles.authors}>
+                        {
+                            authors
+                                .filter(query => query.data)
+                                .map(({data}) => {
+                                    if(!data) return; 
+                                    return <NewsAuthor key={data?.displayName} author={data} />;
+                                })
+                        }
                     </div>
                     {
                         articleData.release ? (

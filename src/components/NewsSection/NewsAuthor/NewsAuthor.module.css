@@ -1,0 +1,27 @@
+
+.author {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.author .avatar {
+    height: 48px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.author .authorInformation {
+    color: #5A5A5A;
+}
+
+.author .authorInformation .authorName {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.author .authorInformation .authorRole {
+    font-size: 12px;
+    font-weight: 400;
+}
