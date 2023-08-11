@@ -1,3 +1,4 @@
+import { newsBaseURL } from "@app/utils/consts";
 import { useQuery } from "@tanstack/react-query";
 
 export interface ArticleData {
@@ -5,8 +6,7 @@ export interface ArticleData {
     type: string,
     title: string,
     thumb: string,
-    author: string,
-    avatar: string,
+    authors: string[],
     release: string,
     category: string
 }
@@ -19,7 +19,7 @@ export const useNews = () => {
     return useQuery({
         queryKey: ["NewsIndex"],
         queryFn: async (): Promise<NewsData> => await fetch(
-            "https://raw.githubusercontent.com/YARC-Official/News/master/index.json")
+            `${newsBaseURL}/index.json`)
             .then(res => res.json())
     });
 };

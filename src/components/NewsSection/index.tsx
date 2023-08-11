@@ -25,7 +25,7 @@ const NewsSection: React.FC<Props> = ({ categoryFilter, startingEntries }: Props
                 </div>
             </div>
             {
-                Array.from(data.articles).filter(i => {
+                data.articles.filter(i => {
                     // Filter out everything that doesn't meet the filter
                     if (!categoryFilter) return true;
                     return i.category === categoryFilter;
