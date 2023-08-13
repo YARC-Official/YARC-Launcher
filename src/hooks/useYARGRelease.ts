@@ -45,11 +45,8 @@ export const getYARGReleaseZip = (releaseData: ReleaseData, platformType: OsType
     throw new Error(`Platform of type "${platformType}" is not supported in release "${releaseData.tag_name}"!`);
 };
 
-export const getYARGReleaseSig = (releaseData: ReleaseData, platformType: OsType) => {
-    const zip = getYARGReleaseZip(releaseData, platformType);
-    if(!zip) return undefined;
-
-    const sigAssetName = zip.split("/").at(-1) + ".sig";
+export const getYARGReleaseSigFromZipURL = (releaseData: ReleaseData, zipUrl: string) => {
+    const sigAssetName = zipUrl.split("/").at(-1) + ".sig";
 
     const asset = releaseData.assets.find(asset => asset.name === sigAssetName);
 
