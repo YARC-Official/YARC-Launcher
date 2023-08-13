@@ -18,16 +18,7 @@ window.addEventListener("error", event => {
     LogError(JSON.stringify(serializeError(event)));
 });
 
-let error = undefined;
-
-try {
-    await invoke("init");
-} catch (e) {
-    error = e as string;
-    console.error(e);
-}
-
-if (!error) {
+invoke("init").then(() => {
     ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <React.StrictMode>
             <ErrorBoundary FallbackComponent={ErrorScreen} onError={onError}>
@@ -42,7 +33,10 @@ if (!error) {
             </ErrorBoundary>
         </React.StrictMode>
     );
-} else {
+}).catch(e => {
+    console.error(e);
+    LogError(JSON.stringify(serializeError(e)));
+    
     ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <React.StrictMode>
             <TitleBar />
@@ -51,8 +45,8 @@ if (!error) {
                 Please report this to our Discord or GitHub immediately.
             </p>
             <p>
-                {error}
+                {e instanceof Error ? e.message : JSON.stringify(serializeError(e))}
             </p>
         </React.StrictMode>
     );
-}
+});

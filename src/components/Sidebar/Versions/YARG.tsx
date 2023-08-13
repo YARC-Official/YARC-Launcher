@@ -1,4 +1,4 @@
-import { useYARGRelease } from "@app/hooks/useYARGRelease";
+import { YARGChannels, useYARGRelease } from "@app/hooks/useYARGRelease";
 import { YARGStates, useYARGVersion } from "@app/hooks/useYARGVersion";
 import BaseVersion from "./Base";
 import NightlyYARGIcon from "@app/assets/NightlyYARGIcon.png";
@@ -7,11 +7,11 @@ import DevYARGIcon from "@app/assets/DevYARGIcon.png";
 import { NavLink } from "react-router-dom";
 
 interface Props {
-    channel: "stable" | "nightly" | "newEngine";
+    channel: YARGChannels
 }
 
 const YARGVersion: React.FC<Props> = ({ channel }: Props) => {
-    const releaseData = useYARGRelease(channel);
+    const {data: releaseData} = useYARGRelease(channel);
     const { state } = useYARGVersion(releaseData, channel);
 
     function getChannelIcon() {

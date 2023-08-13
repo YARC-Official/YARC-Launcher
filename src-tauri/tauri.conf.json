@@ -35,6 +35,9 @@
         "message": true,
         "open": true,
         "save": true
+      },
+      "os": {
+        "all": true
       }
     },
     "bundle": {
