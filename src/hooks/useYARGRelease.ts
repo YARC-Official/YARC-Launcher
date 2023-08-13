@@ -46,7 +46,7 @@ export const getYARGReleaseZip = (releaseData: ReleaseData, platformType: OsType
 };
 
 export const getYARGReleaseSigFromZipURL = (releaseData: ReleaseData, zipUrl: string) => {
-    const sigAssetName = zipUrl.split("/").at(-1) + ".sig";
+    const sigAssetName = zipUrl.split("/").slice(-1) + ".sig";
 
     const asset = releaseData.assets.find(asset => asset.name === sigAssetName);
 
