@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Endpoints } from "@octokit/types";
-import { type, OsType } from "@tauri-apps/api/os";
+import { OsType } from "@tauri-apps/api/os";
 
 
 export type YARGChannels = "stable" | "nightly" | "newEngine";
@@ -26,9 +26,7 @@ export const useYARGRelease = (channel: YARGChannels) => {
     }).data as ExtendedReleaseData;
 };
 
-export const getYARGReleaseZip = async (releaseData: ReleaseData) => {
-    const platformType = await type();
-
+export const getYARGReleaseZip = (releaseData: ReleaseData, platformType: OsType) => {
     const suffixesPerPlatform: {[key in OsType]: string[]} = {
         "Windows_NT": ["Windows-x64.zip"],
         "Darwin": ["MacOS-Universal.zip"],
@@ -47,8 +45,8 @@ export const getYARGReleaseZip = async (releaseData: ReleaseData) => {
     throw new Error(`Platform of type "${platformType}" is not supported in release "${releaseData.tag_name}"!`);
 };
 
-export const getYARGReleaseSig = async (releaseData: ReleaseData) => {
-    const zip = await getYARGReleaseZip(releaseData);
+export const getYARGReleaseSig = (releaseData: ReleaseData, platformType: OsType) => {
+    const zip = getYARGReleaseZip(releaseData, platformType);
     if(!zip) return undefined;
 
     const sigAssetName = zip.split("/").at(-1) + ".sig";
