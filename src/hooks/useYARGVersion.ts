@@ -25,12 +25,12 @@ export type YARGVersion = {
     payload?: DownloadPayload
 }
 
-export const useYARGVersion = (releaseData: ExtendedReleaseData, profileName: string) => {
+export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, profileName: string): YARGVersion => {
+    // Initialize hooks before returning
     const { state, setState } = useYARGState(releaseData?.tag_name);
-
     const dialogManager = useDialogManager();
     const downloadClient = useDownloadClient();
-    const payload = downloadClient.usePayload(generateYARGUUID(releaseData?.tag_name));
+    const payload = downloadClient.usePayload(releaseData ? generateYARGUUID(releaseData.tag_name) : undefined);
 
     useEffect(() => {
         (
@@ -46,6 +46,15 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData, profileName: st
             }
         )();
     }, [releaseData]);
+
+    // If we don't have a release data yet, return a dummy loading version;
+    if(!releaseData) {
+        return {
+            state,
+            play: async () => {},
+            download: async () => {},
+        };
+    } 
 
     const play = async () => {
         if (!releaseData) return;
@@ -106,5 +115,5 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData, profileName: st
         }
     };
 
-    return { state, play, download, payload } as YARGVersion;
+    return { state, play, download, payload };
 };

@@ -23,7 +23,7 @@ export const useYARGRelease = (channel: YARGChannels) => {
             `https://api.github.com/repos/YARC-Official/${repositoryName[channel]}/releases/latest`)
             .then(res => res.json()),
         select: (data): ExtendedReleaseData => ({ ...data, channel: channel })
-    }).data as ExtendedReleaseData;
+    });
 };
 
 export const getYARGReleaseZip = (releaseData: ReleaseData, platformType: OsType) => {
