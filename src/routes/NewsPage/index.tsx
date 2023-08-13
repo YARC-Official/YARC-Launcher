@@ -19,70 +19,68 @@ function NewsPage() {
     const { md } = useParams();
     if (!md) return <></>;
 
-    const { data, error, isLoading, isSuccess } = useNewsArticle(md);
+    const { data, error } = useNewsArticle(md);
     const navigate = useNavigate();
 
-    if (isLoading) return "Loading..";
+    const article = matter(data || "");
+    const articleData = article.data as Article | undefined;
+    const content = article.content;
+
+    const authors = useQueries({
+        queries: articleData?.authors?.map((authorId) => useNewsAuthorSettings(authorId)) || []
+    });
+
+    const video = articleData?.video ? urlParser.parse(articleData.video) : undefined;
 
     if (error) return `An error has occurred: ${error}`;
 
-    if (isSuccess) {
-        const article = matter(data);
-        const articleData = article.data as Article;
-        const content = article.content;
-
-        const authors = useQueries({
-            queries: articleData?.authors?.map((authorId) => useNewsAuthorSettings(authorId)) || []
-        });
-
-        const video = articleData.video ? urlParser.parse(articleData.video) : undefined;
-
-        return <>
-            <div className={styles.header} style={{ "--bannerURL": `url(${newsBaseURL}/images/banners/${articleData.banner})` } as CSSProperties}>
-                <div onClick={() => navigate(-1)} className={styles.header_back}>
-                    <BackIcon />
+    return <>
+        <div className={styles.header} style={{ "--bannerURL": `url(${newsBaseURL}/images/banners/${articleData?.banner})` } as CSSProperties}>
+            <div onClick={() => navigate(-1)} className={styles.header_back}>
+                <BackIcon />
                     RETURN
-                </div>
-                <div className={styles.header_info}>
-                    <NewsBadge badgeType={articleData.type} />
-                    <div className={styles.title}>{articleData.title}</div>
-                </div>
-            </div >
-            <div className={styles.content}>
-                <div className={styles.info}>
-                    <div className={styles.authors}>
-                        {
-                            authors
-                                .filter(query => query.data)
-                                .map(({data}) => {
-                                    if(!data) return; 
-                                    return <NewsAuthor key={data?.displayName} author={data} />;
-                                })
-                        }
-                    </div>
+            </div>
+            <div className={styles.header_info}>
+                {
+                    articleData?.type ? <NewsBadge badgeType={articleData?.type} /> : ""
+                }
+                <div className={styles.title}>{articleData?.title}</div>
+            </div>
+        </div >
+        <div className={styles.content}>
+            <div className={styles.info}>
+                <div className={styles.authors}>
                     {
-                        articleData.release ? (
-                            <div className={styles.releaseDate}>
-                                <TimeIcon />
-                                {intlFormatDistance(new Date(articleData.release), new Date())}
-                            </div>
-                        ) : ""
+                        authors
+                            .filter(query => query.data)
+                            .map(({data}) => {
+                                if(!data) return; 
+                                return <NewsAuthor key={data?.displayName} author={data} />;
+                            })
                     }
                 </div>
-
                 {
-                    video?.id ? <iframe
-                        className={styles.video}
-                        src={`https://www.youtube.com/embed/${video.id}`}
-                        title="YouTube video player"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    /> : ""
+                    articleData?.release ? (
+                        <div className={styles.releaseDate}>
+                            <TimeIcon />
+                            {intlFormatDistance(new Date(articleData?.release), new Date())}
+                        </div>
+                    ) : ""
                 }
-
-                <SanitizedHTML dirtyHTML={marked.parse(content)} />
             </div>
-        </>;
-    }
+
+            {
+                video?.id ? <iframe
+                    className={styles.video}
+                    src={`https://www.youtube.com/embed/${video.id}`}
+                    title="YouTube video player"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                /> : ""
+            }
+
+            <SanitizedHTML dirtyHTML={marked.parse(content)} />
+        </div>
+    </>;
 }
 
 export default NewsPage;
