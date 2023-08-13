@@ -7,6 +7,10 @@ function StableYARGPage() {
     const { data: releaseData, error, isSuccess, isLoading } = useYARGRelease("stable");
     const yargVersion = useYARGVersion(releaseData, "stable");
 
+    if (isLoading) return "Loading...";
+
+    if (error) return `An error has occurred: ${error}`;
+
     if(isSuccess) {
         return (<>
             <LaunchPage 

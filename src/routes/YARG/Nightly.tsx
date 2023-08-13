@@ -7,6 +7,10 @@ function NightlyYARGPage() {
     const { data: releaseData, error, isSuccess, isLoading } = useYARGRelease("nightly");
     const yargVersion = useYARGVersion(releaseData, "nightly");
 
+    if (isLoading) return "Loading...";
+
+    if (error) return `An error has occurred: ${error}`;
+
     if(isSuccess) {
         return (<>
             <LaunchPage 
