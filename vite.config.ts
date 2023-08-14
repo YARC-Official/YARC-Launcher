@@ -6,7 +6,7 @@ import topLevelAwait from "vite-plugin-top-level-await";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 // https://vitejs.dev/config/
-export default defineConfig(async () => ({
+export default defineConfig({
     plugins: [react(), tsconfigPaths(), svgr(), topLevelAwait(), nodePolyfills({
         globals: {
             Buffer: true,
@@ -32,4 +32,4 @@ export default defineConfig(async () => ({
         // produce sourcemaps for debug builds
         sourcemap: !!process.env.TAURI_DEBUG,
     }
-}));
+});
