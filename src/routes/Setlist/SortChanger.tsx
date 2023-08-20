@@ -1,7 +1,7 @@
 import { SetlistSong } from "@app/hooks/useSetlistRelease";
 import styles from "./SortChanger.module.css";
 import * as ToggleGroup from "@radix-ui/react-toggle-group";
-import { NoteIcon, SongIcon, TimeIcon } from "@app/assets/Icons";
+import { DateIcon, NoteIcon, SongIcon, TimeIcon } from "@app/assets/Icons";
 
 export type SortType = keyof SetlistSong;
 
@@ -14,19 +14,23 @@ const SortChanger: React.FC<Props> = ({ onChange }: Props) => {
         className={styles.container}
         type="single"
         defaultValue="title"
-        onValueChange={(value) => onChange(value as SortType)}>
+        onValueChange={(value: SortType) => onChange(value)}>
         
         <ToggleGroup.Item className={styles.item} value="title">
             <NoteIcon />
-            Song Name
+            Track
         </ToggleGroup.Item>
         <ToggleGroup.Item className={styles.item} value="artist">
             <SongIcon />
-            Artist Name
+            Artist
         </ToggleGroup.Item>
         <ToggleGroup.Item className={styles.item} value="length">
             <TimeIcon />
-            Song Length
+            Length
+        </ToggleGroup.Item>
+        <ToggleGroup.Item className={styles.item} value="release">
+            <DateIcon />
+            Release
         </ToggleGroup.Item>
     </ToggleGroup.Root>;
 };
