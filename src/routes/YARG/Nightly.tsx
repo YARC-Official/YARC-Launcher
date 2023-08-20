@@ -23,7 +23,8 @@ function NightlyYARGPage() {
                     If you do notice a bug, please be sure to report it on GitHub, or on our Discord.
                 </>} 
                 websiteUrl="https://github.com/YARC-Official/YARG-BleedingEdge" 
-                icon={NightlyYARGIcon} 
+                icon={NightlyYARGIcon}
+                banner="/src/assets/Banner/Nightly.png"
             />
         </>);
     }

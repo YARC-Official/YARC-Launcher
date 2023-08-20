@@ -24,6 +24,7 @@ function StableYARGPage() {
                 </>} 
                 websiteUrl="https://github.com/YARC-Official/YARG" 
                 icon={StableYARGIcon} 
+                banner="/src/assets/Banner/Stable.png"
             />
         </>);
     }

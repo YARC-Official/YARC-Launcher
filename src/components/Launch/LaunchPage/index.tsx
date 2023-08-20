@@ -16,20 +16,23 @@ interface Props {
     description: React.ReactNode,
     websiteUrl: string,
     icon: string,
+    banner: string,
 }
 
-const LaunchPage: React.FC<Props> = ({ version, releaseTag, playName, description, websiteUrl, icon }: Props) => {
+const LaunchPage: React.FC<Props> = ({ version, releaseTag, playName, description, websiteUrl, icon, banner }: Props) => {
     // If there isn't a version, something went wrong
     if (!version) {
         return <p>Error: No version.</p>;
     }
 
     return <>
-        <div className={styles.header}>
+        <div className={styles.header} style={{backgroundImage: `url("${banner}")`}}>
             <div className={styles.icon_container}>
                 <img className={styles.icon} src={icon} alt="YARG" />
                 <div className={styles.game_info}>
-                    YARG
+                    <span className={styles.game_name}>
+                        YARG
+                    </span>
                     <div className={styles.version_badge}>
                         {releaseTag}
                     </div>

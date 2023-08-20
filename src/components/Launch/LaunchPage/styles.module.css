@@ -5,7 +5,6 @@
     align-self: stretch;
     flex-direction: column-reverse;
 
-    background-image: url("/src/assets/Background.png");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -55,6 +54,10 @@
     font-weight: 700;
     line-height: normal;
     text-transform: uppercase;
+}
+
+.game_name {
+    text-shadow: 0px 0px 6px rgba(0,0,0,0.5);
 }
 
 .version_badge {
