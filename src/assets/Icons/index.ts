@@ -11,6 +11,7 @@ import { ReactComponent as InstallingIcon } from "./Installing.svg";
 import { ReactComponent as LinkIcon } from "./Link.svg";
 import { ReactComponent as MinimizeIcon } from "./Minimize.svg";
 import { ReactComponent as NewsIcon } from "./News.svg";
+import { ReactComponent as NoteIcon } from "./Note.svg";
 import { ReactComponent as OrganizerIcon } from "./Organizer.svg";
 import { ReactComponent as QueueIcon } from "./Queue.svg";
 import { ReactComponent as QueueListIcon } from "./QueueList.svg";
@@ -39,6 +40,7 @@ export {
     LinkIcon,
     MinimizeIcon,
     NewsIcon,
+    NoteIcon,
     OrganizerIcon,
     QueueIcon,
     QueueListIcon,

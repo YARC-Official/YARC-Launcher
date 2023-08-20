@@ -7,6 +7,10 @@
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
+.song:last-child {
+    border-bottom: none;
+}
+
 .track_container {
     display: flex;
     align-items: flex-start;

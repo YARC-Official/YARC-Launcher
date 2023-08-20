@@ -5,7 +5,7 @@ button {
 .container {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: right;
     gap: 5px; 
 }
 
@@ -18,12 +18,17 @@ button {
 
     border-radius: 50px;
     background: #E9E9E9;
+    cursor: pointer;
 
     color: black;
     font-size: 12px;
     font-style: normal;
     font-weight: 500;
     line-height: normal; 
+}
+
+.item svg {
+    height: 15px;
 }
 
 .item[data-state="on"] {
