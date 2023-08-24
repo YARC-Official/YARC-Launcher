@@ -2,6 +2,7 @@ import LaunchPage from "@app/components/Launch/LaunchPage";
 import { useYARGRelease } from "@app/hooks/useYARGRelease";
 import { useYARGVersion } from "@app/hooks/useYARGVersion";
 import NightlyYARGIcon from "@app/assets/NightlyYARGIcon.png";
+import NightlyYARGBanner from "@app/assets/Banner/Nightly.png";
 
 function NightlyYARGPage() {
     const { data: releaseData, error, isSuccess, isLoading } = useYARGRelease("nightly");
@@ -24,7 +25,7 @@ function NightlyYARGPage() {
                 </>} 
                 websiteUrl="https://github.com/YARC-Official/YARG-BleedingEdge" 
                 icon={NightlyYARGIcon}
-                banner="/src/assets/Banner/Nightly.png"
+                banner={NightlyYARGBanner}
             />
         </>);
     }

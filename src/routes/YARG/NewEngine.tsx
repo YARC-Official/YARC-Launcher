@@ -2,6 +2,7 @@ import LaunchPage from "@app/components/Launch/LaunchPage";
 import { useYARGRelease } from "@app/hooks/useYARGRelease";
 import { useYARGVersion } from "@app/hooks/useYARGVersion";
 import DevYARGIcon from "@app/assets/DevYARGIcon.png";
+import DevYARGBanner from "@app/assets/Banner/Development.png";
 
 function StableYARGPage() {
     const { data: releaseData, error, isSuccess, isLoading } = useYARGRelease("newEngine");
@@ -27,7 +28,7 @@ function StableYARGPage() {
                 </>}
                 websiteUrl="https://github.com/YARC-Official/YARG-NewEngine" 
                 icon={DevYARGIcon}
-                banner="/src/assets/Banner/Development.png"
+                banner={DevYARGBanner}
             />
         </>);
     }

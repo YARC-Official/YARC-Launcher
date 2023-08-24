@@ -2,6 +2,7 @@ import LaunchPage from "@app/components/Launch/LaunchPage";
 import { useYARGRelease } from "@app/hooks/useYARGRelease";
 import { useYARGVersion } from "@app/hooks/useYARGVersion";
 import StableYARGIcon from "@app/assets/StableYARGIcon.png";
+import StableYARGBanner from "@app/assets/Banner/Stable.png";
 
 function StableYARGPage() {
     const { data: releaseData, error, isSuccess, isLoading } = useYARGRelease("stable");
@@ -24,7 +25,7 @@ function StableYARGPage() {
                 </>} 
                 websiteUrl="https://github.com/YARC-Official/YARG" 
                 icon={StableYARGIcon} 
-                banner="/src/assets/Banner/Stable.png"
+                banner={StableYARGBanner}
             />
         </>);
     }
