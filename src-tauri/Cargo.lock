@@ -4454,7 +4454,7 @@ dependencies = [
 
 [[package]]
 name = "yet_another_launcher"
-version = "0.2.2"
+version = "0.2.3"
 dependencies = [
  "directories",
  "futures-util",
