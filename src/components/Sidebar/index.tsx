@@ -1,7 +1,7 @@
 import styles from "./Sidebar.module.css";
 import { DiscordIcon, TwitterIcon, GithubIcon, HomeIcon, QueueIcon } from "@app/assets/Icons";
 import SidebarMenuButton from "./SidebarMenuButton";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import VersionsList from "./Versions/List";
 import { useEffect, useState } from "react";
 import { getVersion } from "@tauri-apps/api/app";
@@ -31,13 +31,17 @@ const Sidebar: React.FC = () => {
 
     return <div className={styles.sidebar}>
         <div className={styles.menus}>
-            <Link to="/"><SidebarMenuButton icon={<HomeIcon />}>Home</SidebarMenuButton></Link>
-            {/* <Link to="/settings"><SidebarMenuButton icon={<SettingsIcon />}>Settings</SidebarMenuButton></Link> */}
-            <Link to="/queue">
+            <NavLink to="/">
+                <SidebarMenuButton icon={<HomeIcon />}>
+                    Home
+                </SidebarMenuButton>
+            </NavLink>
+            {/* <NavLink to="/settings"><SidebarMenuButton icon={<SettingsIcon />}>Settings</SidebarMenuButton></NavLink> */}
+            <NavLink to="/queue">
                 <SidebarMenuButton icon={<QueueIcon />}>
                     Downloads {getDownloadCount() <= 0 ? "" : `(${getDownloadCount()})`}
                 </SidebarMenuButton>
-            </Link>
+            </NavLink>
         </div>
 
         <VersionsList />

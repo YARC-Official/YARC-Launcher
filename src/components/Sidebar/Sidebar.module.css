@@ -38,11 +38,27 @@
     color: var(--primary);
 }
 
+.menus {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
 /* Menu Button */
 
 .button {
     display: flex;
     gap: 10px;
+    
+    background: rgba(255, 255, 255, 0);
+    border-radius: 13px;
+
+    transition: background 0.1s;
+}
+
+[aria-current="page"] > .button,
+.button:hover {
+    background: rgba(255, 255, 255, 0.025);
 }
 
 .button .icon {
