@@ -3,8 +3,11 @@
     background: none;
 
     position: relative;
-    overflow: hidden;
     isolation: isolate;
+
+    /* Masking works WAY better than below */
+    /*overflow: none;*/
+    mask: linear-gradient(#000 0 0);
 
     border: none;
     border-radius: var(--borderRadius);
