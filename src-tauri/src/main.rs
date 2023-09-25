@@ -473,18 +473,6 @@ fn main() {
             let _ = set_shadow(&window, true);
             Ok(())
         })
-        .on_window_event(|event| match event.event() {
-            tauri::WindowEvent::Destroyed => {
-                // Close the alert window if the main one is closed
-                let win = event.window();
-                if win.label() == "main" {
-                    if let Some(alert_win) = win.app_handle().windows().get("alert") {
-                        let _ = alert_win.close();
-                    }
-                }
-            }
-            _ => {}
-        })
         .run(tauri::generate_context!())
         .expect("Error while running Tauri application.");
 }
