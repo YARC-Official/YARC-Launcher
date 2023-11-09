@@ -33,3 +33,38 @@
     border: none;
     cursor: pointer;
 }
+
+.dropdown_content {
+    width: 300px;
+    background-color: white;
+    border-radius: 6px;
+    padding: 5px;
+    box-shadow: 0px 10px 38px -10px rgba(22, 23, 24, 0.35), 0px 10px 20px -15px rgba(22, 23, 24, 0.2);
+    animation-duration: 400ms;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity;
+}
+
+.dropdown_item {
+    font-size: 16px;
+    line-height: 1;
+    color: var(--violet-11);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    height: 25px;
+    padding: 0 5px;
+    position: relative;
+    padding-left: 25px;
+    user-select: none;
+    outline: none;
+}
+
+.dropdown_item[data-highlighted] {
+    background-color: var(--violet-9);
+    color: var(--violet-1);
+}
+
+.dropdown_arrow {
+    fill: white;
+}
