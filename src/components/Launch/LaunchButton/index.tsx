@@ -51,6 +51,12 @@ export function LaunchButton(props: LaunchButtonProps) {
 
         const dropdownChildren = <>
             <DropdownItem>
+                Open Folder
+            </DropdownItem>
+            <DropdownItem>
+                Clear Caches
+            </DropdownItem>
+            <DropdownItem>
                 Uninstall
             </DropdownItem>
         </>;

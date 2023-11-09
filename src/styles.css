@@ -22,6 +22,7 @@
 
     --sideBar_background: #05060B;
     --sideBar_separator_color: #394452;
+    --sideBar_selection: rgba(255, 255, 255, 0.1);
 
     --button_green: #46E74F;
     --button_blue: #2ED9FF;

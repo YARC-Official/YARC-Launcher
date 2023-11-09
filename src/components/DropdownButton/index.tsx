@@ -17,19 +17,23 @@ const DropdownButton: React.FC<DropdownProps> = (props: DropdownProps) => {
     } = props;
 
     return <DropdownMenu.Root>
-        <DropdownMenu.Trigger asChild>
-            <div className={[styles.container, className].join(" ")} style={style}>
-                <Button {...buttonProps as ButtonProps} className={styles.button}>
-                    {children}
-                </Button>
+        <div className={[styles.container, className].join(" ")} style={style}>
+            <Button {...buttonProps as ButtonProps} className={styles.button}>
+                {children}
+            </Button>
+            <DropdownMenu.Trigger asChild>
                 <button className={styles.dropdown_button}>
                     <DropdownIcon width={12} height={12} />
                 </button>
-            </div>
-        </DropdownMenu.Trigger>
+            </DropdownMenu.Trigger>
+        </div>
 
         <DropdownMenu.Portal>
-            <DropdownMenu.Content className={styles.dropdown_content} sideOffset={5}>
+            <DropdownMenu.Content
+                className={styles.dropdown_content}
+                sideOffset={5}
+                align="end">
+
                 {dropdownChildren}
                 <DropdownMenu.Arrow className={styles.dropdown_arrow} />
             </DropdownMenu.Content>
