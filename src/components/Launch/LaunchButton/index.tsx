@@ -4,7 +4,7 @@ import { InstallingIcon, UpdateIcon } from "@app/assets/Icons";
 import { calculatePayloadPercentage } from "@app/utils/Download/payload";
 import PayloadProgress from "../../PayloadProgress";
 import Button from "@app/components/Button";
-import { DropdownButton, DropdownItem } from "@app/components/DropdownButton";
+// import { DropdownButton, DropdownItem } from "@app/components/DropdownButton";
 
 interface LaunchButtonProps extends React.PropsWithChildren {
     version: YARGVersion,
@@ -20,13 +20,13 @@ export function LaunchButton(props: LaunchButtonProps) {
             <UpdateIcon /> Update {playName}
         </>;
 
-        return <DropdownButton
+        return <Button
             style={props.style}
             color={ButtonColor.GREEN}
             onClick={() => version.download()}>
 
             {buttonChildren}
-        </DropdownButton>;
+        </Button>;
     }
 
     if (version.state === YARGStates.DOWNLOADING) {
@@ -49,26 +49,25 @@ export function LaunchButton(props: LaunchButtonProps) {
             Play {playName}
         </>;
 
-        const dropdownChildren = <>
-            <DropdownItem>
-                Open Folder
-            </DropdownItem>
-            <DropdownItem>
-                Clear Caches
-            </DropdownItem>
-            <DropdownItem>
-                Uninstall
-            </DropdownItem>
-        </>;
+        // const dropdownChildren = <>
+        //     <DropdownItem>
+        //         Open Folder
+        //     </DropdownItem>
+        //     <DropdownItem>
+        //         Clear Caches
+        //     </DropdownItem>
+        //     <DropdownItem>
+        //         Uninstall
+        //     </DropdownItem>
+        // </>;
 
-        return <DropdownButton
+        return <Button
             style={props.style}
             color={ButtonColor.BLUE}
-            onClick={() => version.play()}
-            dropdownChildren={dropdownChildren}>
+            onClick={() => version.play()}>
 
             {buttonChildren}
-        </DropdownButton>;
+        </Button>;
     }
 
     if (version.state === YARGStates.PLAYING) {
