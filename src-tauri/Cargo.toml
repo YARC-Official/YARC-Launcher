@@ -1,10 +1,10 @@
 [package]
 name = "yet_another_launcher"
 version = "0.2.5"
-description = "A Tauri App"
-authors = ["you"]
-license = ""
-repository = ""
+description = "The YARC (Yet Another Rhythm Company) launcher."
+authors = ["YARC Team"]
+license = "YARG License"
+repository = "https://github.com/YARC-Official/YARC-Launcher"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
