@@ -5,7 +5,6 @@ import Home from "@app/routes/Home";
 import Settings from "@app/routes/Settings";
 import StableYARGPage from "./YARG/Stable";
 import NightlyYARGPage from "./YARG/Nightly";
-import NewEngineYARGPage from "./YARG/NewEngine";
 import Queue from "@app/routes/Queue";
 import SetlistPage from "./Setlist";
 import NewsPage from "./NewsPage";
@@ -38,11 +37,6 @@ const Router = createBrowserRouter([
             {
                 path: "/yarg/nightly",
                 element: <NightlyYARGPage />
-            },
-
-            {
-                path: "/yarg/newEngine",
-                element: <NewEngineYARGPage />
             },
 
             {

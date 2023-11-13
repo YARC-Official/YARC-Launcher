@@ -11,7 +11,6 @@ const VersionsList: React.FC = () => {
         </VersionSeparator>
         <YARGVersion channel="stable" />
         <YARGVersion channel="nightly" />
-        <YARGVersion channel="newEngine" />
         <VersionSeparator name="Songs">
             <AddIcon className={styles.add} />
         </VersionSeparator>
