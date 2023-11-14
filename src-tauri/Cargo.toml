@@ -25,6 +25,8 @@ directories = "5.0.1"
 sevenz-rust = { version = "0.4.3", features = ["aes256"] }
 window-shadows = "0.2.1"
 minisign = "0.7.5"
+opener = "0.6.1"
+async-trait = "0.1.74"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

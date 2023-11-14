@@ -2,6 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod utils;
+mod app_profile;
 
 use directories::BaseDirs;
 use minisign::{PublicKeyBox, SignatureBox};
