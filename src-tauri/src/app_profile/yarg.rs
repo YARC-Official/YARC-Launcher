@@ -1,7 +1,7 @@
 use async_trait::async_trait;
 use minisign::{PublicKeyBox, SignatureBox};
 use tauri::Manager;
-use std::{path::{PathBuf, Path}, fs::{File, remove_file}};
+use std::{path::{PathBuf, Path}, fs::{File, remove_file}, process::Command};
 
 use crate::utils::*;
 
@@ -161,6 +161,10 @@ impl AppProfile for YARGAppProfile {
     fn launch(
         &self
     ) -> Result<(), String> {
-        todo!()
+        let path = self.get_exec()?;
+        Command::new(&path)
+            .spawn()
+            .map_err(|e| format!("Failed to start YARG. Is it installed?\n{:?}", e))?;
+        Ok(())
     }
 }
