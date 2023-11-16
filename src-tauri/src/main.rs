@@ -4,15 +4,15 @@
 mod utils;
 mod app_profile;
 
+use app_profile::AppProfile;
+use app_profile::official_setlist::OfficialSetlistProfile;
+use app_profile::yarg::YARGAppProfile;
 use directories::BaseDirs;
-use minisign::{PublicKeyBox, SignatureBox};
-use std::fs::{self, remove_file};
-use std::path::{Path, PathBuf};
-use std::process::Command;
-use std::{fs::File, io::Write};
+use std::fs::{self, remove_file, File};
+use std::path::PathBuf;
 use tauri::async_runtime::RwLock;
 use tauri::{AppHandle, Manager};
-use utils::{clear_folder, download, extract, extract_setlist_part};
+use utils::clear_folder;
 use window_shadows::set_shadow;
 
 #[derive(Default, serde::Serialize, serde::Deserialize)]
@@ -122,64 +122,6 @@ impl InnerState {
 
         Ok(())
     }
-
-    pub async fn download_setlist(
-        &self,
-        app: &AppHandle,
-        zip_urls: Vec<String>,
-        id: String,
-        version: String,
-    ) -> Result<(), String> {
-        let folder = self.setlist_folder.join(&id);
-
-        // Delete the old installation
-        clear_folder(&folder)?;
-
-        // Download the zip(s)
-        for (index, zip_url) in zip_urls.iter().enumerate() {
-            // Download the current zip
-            let zip_path = &self.temp_folder.join(format!("setlist_{}.7z", index));
-            download(Some(app), &zip_url, &zip_path).await?;
-
-            // Emit the install
-            let _ = app.emit_all(
-                "progress_info",
-                ProgressPayload {
-                    state: "installing".to_string(),
-                    current: 0,
-                    total: 0,
-                },
-            );
-
-            // Extract the zip to the game directory
-            extract_setlist_part(&zip_path, &folder)?;
-
-            // Delete zip
-            let _ = remove_file(zip_path);
-        }
-
-        // Create a version.txt
-        let mut file = File::create(folder.join("version.txt"))
-            .map_err(|e| format!("Failed to create version file in `{:?}`.\n{:?}", folder, e))?;
-        file.write_all(version.as_bytes())
-            .map_err(|e| format!("Failed to write version file in `{:?}`.\n{:?}", folder, e))?;
-
-        Ok(())
-    }
-
-    pub fn version_exists_setlist(&self, id: String, version: String) -> bool {
-        let path = self.setlist_folder.join(id);
-        if !Path::new(&path).exists() {
-            return false;
-        }
-
-        let contents = match fs::read_to_string(&path.join("version.txt")) {
-            Ok(contents) => contents,
-            _ => return false,
-        };
-
-        contents == version
-    }
 }
 
 pub struct State(pub RwLock<InnerState>);
@@ -193,69 +135,122 @@ async fn init(state: tauri::State<'_, State>) -> Result<(), String> {
 }
 
 #[tauri::command]
-async fn download_yarg(
-    app: AppHandle,
-    state: tauri::State<'_, State>,
-    zip_url: String,
-    sig_url: Option<String>,
-    version_id: String,
-    profile: String,
-) -> Result<(), String> {
+async fn is_initialized(state: tauri::State<'_, State>) -> Result<bool, String> {
     let state_guard = state.0.read().await;
+    Ok(state_guard.settings.initialized)
+}
 
-    state_guard
-        .download_yarg(&app, zip_url, sig_url, version_id, profile)
-        .await?;
-
-    Ok(())
+fn create_app_profile(
+    app_name: String,
+    inner_state: &InnerState,
+    version: String,
+    profile: String
+) -> Result<Box<dyn AppProfile + Send>, String> {
+    Ok(match app_name.as_str() {
+        "yarg" => Box::new(YARGAppProfile {
+            root_folder: inner_state.yarg_folder.clone(),
+            temp_folder: inner_state.temp_folder.clone(),
+            version,
+            profile
+        }),
+        "official_setlist" => Box::new(OfficialSetlistProfile {
+            root_folder: inner_state.setlist_folder.clone(),
+            temp_folder: inner_state.temp_folder.clone(),
+            version,
+            profile
+        }),
+        _ => Err(format!("Unknown app profile `{}`.", app_name))?
+    })
 }
 
 #[tauri::command]
-async fn play_yarg(
+async fn download_and_install(
     state: tauri::State<'_, State>,
-    version_id: String,
+    app_handle: AppHandle,
+    app_name: String,
+    version: String,
     profile: String,
-) -> Result<(), String> {
-    let state_guard = state.0.read().await;
-    state_guard.play_yarg(version_id, profile)?;
-
-    Ok(())
-}
-
-#[tauri::command]
-async fn version_exists_yarg(
-    state: tauri::State<'_, State>,
-    version_id: String,
-    profile: String,
-) -> Result<bool, String> {
-    let state_guard = state.0.read().await;
-    Ok(state_guard.version_exists_yarg(version_id, profile))
-}
-
-#[tauri::command]
-async fn download_setlist(
-    app: AppHandle,
-    state: tauri::State<'_, State>,
     zip_urls: Vec<String>,
-    id: String,
-    version: String,
+    sig_urls: Vec<String>
 ) -> Result<(), String> {
     let state_guard = state.0.read().await;
-    state_guard
-        .download_setlist(&app, zip_urls, id, version)
-        .await?;
+
+    let app_profile = create_app_profile(
+        app_name,
+        &*state_guard,
+        version,
+        profile
+    )?;
+
+    let result = app_profile.download_and_install(
+        &app_handle,
+        zip_urls,
+        sig_urls
+    );
+
+    result.await?;
 
     Ok(())
 }
 
 #[tauri::command]
-async fn version_exists_setlist(
+async fn uninstall(
     state: tauri::State<'_, State>,
-    id: String,
+    app_handle: AppHandle,
+    app_name: String,
     version: String,
+    profile: String
+) -> Result<(), String> {
+    let state_guard = state.0.read().await;
+
+    let app_profile = create_app_profile(
+        app_name,
+        &*state_guard,
+        version,
+        profile
+    )?;
+
+    app_profile.uninstall(&app_handle)?;
+
+    Ok(())
+}
+
+#[tauri::command]
+async fn exists(
+    state: tauri::State<'_, State>,
+    app_name: String,
+    version: String,
+    profile: String
 ) -> Result<bool, String> {
     let state_guard = state.0.read().await;
-    Ok(state_guard.version_exists_setlist(id, version))
+
+    let app_profile = create_app_profile(
+        app_name,
+        &*state_guard,
+        version,
+        profile
+    )?;
+
+    Ok(app_profile.exists())
+}
+
+#[tauri::command]
+async fn launch(
+    state: tauri::State<'_, State>,
+    app_name: String,
+    version: String,
+    profile: String
+) -> Result<(), String> {
+    let state_guard = state.0.read().await;
+
+    let app_profile = create_app_profile(
+        app_name,
+        &*state_guard,
+        version,
+        profile
+    )?;
+
+    app_profile.launch()
 }
 
 #[tauri::command]
@@ -264,9 +259,11 @@ fn get_os() -> String {
 }
 
 #[tauri::command]
-async fn is_initialized(state: tauri::State<'_, State>) -> Result<bool, String> {
-    let state_guard = state.0.read().await;
-    Ok(state_guard.settings.initialized)
+fn is_dir_empty(path: String) -> bool {
+    match fs::read_dir(path) {
+        Ok(mut entries) => entries.next().is_none(),
+        Err(_) => false,
+    }
 }
 
 #[tauri::command]
@@ -295,14 +292,6 @@ async fn get_download_location(state: tauri::State<'_, State>) -> Result<String,
     Ok(state_guard.settings.download_location.clone())
 }
 
-#[tauri::command]
-fn is_dir_empty(path: String) -> bool {
-    match fs::read_dir(path) {
-        Ok(mut entries) => entries.next().is_none(),
-        Err(_) => false,
-    }
-}
-
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_log::Builder::default().build())
@@ -316,16 +305,18 @@ fn main() {
         })))
         .invoke_handler(tauri::generate_handler![
             init,
-            download_yarg,
-            play_yarg,
-            version_exists_yarg,
-            download_setlist,
-            version_exists_setlist,
-            get_os,
             is_initialized,
+
+            download_and_install,
+            uninstall,
+            exists,
+            launch,
+
+            get_os,
+            is_dir_empty,
+
             set_download_location,
             get_download_location,
-            is_dir_empty
         ])
         .setup(|app| {
             let window = app.get_window("main").unwrap();

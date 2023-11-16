@@ -5,7 +5,7 @@ use std::path::Path;
 use std::{fs::File, io::Write};
 use tauri::{AppHandle, Manager};
 
-use crate::ProgressPayload;
+use crate::app_profile::ProgressPayload;
 
 const LETTERS: &str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 

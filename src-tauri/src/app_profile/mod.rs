@@ -2,6 +2,7 @@ use tauri::AppHandle;
 use async_trait::async_trait;
 
 pub mod yarg;
+pub mod official_setlist;
 
 pub const YARG_PUB_KEY: &str = "untrusted comment: minisign public key C26EBBBEC4C1DB81
 RWSB28HEvrtuwvPn3pweVBodgVi/d+UH22xDsL3K8VBgeRqaIrDdTvps
@@ -15,12 +16,12 @@ pub struct ProgressPayload {
 }
 
 #[async_trait]
-trait AppProfile {
+pub trait AppProfile {
     async fn download_and_install(
         &self,
         app: &AppHandle,
-        zip_url: String,
-        sig_url: Option<String>
+        zip_urls: Vec<String>,
+        sig_urls: Vec<String>
     ) -> Result<(), String>;
 
     fn install(
@@ -28,15 +29,14 @@ trait AppProfile {
     ) -> Result<(), String>;
 
     fn uninstall(
-        &self
+        &self,
+        app: &AppHandle
     ) -> Result<(), String>;
 
     fn exists(
         &self
     ) -> bool;
-}
 
-trait LaunchableAppProfile {
     fn launch(
         &self
     ) -> Result<(), String>;

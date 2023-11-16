@@ -7,15 +7,17 @@ use crate::utils::*;
 
 use super::*;
 
-struct YARGAppProfile {
-    root_folder: PathBuf,
-    temp_folder: PathBuf,
-    version: String,
-    profile: String
+pub struct YARGAppProfile {
+    pub root_folder: PathBuf,
+    pub temp_folder: PathBuf,
+    pub version: String,
+    pub profile: String
 }
 
 impl YARGAppProfile {
-    fn get_exec(&self) -> Result<PathBuf, String> {
+    fn get_exec(
+        &self
+    ) -> Result<PathBuf, String> {
         let mut path = self.root_folder.join(&self.profile).join(&self.version);
 
         // Each OS has a different executable
@@ -46,10 +48,13 @@ impl AppProfile for YARGAppProfile {
     async fn download_and_install(
         &self,
         app: &tauri::AppHandle,
-        zip_url: String,
-        sig_url: Option<String>
+        zip_urls: Vec<String>,
+        sig_urls: Vec<String>
     ) -> Result<(), String> {
         let mut folder = self.root_folder.join(&self.profile);
+
+        let zip_url = zip_urls.first().ok_or("Did not get any zip URLs.")?;
+        let sig_url = sig_urls.first();
 
         // Delete the old installation
         clear_folder(&folder)?;
@@ -141,7 +146,8 @@ impl AppProfile for YARGAppProfile {
     }
 
     fn uninstall(
-        &self
+        &self,
+        app: &AppHandle
     ) -> Result<(), String> {
         todo!()
     }
@@ -150,5 +156,11 @@ impl AppProfile for YARGAppProfile {
         &self
     ) -> bool {
         Path::new(&self.root_folder.join(&self.profile).join(&self.version)).exists()
+    }
+
+    fn launch(
+        &self
+    ) -> Result<(), String> {
+        todo!()
     }
 }
