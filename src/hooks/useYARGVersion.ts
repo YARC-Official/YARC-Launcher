@@ -37,8 +37,9 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, pro
             async () => {
                 if (state || !releaseData) return;
 
-                const exists = await invoke("version_exists_yarg", {
-                    versionId: releaseData.tag_name,
+                const exists = await invoke("exists", {
+                    appName: "yarg",
+                    version: releaseData.tag_name,
                     profile: profileName
                 });
 
@@ -54,7 +55,7 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, pro
             play: async () => {},
             download: async () => {},
         };
-    } 
+    }
 
     const play = async () => {
         if (!releaseData) return;
@@ -62,14 +63,15 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, pro
         setState(YARGStates.LOADING);
 
         try {
-            await invoke("play_yarg", {
-                versionId: releaseData.tag_name,
+            await invoke("launch", {
+                appName: "yarg",
+                version: releaseData.tag_name,
                 profile: profileName
             });
 
             setState(YARGStates.PLAYING);
 
-            // As we don't have a way to check if the YARG game process is closed, we set a timer to avoid locking the state to PLAYING 
+            // As we don't have a way to check if the YARG game process is closed, we set a timer to avoid locking the state to PLAYING
             setTimeout(() => {
                 setState(YARGStates.AVAILABLE);
             }, 10 * 1000);

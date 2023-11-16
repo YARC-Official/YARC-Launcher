@@ -25,9 +25,10 @@ export const useSetlistData = (setlistData: SetlistData) => {
             async () => {
                 if (state || !setlistData) return;
 
-                const exists = await invoke("version_exists_setlist", {
-                    id: setlistData.id,
-                    version: setlistData.version
+                const exists = await invoke("exists", {
+                    appName: "official_setlist",
+                    version: setlistData.version,
+                    profile: setlistData.id
                 });
 
                 setState(exists ? SetlistStates.AVAILABLE : SetlistStates.NEW_UPDATE);

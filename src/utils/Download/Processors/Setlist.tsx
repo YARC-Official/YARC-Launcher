@@ -17,10 +17,12 @@ export class SetlistDownload extends BaseDownload implements IBaseDownload {
     }
 
     async start(): Promise<void> {
-        return await invoke("download_setlist", {
-            zipUrls: this.zipUrls,
-            id: this.id,
+        return await invoke("download_and_install", {
+            appName: "official_setlist",
             version: this.version,
+            profile: this.id,
+            zipUrls: this.zipUrls,
+            sigUrls: [],
         });
     }
 

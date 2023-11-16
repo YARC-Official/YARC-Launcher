@@ -22,11 +22,17 @@ export class YARGDownload extends BaseDownload implements IBaseDownload {
     }
 
     async start(): Promise<void> {
-        return await invoke("download_yarg", {
-            zipUrl: this.zipUrl,
-            sigUrl: this.sigUrl,
-            versionId: this.version,
-            profile: this.profile
+        let sigUrls: string[] = [];
+        if (this.sigUrl != null) {
+            sigUrls = [ this.sigUrl ];
+        }
+
+        return await invoke("download_and_install", {
+            appName: "yarg",
+            version: this.version,
+            profile: this.profile,
+            zipUrls: [ this.zipUrl ],
+            sigUrls: sigUrls,
         });
     }
 
