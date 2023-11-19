@@ -4,6 +4,7 @@ import { InstallingIcon, UpdateIcon } from "@app/assets/Icons";
 import { calculatePayloadPercentage } from "@app/utils/Download/payload";
 import PayloadProgress from "../../PayloadProgress";
 import Button from "@app/components/Button";
+import { DropdownButton, DropdownItem } from "@app/components/DropdownButton";
 // import { DropdownButton, DropdownItem } from "@app/components/DropdownButton";
 
 interface LaunchButtonProps extends React.PropsWithChildren {
@@ -49,25 +50,20 @@ export function LaunchButton(props: LaunchButtonProps) {
             Play {playName}
         </>;
 
-        // const dropdownChildren = <>
-        //     <DropdownItem>
-        //         Open Folder
-        //     </DropdownItem>
-        //     <DropdownItem>
-        //         Clear Caches
-        //     </DropdownItem>
-        //     <DropdownItem>
-        //         Uninstall
-        //     </DropdownItem>
-        // </>;
+        const dropdownChildren = <>
+            <DropdownItem>
+                Uninstall
+            </DropdownItem>
+        </>;
 
-        return <Button
+        return <DropdownButton
             style={props.style}
             color={ButtonColor.BLUE}
-            onClick={() => version.play()}>
+            onClick={() => version.play()}
+            dropdownChildren={dropdownChildren}>
 
             {buttonChildren}
-        </Button>;
+        </DropdownButton>;
     }
 
     if (version.state === YARGStates.PLAYING) {
