@@ -29,8 +29,7 @@ pub trait AppProfile {
     ) -> Result<(), String>;
 
     fn uninstall(
-        &self,
-        app: &AppHandle
+        &self
     ) -> Result<(), String>;
 
     fn exists(

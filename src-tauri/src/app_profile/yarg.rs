@@ -146,10 +146,11 @@ impl AppProfile for YARGAppProfile {
     }
 
     fn uninstall(
-        &self,
-        app: &AppHandle
+        &self
     ) -> Result<(), String> {
-        todo!()
+        let folder = self.root_folder.join(&self.profile);
+        std::fs::remove_dir_all(folder)
+            .map_err(|e| format!("Failed to remove directory.\n{:?}", e))
     }
 
     fn exists(

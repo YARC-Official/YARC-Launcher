@@ -196,7 +196,6 @@ async fn download_and_install(
 #[tauri::command]
 async fn uninstall(
     state: tauri::State<'_, State>,
-    app_handle: AppHandle,
     app_name: String,
     version: String,
     profile: String
@@ -210,7 +209,7 @@ async fn uninstall(
         profile
     )?;
 
-    app_profile.uninstall(&app_handle)?;
+    app_profile.uninstall()?;
 
     Ok(())
 }
