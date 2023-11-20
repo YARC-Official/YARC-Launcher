@@ -10,7 +10,7 @@ use app_profile::yarg::YARGAppProfile;
 use directories::BaseDirs;
 use std::fs::{self, remove_file, File};
 use std::path::PathBuf;
-use tauri::async_runtime::RwLock;
+use std::sync::RwLock;
 use tauri::{AppHandle, Manager};
 use utils::clear_folder;
 use window_shadows::set_shadow;
@@ -126,36 +126,38 @@ impl InnerState {
 
 pub struct State(pub RwLock<InnerState>);
 
-#[tauri::command]
-async fn init(state: tauri::State<'_, State>) -> Result<(), String> {
-    let mut state_guard = state.0.write().await;
+#[tauri::command(async)]
+fn init(state: tauri::State<State>) -> Result<(), String> {
+    let mut state_guard = state.0.write().unwrap();
     state_guard.init()?;
 
     Ok(())
 }
 
-#[tauri::command]
-async fn is_initialized(state: tauri::State<'_, State>) -> Result<bool, String> {
-    let state_guard = state.0.read().await;
+#[tauri::command(async)]
+fn is_initialized(state: tauri::State<State>) -> Result<bool, String> {
+    let state_guard = state.0.read().unwrap();
     Ok(state_guard.settings.initialized)
 }
 
 fn create_app_profile(
     app_name: String,
-    inner_state: &InnerState,
+    state: &tauri::State<State>,
     version: String,
     profile: String
 ) -> Result<Box<dyn AppProfile + Send>, String> {
+    let state_guard = state.0.read().unwrap();
+
     Ok(match app_name.as_str() {
         "yarg" => Box::new(YARGAppProfile {
-            root_folder: inner_state.yarg_folder.clone(),
-            temp_folder: inner_state.temp_folder.clone(),
+            root_folder: state_guard.yarg_folder.clone(),
+            temp_folder: state_guard.temp_folder.clone(),
             version,
             profile
         }),
         "official_setlist" => Box::new(OfficialSetlistProfile {
-            root_folder: inner_state.setlist_folder.clone(),
-            temp_folder: inner_state.temp_folder.clone(),
+            root_folder: state_guard.setlist_folder.clone(),
+            temp_folder: state_guard.temp_folder.clone(),
             version,
             profile
         }),
@@ -173,11 +175,9 @@ async fn download_and_install(
     zip_urls: Vec<String>,
     sig_urls: Vec<String>
 ) -> Result<(), String> {
-    let state_guard = state.0.read().await;
-
     let app_profile = create_app_profile(
         app_name,
-        &*state_guard,
+        &state,
         version,
         profile
     )?;
@@ -193,18 +193,16 @@ async fn download_and_install(
     Ok(())
 }
 
-#[tauri::command]
-async fn uninstall(
-    state: tauri::State<'_, State>,
+#[tauri::command(async)]
+fn uninstall(
+    state: tauri::State<State>,
     app_name: String,
     version: String,
     profile: String
 ) -> Result<(), String> {
-    let state_guard = state.0.read().await;
-
     let app_profile = create_app_profile(
         app_name,
-        &*state_guard,
+        &state,
         version,
         profile
     )?;
@@ -214,18 +212,16 @@ async fn uninstall(
     Ok(())
 }
 
-#[tauri::command]
-async fn exists(
-    state: tauri::State<'_, State>,
+#[tauri::command(async)]
+fn exists(
+    state: tauri::State<State>,
     app_name: String,
     version: String,
     profile: String
 ) -> Result<bool, String> {
-    let state_guard = state.0.read().await;
-
     let app_profile = create_app_profile(
         app_name,
-        &*state_guard,
+        &state,
         version,
         profile
     )?;
@@ -233,18 +229,16 @@ async fn exists(
     Ok(app_profile.exists())
 }
 
-#[tauri::command]
-async fn launch(
+#[tauri::command(async)]
+fn launch(
     state: tauri::State<'_, State>,
     app_name: String,
     version: String,
     profile: String
 ) -> Result<(), String> {
-    let state_guard = state.0.read().await;
-
     let app_profile = create_app_profile(
         app_name,
-        &*state_guard,
+        &state,
         version,
         profile
     )?;
@@ -265,12 +259,12 @@ fn is_dir_empty(path: String) -> bool {
     }
 }
 
-#[tauri::command]
+#[tauri::command(async)]
 async fn set_download_location(
     state: tauri::State<'_, State>,
     path: Option<String>,
 ) -> Result<(), String> {
-    let mut state_guard = state.0.write().await;
+    let mut state_guard = state.0.write().unwrap();
 
     // If this is None, just use the default
     if let Some(path) = path {
@@ -286,8 +280,8 @@ async fn set_download_location(
 }
 
 #[tauri::command]
-async fn get_download_location(state: tauri::State<'_, State>) -> Result<String, String> {
-    let state_guard = state.0.read().await;
+fn get_download_location(state: tauri::State<'_, State>) -> Result<String, String> {
+    let state_guard = state.0.read().unwrap();
     Ok(state_guard.settings.download_location.clone())
 }
 
@@ -315,7 +309,7 @@ fn main() {
             is_dir_empty,
 
             set_download_location,
-            get_download_location,
+            get_download_location
         ])
         .setup(|app| {
             let window = app.get_window("main").unwrap();
