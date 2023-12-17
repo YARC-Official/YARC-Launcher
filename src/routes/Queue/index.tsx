@@ -1,11 +1,10 @@
 import styles from "./Queue.module.css";
 import QueueSection from "@app/components/Queue/QueueSection";
 import { useDownloadClient } from "@app/utils/Download/provider";
-import { ReactComponent as QueueListIcon } from "@app/assets/Icons/QueueList.svg";
 import PayloadProgress from "@app/components/PayloadProgress";
 import * as Progress from "@radix-ui/react-progress";
 import { useEffect, useState } from "react";
-import { InstallingIcon } from "@app/assets/Icons";
+import { InstallingIcon, QueueListIcon } from "@app/assets/Icons";
 
 function Queue() {
     // These are for the "You've been staring at this blank page for..."
