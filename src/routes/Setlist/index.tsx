@@ -29,7 +29,7 @@ const SetlistPage: React.FC<Props> = ({ setlistId }: Props) => {
     const setlistData = useSetlistRelease(setlistId);
     const { state, download, payload } = useSetlistData(setlistData);
     const [ sortType, setSortType ] = useState("title" as SortType);
-    
+
     const dialogManager = useDialogManager();
 
     function SetlistButton(props: SetlistButtonProps) {
@@ -52,33 +52,43 @@ const SetlistPage: React.FC<Props> = ({ setlistId }: Props) => {
             </Button>;
         }
     }
-    
+
     const newestSongRelease = setlistData.songs.reduce((prev, curr) =>
         new Date(prev.releaseDate).getTime() > new Date(curr.releaseDate).getTime() ? prev : curr);
-    
+
     return <>
         <div className={styles.banner} />
         <div className={styles.main}>
             <div className={styles.content}>
                 <SortChanger onChange={(s) => setSortType(s)} />
-            
+
                 <GenericBoxSlim>
-                    {sortArray(setlistData.songs, { by: "order", computed: {
-                        order: i => {
-                            const value = i[sortType];
-                            
-                            if (typeof value === "string") {
-                                return value.toLowerCase();
+                    {sortArray(setlistData.songs, {
+                        by: "order",
+                        order: sortType === "releaseDate" ? "desc" : "asc",
+                        computed: {
+                            order: i => {
+                                const value = i[sortType];
+
+                                // Speical case for release date
+                                if (sortType === "releaseDate" && typeof value === "string") {
+                                    return new Date(value).getTime();
+                                }
+
+                                // Make sure strings are in all lowercase for proper sorting
+                                if (typeof value === "string") {
+                                    return value.toLowerCase();
+                                }
+
+                                return value;
                             }
-                            
-                            return value;
                         }
-                    }}).map(i =>
+                    }).map(i =>
                         <SongEntry title={i.title} artist={i.artist} length={i.length}
                             newSong={isConsideredNewRelease(i.releaseDate, newestSongRelease.releaseDate)} key={i.title} />
                     )}
                 </GenericBoxSlim>
-                
+
                 <div className={styles.content_spacer}></div>
                 <NewsSection categoryFilter="setlist_official" startingEntries={2} />
             </div>

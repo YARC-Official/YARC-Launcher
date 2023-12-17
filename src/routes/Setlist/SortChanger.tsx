@@ -15,7 +15,7 @@ const SortChanger: React.FC<Props> = ({ onChange }: Props) => {
         type="single"
         defaultValue="title"
         onValueChange={(value: SortType) => onChange(value)}>
-        
+
         <ToggleGroup.Item className={styles.item} value="title">
             <NoteIcon />
             Track
@@ -28,7 +28,7 @@ const SortChanger: React.FC<Props> = ({ onChange }: Props) => {
             <TimeIcon />
             Length
         </ToggleGroup.Item>
-        <ToggleGroup.Item className={styles.item} value="release">
+        <ToggleGroup.Item className={styles.item} value="releaseDate">
             <DateIcon />
             Release
         </ToggleGroup.Item>
