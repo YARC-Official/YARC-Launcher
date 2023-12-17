@@ -1,30 +1,37 @@
-import { ReactComponent as AddIcon } from "./Add.svg";
-import { ReactComponent as ChartersIcon } from "./Charters.svg";
-import { ReactComponent as CheckmarkIcon } from "./Checkmark.svg";
-import { ReactComponent as CloseIcon } from "./Close.svg";
-import { ReactComponent as DateIcon } from "./Date.svg";
-import { ReactComponent as DiscordIcon } from "./Discord.svg";
-import { ReactComponent as GithubIcon } from "./Github.svg";
-import { ReactComponent as HomeIcon } from "./Home.svg";
-import { ReactComponent as InformationIcon } from "./Information.svg";
-import { ReactComponent as InstallingIcon } from "./Installing.svg";
-import { ReactComponent as LinkIcon } from "./Link.svg";
-import { ReactComponent as MinimizeIcon } from "./Minimize.svg";
-import { ReactComponent as NewsIcon } from "./News.svg";
-import { ReactComponent as NoteIcon } from "./Note.svg";
-import { ReactComponent as OrganizerIcon } from "./Organizer.svg";
-import { ReactComponent as QueueIcon } from "./Queue.svg";
-import { ReactComponent as QueueListIcon } from "./QueueList.svg";
-import { ReactComponent as SettingsIcon } from "./Settings.svg";
-import { ReactComponent as SongIcon } from "./Song.svg";
-import { ReactComponent as TimeIcon } from "./Time.svg";
-import { ReactComponent as TwitterIcon } from "./Twitter.svg";
-import { ReactComponent as UpdateIcon } from "./Update.svg";
-import { ReactComponent as DriveIcon } from "./Drive.svg";
-import { ReactComponent as UnknownUserIcon } from "./UnknownUser.svg";
-import { ReactComponent as BackIcon } from "./Back.svg";
-import { ReactComponent as WarningIcon } from "./Warning.svg";
-import { ReactComponent as DropdownIcon } from "./Dropdown.svg";
+/**
+ * Note for adding new icons:
+ * For auto-converting SVG to React Components, we're currently using vite-plugin-svgr.
+ * When referencing the path for the svg, insert "?react" at the end of the path to auto-convert into a React Component. 
+ * Also if possible, replace the static colors inside the SVG file with "currentColor" for dynamic color.
+ */
+
+import AddIcon from "./Add.svg?react";
+import ChartersIcon from "./Charters.svg?react";
+import CheckmarkIcon from "./Checkmark.svg?react";
+import CloseIcon from "./Close.svg?react";
+import DateIcon from "./Date.svg?react";
+import DiscordIcon from "./Discord.svg?react";
+import GithubIcon from "./Github.svg?react";
+import HomeIcon from "./Home.svg?react";
+import InformationIcon from "./Information.svg?react";
+import InstallingIcon from "./Installing.svg?react";
+import LinkIcon from "./Link.svg?react";
+import MinimizeIcon from "./Minimize.svg?react";
+import NewsIcon from "./News.svg?react";
+import NoteIcon from "./Note.svg?react";
+import OrganizerIcon from "./Organizer.svg?react";
+import QueueIcon from "./Queue.svg?react";
+import QueueListIcon from "./QueueList.svg?react";
+import SettingsIcon from "./Settings.svg?react";
+import SongIcon from "./Song.svg?react";
+import TimeIcon from "./Time.svg?react";
+import TwitterIcon from "./Twitter.svg?react";
+import UpdateIcon from "./Update.svg?react";
+import DriveIcon from "./Drive.svg?react";
+import UnknownUserIcon from "./UnknownUser.svg?react";
+import BackIcon from "./Back.svg?react";
+import WarningIcon from "./Warning.svg?react";
+import DropdownIcon from "./Dropdown.svg?react";
 
 export {
     AddIcon,
