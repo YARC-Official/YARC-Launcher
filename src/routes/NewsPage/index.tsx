@@ -78,7 +78,9 @@ function NewsPage() {
                 /> : ""
             }
 
-            <SanitizedHTML dirtyHTML={marked.parse(content)} />
+            <SanitizedHTML 
+                dirtyHTML={ marked.parse(content, {async: false}) as string } 
+            />
         </div>
     </>;
 }
