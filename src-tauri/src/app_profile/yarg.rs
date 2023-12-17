@@ -119,29 +119,9 @@ impl AppProfile for YARGAppProfile {
         Ok(())
     }
 
-    #[cfg(not(target_os = "linux"))]
     fn install(
         &self
     ) -> Result<(), String> {
-        Ok(())
-    }
-
-    #[cfg(target_os = "linux")]
-    fn install(
-        &self
-    ) -> Result<(), String> {
-        use std::os::unix::prelude::PermissionsExt;
-
-        let exec = self.get_exec()?;
-
-        // Set the correct permissions for the YARG exec
-        let mut perms = std::fs::metadata(&exec)
-            .map_err(|e| format!("Failed to get permissions of file.\n{:?}", e))?
-            .permissions();
-        perms.set_mode(0o7111);
-        std::fs::set_permissions(&exec, perms)
-            .map_err(|e| format!("Failed to set permissions of file.\n{:?}", e))?;
-
         Ok(())
     }
 
