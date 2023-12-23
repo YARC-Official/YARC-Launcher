@@ -3,9 +3,9 @@ import { ExtendedReleaseData, getYARGReleaseZip, getYARGReleaseSigFromZipURL } f
 import { invoke } from "@tauri-apps/api/tauri";
 import { type } from "@tauri-apps/api/os";
 import { useYARGState } from "@app/stores/YARGStateStore";
-import { useDownloadClient } from "@app/utils/Download/provider";
-import { YARGDownload, generateYARGUUID } from "@app/utils/Download/Processors/YARG";
-import { DownloadPayload } from "@app/utils/Download";
+import { useDownloadClient } from "@app/tasks/provider";
+import { YARGDownload, generateYARGUUID } from "@app/tasks/Processors/YARG";
+import { DownloadPayload } from "@app/tasks";
 import { showErrorDialog, showInstallFolderDialog } from "@app/dialogs/dialogUtil";
 import { useDialogManager } from "@app/dialogs/DialogProvider";
 

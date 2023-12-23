@@ -1,4 +1,4 @@
-import { DownloadPayload } from "@app/utils/Download";
+import { DownloadPayload } from "@app/tasks";
 
 interface Props {
     payload?: DownloadPayload;

@@ -1,4 +1,4 @@
-import { YARGDownload } from "@app/utils/Download/Processors/YARG";
+import { YARGDownload } from "@app/tasks/Processors/YARG";
 import BaseQueue from "./base";
 import StableYARGIcon from "@app/assets/StableYARGIcon.png";
 import NightlyYARGIcon from "@app/assets/NightlyYARGIcon.png";

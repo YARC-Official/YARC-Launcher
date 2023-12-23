@@ -9,7 +9,7 @@ import { isConsideredNewRelease, millisToDisplayLength } from "@app/utils/timeFo
 import Button, { ButtonColor } from "@app/components/Button";
 import PayloadProgress from "@app/components/PayloadProgress";
 import TooltipWrapper from "@app/components/TooltipWrapper";
-import { calculatePayloadPercentage } from "@app/utils/Download/payload";
+import { calculatePayloadPercentage } from "@app/tasks/payload";
 import { useDialogManager } from "@app/dialogs/DialogProvider";
 import { intlFormatDistance } from "date-fns";
 import NewsSection from "@app/components/NewsSection";

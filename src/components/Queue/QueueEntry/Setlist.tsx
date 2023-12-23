@@ -1,4 +1,4 @@
-import { SetlistDownload } from "@app/utils/Download/Processors/Setlist";
+import { SetlistDownload } from "@app/tasks/Processors/Setlist";
 import BaseQueue from "./base";
 import SetlistIcon from "@app/assets/SourceIcons/Official.png";
 

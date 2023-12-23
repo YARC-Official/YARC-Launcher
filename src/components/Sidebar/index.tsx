@@ -5,7 +5,7 @@ import { NavLink } from "react-router-dom";
 import VersionsList from "./Versions/List";
 import { useEffect, useState } from "react";
 import { getVersion } from "@tauri-apps/api/app";
-import { useDownloadClient } from "@app/utils/Download/provider";
+import { useDownloadClient } from "@app/tasks/provider";
 
 const Sidebar: React.FC = () => {
     const [launcherVersion, setLauncherVersion] = useState("");

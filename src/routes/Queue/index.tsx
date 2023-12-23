@@ -1,6 +1,6 @@
 import styles from "./Queue.module.css";
 import QueueSection from "@app/components/Queue/QueueSection";
-import { useDownloadClient } from "@app/utils/Download/provider";
+import { useDownloadClient } from "@app/tasks/provider";
 import PayloadProgress from "@app/components/PayloadProgress";
 import * as Progress from "@radix-ui/react-progress";
 import { useEffect, useState } from "react";

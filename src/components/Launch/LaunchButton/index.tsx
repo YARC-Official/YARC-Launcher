@@ -1,7 +1,7 @@
 import { YARGStates, YARGVersion } from "@app/hooks/useYARGVersion";
 import { ButtonColor } from "../../Button";
 import { InstallingIcon, UpdateIcon } from "@app/assets/Icons";
-import { calculatePayloadPercentage } from "@app/utils/Download/payload";
+import { calculatePayloadPercentage } from "@app/tasks/payload";
 import PayloadProgress from "../../PayloadProgress";
 import Button from "@app/components/Button";
 import { DropdownButton, DropdownItem } from "@app/components/DropdownButton";

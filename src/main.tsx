@@ -7,7 +7,7 @@ import Router from "@app/routes";
 import { invoke } from "@tauri-apps/api/tauri";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./query";
-import { DownloadClientProvider } from "@app/utils/Download/provider";
+import { DownloadClientProvider } from "@app/tasks/provider";
 import { DialogManagerProvider } from "./dialogs/DialogProvider";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorScreen, onError } from "./routes/ErrorScreen";
@@ -36,7 +36,7 @@ invoke("init").then(() => {
 }).catch(e => {
     console.error(e);
     LogError(JSON.stringify(serializeError(e)));
-    
+
     ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <React.StrictMode>
             <TitleBar />

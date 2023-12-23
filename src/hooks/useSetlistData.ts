@@ -1,7 +1,7 @@
 import { useSetlistState } from "@app/stores/SetlistStateStore";
 import { SetlistData } from "./useSetlistRelease";
-import { useDownloadClient } from "@app/utils/Download/provider";
-import { SetlistDownload, generateSetlistUUID } from "@app/utils/Download/Processors/Setlist";
+import { useDownloadClient } from "@app/tasks/provider";
+import { SetlistDownload, generateSetlistUUID } from "@app/tasks/Processors/Setlist";
 import { useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { DialogManager } from "@app/dialogs";
