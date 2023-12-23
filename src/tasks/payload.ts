@@ -1,36 +1,36 @@
 import { createStore } from "zustand/vanilla";
-import { DownloadPayload } from ".";
-import { IBaseDownload } from "./Processors/base";
+import { TaskPayload } from ".";
+import { IBaseTask } from "./Processors/base";
 
-interface DownloadPayloadStore {
-    [key: string]: DownloadPayload,
+interface TaskPayloadStore {
+    [key: string]: TaskPayload,
 }
 
-export class DownloadPayloadHandler {
-    payloadStore = createStore<DownloadPayloadStore>(() => ({}));
+export class TaskPayloadHandler {
+    payloadStore = createStore<TaskPayloadStore>(() => ({}));
 
-    add(downloader: IBaseDownload) {
-        const initialPayload: DownloadPayload = {
+    add(task: IBaseTask) {
+        const initialPayload: TaskPayload = {
             state: "waiting",
             current: 0,
             total: 0,
         };
 
-        this.update(downloader, initialPayload);
+        this.update(task, initialPayload);
     }
 
-    update(downloader: IBaseDownload, payload: DownloadPayload) {
-        const uuid = downloader.uuid;
+    update(task: IBaseTask, payload: TaskPayload) {
+        const uuid = task.taskUUID;
         return this.payloadStore.setState({ [uuid]: { ...payload } });
     }
 
-    remove(downloader: IBaseDownload) {
-        const uuid = downloader.uuid;
+    remove(task: IBaseTask) {
+        const uuid = task.taskUUID;
         return this.payloadStore.setState({ [uuid]: undefined });
     }
 }
 
-export const calculatePayloadPercentage = (payload?: DownloadPayload): number | undefined => {
+export const calculatePayloadPercentage = (payload?: TaskPayload): number | undefined => {
     if (!payload) return undefined;
 
     return payload.total > 0 ? (payload.current / payload.total) * 100 : undefined;

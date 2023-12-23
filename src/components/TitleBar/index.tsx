@@ -4,13 +4,13 @@ import styles from "./titlebar.module.css";
 import { CloseIcon, MinimizeIcon } from "@app/assets/Icons";
 import { useDialogManager } from "@app/dialogs/DialogProvider";
 import { TryCloseDialog } from "@app/dialogs/Dialogs/TryCloseDialog";
-import { useDownloadClient } from "@app/tasks/provider";
+import { useTaskClient } from "@app/tasks/provider";
 
 const TitleBar: React.FC = () => {
     const dialogManager = useDialogManager();
 
-    const downloadClient = useDownloadClient();
-    const current = downloadClient.useCurrent();
+    const taskClient = useTaskClient();
+    const current = taskClient.useCurrent();
 
     async function tryClose() {
         // If there is no download, just close

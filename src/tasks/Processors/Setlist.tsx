@@ -1,8 +1,8 @@
 import { invoke } from "@tauri-apps/api/tauri";
-import { BaseDownload, IBaseDownload } from "./base";
+import { BaseTask, IBaseTask } from "./base";
 import SetlistQueue from "@app/components/Queue/QueueEntry/Setlist";
 
-export class SetlistDownload extends BaseDownload implements IBaseDownload {
+export class SetlistDownload extends BaseTask implements IBaseTask {
     zipUrls: string[];
     id: string;
     version: string;

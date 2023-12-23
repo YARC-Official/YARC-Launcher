@@ -1,6 +1,6 @@
 import styles from "./Queue.module.css";
 import QueueSection from "@app/components/Queue/QueueSection";
-import { useDownloadClient } from "@app/tasks/provider";
+import { useTaskClient } from "@app/tasks/provider";
 import PayloadProgress from "@app/components/PayloadProgress";
 import * as Progress from "@radix-ui/react-progress";
 import { useEffect, useState } from "react";
@@ -12,10 +12,10 @@ function Queue() {
     const [startTime, setStartTime] = useState(Date.now());
     const [time, setTime] = useState(Date.now());
 
-    const downloadClient = useDownloadClient();
-    const queue = downloadClient.useQueue();
-    const current = downloadClient.useCurrent();
-    const payload = downloadClient.usePayload(current?.uuid);
+    const taskClient = useTaskClient();
+    const queue = taskClient.useQueue();
+    const current = taskClient.useCurrent();
+    const payload = taskClient.usePayload(current?.taskUUID);
 
     // Update the timer so the text also updates
     useEffect(() => {

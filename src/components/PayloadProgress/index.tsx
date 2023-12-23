@@ -1,7 +1,7 @@
-import { DownloadPayload } from "@app/tasks";
+import { TaskPayload } from "@app/tasks";
 
 interface Props {
-    payload?: DownloadPayload;
+    payload?: TaskPayload;
     defaultText?: string;
     fullMode?: boolean;
 }
@@ -28,7 +28,7 @@ const ProgressWaiting: React.FC = () => {
 };
 
 interface ProgressDownloadingProps {
-    payload: DownloadPayload;
+    payload: TaskPayload;
     fullMode?: boolean;
 }
 

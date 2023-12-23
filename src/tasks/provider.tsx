@@ -1,20 +1,20 @@
 import { createContext } from "react";
-import { DownloadClient } from ".";
+import { TaskClient } from ".";
 import { useContext } from "react";
 import { useDialogManager } from "@app/dialogs/DialogProvider";
 
-const DownloadClientContext = createContext<DownloadClient>({} as DownloadClient);
+const TaskClientContext = createContext<TaskClient>({} as TaskClient);
 
 type ProviderProps = {
     children?: React.ReactNode;
 }
 
-export const DownloadClientProvider: React.FC<ProviderProps> = ({ children }: ProviderProps) => {
+export const TaskClientProvider: React.FC<ProviderProps> = ({ children }: ProviderProps) => {
     const dialogManager = useDialogManager();
 
-    return <DownloadClientContext.Provider value={new DownloadClient(dialogManager)}>
+    return <TaskClientContext.Provider value={new TaskClient(dialogManager)}>
         {children}
-    </DownloadClientContext.Provider>;
+    </TaskClientContext.Provider>;
 };
 
-export const useDownloadClient = () => useContext(DownloadClientContext);
+export const useTaskClient = () => useContext(TaskClientContext);

@@ -5,14 +5,14 @@ import { NavLink } from "react-router-dom";
 import VersionsList from "./Versions/List";
 import { useEffect, useState } from "react";
 import { getVersion } from "@tauri-apps/api/app";
-import { useDownloadClient } from "@app/tasks/provider";
+import { useTaskClient } from "@app/tasks/provider";
 
 const Sidebar: React.FC = () => {
     const [launcherVersion, setLauncherVersion] = useState("");
 
-    const downloadClient = useDownloadClient();
-    const queue = downloadClient.useQueue();
-    const current = downloadClient.useCurrent();
+    const taskClient = useTaskClient();
+    const queue = taskClient.useQueue();
+    const current = taskClient.useCurrent();
 
     function getDownloadCount() {
         let count = queue.size;

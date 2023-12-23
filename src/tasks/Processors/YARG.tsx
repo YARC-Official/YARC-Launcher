@@ -1,9 +1,9 @@
 import { invoke } from "@tauri-apps/api/tauri";
-import { BaseDownload, IBaseDownload } from "./base";
+import { BaseTask, IBaseTask } from "./base";
 import YARGQueue from "@app/components/Queue/QueueEntry/YARG";
 import { YARGChannels } from "@app/hooks/useYARGRelease";
 
-export class YARGDownload extends BaseDownload implements IBaseDownload {
+export class YARGDownload extends BaseTask implements IBaseTask {
     zipUrl: string;
     sigUrl?: string;
     channel: YARGChannels;

@@ -1,31 +1,31 @@
 import { createStore } from "zustand/vanilla";
-import { IBaseDownload } from "./Processors/base";
+import { IBaseTask } from "./Processors/base";
 
-type DownloadQueueStore = {
-    queue: Set<IBaseDownload>
+type TaskQueueStore = {
+    queue: Set<IBaseTask>
 };
 
-export class DownloadQueueHandler {
-    queueStore = createStore<DownloadQueueStore>(() => ({ queue: new Set() }));
-    currentStore = createStore<IBaseDownload | undefined>(() => undefined);
+export class TaskQueueHandler {
+    queueStore = createStore<TaskQueueStore>(() => ({ queue: new Set() }));
+    currentStore = createStore<IBaseTask | undefined>(() => undefined);
 
-    add(downloader: IBaseDownload) {
-        this.queueStore.setState((prev) => ({ queue: new Set(prev.queue).add(downloader) }), true);
+    add(task: IBaseTask) {
+        this.queueStore.setState((prev) => ({ queue: new Set(prev.queue).add(task) }), true);
     }
 
-    delete(downloader?: IBaseDownload) {
-        if (!downloader) return;
+    delete(task?: IBaseTask) {
+        if (!task) return;
 
         this.queueStore.setState((prev) => {
             const newQueue = new Set(prev.queue);
-            newQueue.delete(downloader);
+            newQueue.delete(task);
 
             return { queue: newQueue };
         }, true);
     }
 
     next() {
-        const next: IBaseDownload | undefined = this.queueStore.getState().queue.values().next().value || undefined;
+        const next: IBaseTask | undefined = this.queueStore.getState().queue.values().next().value || undefined;
 
         this.currentStore.setState(() => next, true);
         this.delete(next);

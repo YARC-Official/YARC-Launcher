@@ -1,15 +1,15 @@
-export interface IBaseDownload {
-    uuid: string,
+export interface IBaseTask {
+    taskUUID: string,
     onFinish?: () => void;
 
     start(): Promise<void>;
     getQueueEntry(bannerMode: boolean): React.ReactNode;
 }
 
-export class BaseDownload {
-    uuid: string;
+export class BaseTask {
+    taskUUID: string;
 
-    constructor(uuid: string) {
-        this.uuid = uuid;
+    constructor(taskUUID: string) {
+        this.taskUUID = taskUUID;
     }
 }

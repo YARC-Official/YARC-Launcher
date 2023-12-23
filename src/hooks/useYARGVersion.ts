@@ -3,9 +3,9 @@ import { ExtendedReleaseData, getYARGReleaseZip, getYARGReleaseSigFromZipURL } f
 import { invoke } from "@tauri-apps/api/tauri";
 import { type } from "@tauri-apps/api/os";
 import { useYARGState } from "@app/stores/YARGStateStore";
-import { useDownloadClient } from "@app/tasks/provider";
+import { useTaskClient } from "@app/tasks/provider";
 import { YARGDownload, generateYARGUUID } from "@app/tasks/Processors/YARG";
-import { DownloadPayload } from "@app/tasks";
+import { TaskPayload } from "@app/tasks";
 import { showErrorDialog, showInstallFolderDialog } from "@app/dialogs/dialogUtil";
 import { useDialogManager } from "@app/dialogs/DialogProvider";
 
@@ -22,15 +22,15 @@ export type YARGVersion = {
     state: YARGStates,
     play: () => Promise<void>,
     download: () => Promise<void>,
-    payload?: DownloadPayload
+    payload?: TaskPayload
 }
 
 export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, profileName: string): YARGVersion => {
     // Initialize hooks before returning
     const { state, setState } = useYARGState(releaseData?.tag_name);
     const dialogManager = useDialogManager();
-    const downloadClient = useDownloadClient();
-    const payload = downloadClient.usePayload(releaseData ? generateYARGUUID(releaseData.tag_name) : undefined);
+    const taskClient = useTaskClient();
+    const payload = taskClient.usePayload(releaseData ? generateYARGUUID(releaseData.tag_name) : undefined);
 
     useEffect(() => {
         (
@@ -108,7 +108,7 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, pro
                 () => { setState(YARGStates.AVAILABLE); }
             );
 
-            downloadClient.add(downloader);
+            taskClient.add(downloader);
         } catch (e) {
             setState(YARGStates.ERROR);
 

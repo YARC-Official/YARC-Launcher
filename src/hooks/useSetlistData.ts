@@ -1,6 +1,6 @@
 import { useSetlistState } from "@app/stores/SetlistStateStore";
 import { SetlistData } from "./useSetlistRelease";
-import { useDownloadClient } from "@app/tasks/provider";
+import { useTaskClient } from "@app/tasks/provider";
 import { SetlistDownload, generateSetlistUUID } from "@app/tasks/Processors/Setlist";
 import { useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
@@ -17,8 +17,8 @@ export enum SetlistStates {
 export const useSetlistData = (setlistData: SetlistData) => {
     const { state, setState } = useSetlistState(setlistData?.version);
 
-    const downloadClient = useDownloadClient();
-    const payload = downloadClient.usePayload(generateSetlistUUID(setlistData?.id, setlistData?.version));
+    const taskClient = useTaskClient();
+    const payload = taskClient.usePayload(generateSetlistUUID(setlistData?.id, setlistData?.version));
 
     useEffect(() => {
         (
@@ -55,7 +55,7 @@ export const useSetlistData = (setlistData: SetlistData) => {
                 () => { setState(SetlistStates.AVAILABLE); }
             );
 
-            downloadClient.add(downloader);
+            taskClient.add(downloader);
         } catch (e) {
             setState(SetlistStates.ERROR);
 

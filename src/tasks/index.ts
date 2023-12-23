@@ -1,46 +1,46 @@
 import { useStore } from "zustand";
-import { IBaseDownload } from "./Processors/base";
+import { IBaseTask } from "./Processors/base";
 import { listen } from "@tauri-apps/api/event";
-import { DownloadPayloadHandler } from "./payload";
-import { DownloadQueueHandler } from "./queue";
+import { TaskPayloadHandler as TaskPayloadHandler } from "./payload";
+import { TaskQueueHandler as TaskQueueHandler } from "./queue";
 import { throttle } from "lodash";
 import { showErrorDialog } from "@app/dialogs/dialogUtil";
 import { DialogManager } from "@app/dialogs";
 
-export type DownloadState = "downloading" | "installing" | "verifying" | "waiting";
+export type TaskState = "downloading" | "installing" | "verifying" | "waiting";
 
-export interface DownloadPayload {
-    state: DownloadState;
+export interface TaskPayload {
+    state: TaskState;
     current: number;
     total: number;
 }
 
-export class DownloadClient {
-    private payloadHandler: DownloadPayloadHandler;
-    private queueHandler: DownloadQueueHandler;
+export class TaskClient {
+    private payloadHandler: TaskPayloadHandler;
+    private queueHandler: TaskQueueHandler;
 
     private dialogManager: DialogManager;
 
     constructor(dialogManager: DialogManager) {
         this.dialogManager = dialogManager;
 
-        this.payloadHandler = new DownloadPayloadHandler();
-        this.queueHandler = new DownloadQueueHandler();
+        this.payloadHandler = new TaskPayloadHandler();
+        this.queueHandler = new TaskQueueHandler();
 
         const throttleTime = 25;
 
         listen("progress_info",
             throttle(
-                ({ payload }: { payload: DownloadPayload }) => {
+                ({ payload }: { payload: TaskPayload }) => {
                     this.update(payload);
                 }, throttleTime
             )
         );
     }
 
-    add(downloader: IBaseDownload) {
-        this.queueHandler.add(downloader);
-        this.payloadHandler.add(downloader);
+    add(task: IBaseTask) {
+        this.queueHandler.add(task);
+        this.payloadHandler.add(task);
 
         if (!this.queueHandler.currentStore.getState()) {
             this.processNext();
@@ -64,7 +64,7 @@ export class DownloadClient {
         this.processNext();
     }
 
-    update(payload: DownloadPayload) {
+    update(payload: TaskPayload) {
         const current = this.queueHandler.currentStore.getState();
 
         if (!current) return;
