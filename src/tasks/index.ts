@@ -86,6 +86,8 @@ export class TaskClient {
                 return this.usePayload(queued.taskUUID);
             }
         }
+
+        return undefined;
     }
 
     useQueue() {
