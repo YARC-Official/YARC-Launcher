@@ -1,7 +1,7 @@
 import { useSetlistState } from "@app/stores/SetlistStateStore";
 import { SetlistData } from "./useSetlistRelease";
 import { useTaskClient } from "@app/tasks/provider";
-import { SetlistDownload, generateSetlistUUID } from "@app/tasks/Processors/Setlist";
+import { SetlistDownload } from "@app/tasks/Processors/Setlist";
 import { useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { DialogManager } from "@app/dialogs";
@@ -18,7 +18,7 @@ export const useSetlistData = (setlistData: SetlistData) => {
     const { state, setState } = useSetlistState(setlistData?.version);
 
     const taskClient = useTaskClient();
-    const payload = taskClient.usePayload(generateSetlistUUID(setlistData?.id, setlistData?.version));
+    const payload = taskClient.useNextPayloadOf("setlist", setlistData.id);
 
     useEffect(() => {
         (

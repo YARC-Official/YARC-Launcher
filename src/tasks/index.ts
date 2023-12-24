@@ -1,5 +1,5 @@
 import { useStore } from "zustand";
-import { IBaseTask } from "./Processors/base";
+import { IBaseTask, TaskTag } from "./Processors/base";
 import { listen } from "@tauri-apps/api/event";
 import { TaskPayloadHandler as TaskPayloadHandler } from "./payload";
 import { TaskQueueHandler as TaskQueueHandler } from "./queue";
@@ -76,6 +76,16 @@ export class TaskClient {
             this.payloadHandler.payloadStore,
             (state) => uuid ? state[uuid] : undefined
         );
+    }
+
+    useNextPayloadOf(tag: TaskTag, profile: string) {
+        const queue = this.queueHandler.queueStore.getState();
+
+        for (const queued of queue.queue) {
+            if (queued.taskTag === tag || queued.profile === profile) {
+                return this.usePayload(queued.taskUUID);
+            }
+        }
     }
 
     useQueue() {

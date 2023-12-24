@@ -4,14 +4,15 @@ import SetlistQueue from "@app/components/Queue/QueueEntry/Setlist";
 
 export class SetlistDownload extends BaseTask implements IBaseTask {
     zipUrls: string[];
-    id: string;
+    profile: string;
     version: string;
     onFinish: () => void;
 
-    constructor(zipUrls: string[], id: string, version: string, onFinish: () => void) {
-        super(generateSetlistUUID(id, version));
+    constructor(zipUrls: string[], profile: string, version: string, onFinish: () => void) {
+        super("setlist", profile);
+
         this.zipUrls = zipUrls;
-        this.id = id;
+        this.profile = profile;
         this.version = version;
         this.onFinish = onFinish;
     }
@@ -20,7 +21,7 @@ export class SetlistDownload extends BaseTask implements IBaseTask {
         return await invoke("download_and_install", {
             appName: "official_setlist",
             version: this.version,
-            profile: this.id,
+            profile: this.profile,
             zipUrls: this.zipUrls,
             sigUrls: [],
         });
@@ -29,8 +30,4 @@ export class SetlistDownload extends BaseTask implements IBaseTask {
     getQueueEntry(bannerMode: boolean): React.ReactNode {
         return <SetlistQueue downloader={this} bannerMode={bannerMode} />;
     }
-}
-
-export function generateSetlistUUID(id: string, version: string) {
-    return `setlist_${id}_${version}`;
 }

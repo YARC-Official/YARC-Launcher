@@ -4,7 +4,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { type } from "@tauri-apps/api/os";
 import { useYARGState } from "@app/stores/YARGStateStore";
 import { useTaskClient } from "@app/tasks/provider";
-import { YARGDownload, generateYARGUUID } from "@app/tasks/Processors/YARG";
+import { YARGDownload } from "@app/tasks/Processors/YARG";
 import { TaskPayload } from "@app/tasks";
 import { showErrorDialog, showInstallFolderDialog } from "@app/dialogs/dialogUtil";
 import { useDialogManager } from "@app/dialogs/DialogProvider";
@@ -30,7 +30,9 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, pro
     const { state, setState } = useYARGState(releaseData?.tag_name);
     const dialogManager = useDialogManager();
     const taskClient = useTaskClient();
-    const payload = taskClient.usePayload(releaseData ? generateYARGUUID(releaseData.tag_name) : undefined);
+    const payload = releaseData
+        ? taskClient.useNextPayloadOf("setlist", profileName)
+        : undefined;
 
     useEffect(() => {
         (

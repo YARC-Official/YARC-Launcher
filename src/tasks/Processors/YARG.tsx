@@ -11,8 +11,11 @@ export class YARGDownload extends BaseTask implements IBaseTask {
     profile: string;
     onFinish: () => void;
 
-    constructor(zipUrl: string, sigUrl: string | undefined, channel: YARGChannels, version: string, profile: string, onFinish: () => void) {
-        super(generateYARGUUID(version));
+    constructor(zipUrl: string, sigUrl: string | undefined, channel: YARGChannels, version: string,
+        profile: string, onFinish: () => void) {
+
+        super("yarg", profile);
+
         this.zipUrl = zipUrl;
         this.sigUrl = sigUrl;
         this.channel = channel;
@@ -39,8 +42,4 @@ export class YARGDownload extends BaseTask implements IBaseTask {
     getQueueEntry(bannerMode: boolean): React.ReactNode {
         return <YARGQueue downloader={this} bannerMode={bannerMode} />;
     }
-}
-
-export function generateYARGUUID(version: string) {
-    return `YARG_${version}`;
 }

@@ -1,5 +1,12 @@
+import { v4 as generateUUID } from "uuid";
+
+export type TaskTag = "yarg" | "setlist";
+
 export interface IBaseTask {
     taskUUID: string,
+    taskTag: TaskTag,
+    profile: string,
+
     onFinish?: () => void;
 
     start(): Promise<void>;
@@ -8,8 +15,12 @@ export interface IBaseTask {
 
 export class BaseTask {
     taskUUID: string;
+    taskTag: TaskTag;
+    profile: string;
 
-    constructor(taskUUID: string) {
-        this.taskUUID = taskUUID;
+    constructor(taskTag: TaskTag, profile: string) {
+        this.taskUUID = generateUUID();
+        this.taskTag = taskTag;
+        this.profile = profile;
     }
 }
