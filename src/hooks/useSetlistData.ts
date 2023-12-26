@@ -17,7 +17,7 @@ export enum SetlistStates {
 
 export const useSetlistData = (setlistData: SetlistData) => {
     const { state, setState } = useSetlistState(setlistData?.version);
-    const task = useTask("setlist", setlistData.id);
+    const task = useTask("setlist", setlistData?.id);
     const payload = usePayload(task?.taskUUID);
 
     useEffect(() => {
