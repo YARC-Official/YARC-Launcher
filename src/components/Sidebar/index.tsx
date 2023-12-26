@@ -5,23 +5,11 @@ import { NavLink } from "react-router-dom";
 import VersionsList from "./Versions/List";
 import { useEffect, useState } from "react";
 import { getVersion } from "@tauri-apps/api/app";
-import { useTaskClient } from "@app/tasks/provider";
+import QueueStore from "@app/tasks/queue";
 
 const Sidebar: React.FC = () => {
     const [launcherVersion, setLauncherVersion] = useState("");
-
-    const taskClient = useTaskClient();
-    const queue = taskClient.useQueue();
-    const current = taskClient.useCurrent();
-
-    function getDownloadCount() {
-        let count = queue.size;
-        if (current) {
-            count++;
-        }
-
-        return count;
-    }
+    const queue = QueueStore.useQueue();
 
     useEffect(() => {
         (async () => {
@@ -39,7 +27,7 @@ const Sidebar: React.FC = () => {
             {/* <NavLink to="/settings"><SidebarMenuButton icon={<SettingsIcon />}>Settings</SidebarMenuButton></NavLink> */}
             <NavLink to="/queue">
                 <SidebarMenuButton icon={<QueueIcon />}>
-                    Downloads {getDownloadCount() <= 0 ? "" : `(${getDownloadCount()})`}
+                    Downloads {queue.size <= 0 ? "" : `(${queue.size})`}
                 </SidebarMenuButton>
             </NavLink>
         </div>

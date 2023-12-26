@@ -3,6 +3,7 @@ import { v4 as generateUUID } from "uuid";
 export type TaskTag = "yarg" | "setlist";
 
 export interface IBaseTask {
+    startedAt?: Date,
     taskUUID: string,
     taskTag: TaskTag,
     profile: string,

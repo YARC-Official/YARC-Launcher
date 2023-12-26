@@ -1,11 +1,12 @@
 import { useSetlistState } from "@app/stores/SetlistStateStore";
 import { SetlistData } from "./useSetlistRelease";
-import { useTaskClient } from "@app/tasks/provider";
 import { SetlistDownload } from "@app/tasks/Processors/Setlist";
 import { useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { DialogManager } from "@app/dialogs";
 import { showErrorDialog, showInstallFolderDialog } from "@app/dialogs/dialogUtil";
+import { addTask, useTask } from "@app/tasks";
+import { usePayload } from "@app/tasks/payload";
 
 export enum SetlistStates {
     "AVAILABLE",
@@ -16,9 +17,8 @@ export enum SetlistStates {
 
 export const useSetlistData = (setlistData: SetlistData) => {
     const { state, setState } = useSetlistState(setlistData?.version);
-
-    const taskClient = useTaskClient();
-    const payload = taskClient.useNextPayloadOf("setlist", setlistData.id);
+    const task = useTask("setlist", setlistData.id);
+    const payload = usePayload(task?.taskUUID);
 
     useEffect(() => {
         (
@@ -55,7 +55,7 @@ export const useSetlistData = (setlistData: SetlistData) => {
                 () => { setState(SetlistStates.AVAILABLE); }
             );
 
-            taskClient.add(downloader);
+            addTask(downloader);
         } catch (e) {
             setState(SetlistStates.ERROR);
 

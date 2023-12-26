@@ -4,17 +4,18 @@ import styles from "./titlebar.module.css";
 import { CloseIcon, MinimizeIcon } from "@app/assets/Icons";
 import { useDialogManager } from "@app/dialogs/DialogProvider";
 import { TryCloseDialog } from "@app/dialogs/Dialogs/TryCloseDialog";
-import { useTaskClient } from "@app/tasks/provider";
+import QueueStore from "@app/tasks/queue";
+import { IBaseTask } from "@app/tasks/Processors/base";
 
 const TitleBar: React.FC = () => {
     const dialogManager = useDialogManager();
 
-    const taskClient = useTaskClient();
-    const current = taskClient.useCurrent();
+    const queue = QueueStore.useQueue();
+    const currentTask: IBaseTask | undefined = queue.values().next().value;
 
     async function tryClose() {
         // If there is no download, just close
-        if (!current) {
+        if (!currentTask?.startedAt) {
             appWindow.close();
             return;
         }
