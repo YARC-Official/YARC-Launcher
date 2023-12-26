@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { ExtendedReleaseData, getYARGReleaseZip, getYARGReleaseSigFromZipURL } from "./useYARGRelease";
+import { ExtendedReleaseData, getYARGReleaseZip, getYARGReleaseSigFromZipURL, YARGChannels } from "./useYARGRelease";
 import { invoke } from "@tauri-apps/api/tauri";
 import { type } from "@tauri-apps/api/os";
 import { useYARGState } from "@app/stores/YARGStateStore";
@@ -25,9 +25,7 @@ export type YARGVersion = {
     payload?: TaskPayload
 }
 
-export type YARGProfileName = "stable"|"nightly";
-
-export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, profileName: YARGProfileName): YARGVersion => {
+export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, profileName: YARGChannels): YARGVersion => {
     // Initialize hooks before returning
     const { state, setState } = useYARGState(releaseData?.tag_name);
     const dialogManager = useDialogManager();
@@ -51,7 +49,7 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, pro
     }, [releaseData]);
 
     // If we don't have a release data yet, return a dummy loading version;
-    if(!releaseData) {
+    if (!releaseData) {
         return {
             state,
             play: async () => {},

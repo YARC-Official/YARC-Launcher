@@ -3,21 +3,29 @@ import { SetlistData } from "./useSetlistRelease";
 import { SetlistDownload } from "@app/tasks/Processors/Setlist";
 import { useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
-import { DialogManager } from "@app/dialogs";
 import { showErrorDialog, showInstallFolderDialog } from "@app/dialogs/dialogUtil";
 import { addTask, useTask } from "@app/tasks";
-import { usePayload } from "@app/tasks/payload";
+import { TaskPayload, usePayload } from "@app/tasks/payload";
+import { useDialogManager } from "@app/dialogs/DialogProvider";
 
 export enum SetlistStates {
     "AVAILABLE",
     "DOWNLOADING",
     "ERROR",
+    "LOADING",
     "NEW_UPDATE"
 }
 
-export const useSetlistData = (setlistData: SetlistData) => {
+export type SetlistVersion = {
+    state: SetlistStates,
+    download: () => Promise<void>,
+    payload?: TaskPayload
+}
+
+export const useSetlistData = (setlistData: SetlistData | undefined, setlistId: string): SetlistVersion => {
     const { state, setState } = useSetlistState(setlistData?.version);
-    const task = useTask("setlist", setlistData?.id);
+    const dialogManager = useDialogManager();
+    const task = useTask("setlist", setlistId);
     const payload = usePayload(task?.taskUUID);
 
     useEffect(() => {
@@ -34,9 +42,17 @@ export const useSetlistData = (setlistData: SetlistData) => {
                 setState(exists ? SetlistStates.AVAILABLE : SetlistStates.NEW_UPDATE);
             }
         )();
-    }, []);
+    }, [setlistData]);
 
-    const download = async (dialogManager: DialogManager) => {
+    // If we don't have a release data yet, return a dummy loading version;
+    if (!setlistData) {
+        return {
+            state,
+            download: async () => {},
+        };
+    }
+
+    const download = async () => {
         if (!setlistData || state === SetlistStates.DOWNLOADING) return;
 
         // Ask for a download location (if required)
@@ -64,5 +80,5 @@ export const useSetlistData = (setlistData: SetlistData) => {
         }
     };
 
-    return { state, payload, download };
+    return { state, download, payload };
 };

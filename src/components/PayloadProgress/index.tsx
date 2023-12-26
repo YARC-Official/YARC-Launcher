@@ -1,4 +1,4 @@
-import { TaskPayload } from "@app/tasks";
+import { TaskPayload } from "@app/tasks/payload";
 
 interface Props {
     payload?: TaskPayload;

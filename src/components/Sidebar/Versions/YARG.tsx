@@ -3,7 +3,6 @@ import { YARGStates, useYARGVersion } from "@app/hooks/useYARGVersion";
 import BaseVersion from "./Base";
 import NightlyYARGIcon from "@app/assets/NightlyYARGIcon.png";
 import StableYARGIcon from "@app/assets/StableYARGIcon.png";
-import DevYARGIcon from "@app/assets/DevYARGIcon.png";
 import { NavLink } from "react-router-dom";
 
 interface Props {
@@ -20,8 +19,6 @@ const YARGVersion: React.FC<Props> = ({ channel }: Props) => {
                 return StableYARGIcon;
             case "nightly":
                 return NightlyYARGIcon;
-            case "newEngine":
-                return DevYARGIcon;
         }
     }
 
@@ -31,8 +28,6 @@ const YARGVersion: React.FC<Props> = ({ channel }: Props) => {
                 return "Stable";
             case "nightly":
                 return "Nightly";
-            case "newEngine":
-                return "New Engine";
         }
     }
 

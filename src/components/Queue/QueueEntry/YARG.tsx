@@ -2,7 +2,6 @@ import { YARGDownload } from "@app/tasks/Processors/YARG";
 import BaseQueue from "./base";
 import StableYARGIcon from "@app/assets/StableYARGIcon.png";
 import NightlyYARGIcon from "@app/assets/NightlyYARGIcon.png";
-import DevYARGIcon from "@app/assets/DevYARGIcon.png";
 import { YARGChannels } from "@app/hooks/useYARGRelease";
 
 interface Props {
@@ -11,11 +10,9 @@ interface Props {
 }
 
 const YARGQueue: React.FC<Props> = ({ downloader, bannerMode }: Props) => {
-
     const channelIconPath: { [key in YARGChannels]: string } = {
         "stable": StableYARGIcon,
-        "nightly": NightlyYARGIcon,
-        "newEngine": DevYARGIcon
+        "nightly": NightlyYARGIcon
     };
 
     return <BaseQueue
