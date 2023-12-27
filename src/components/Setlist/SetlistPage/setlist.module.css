@@ -20,6 +20,8 @@
     align-items: flex-start;
     gap: 25px;
     background: var(--white-background);
+
+    align-items: stretch;
 }
 
 .content {
@@ -81,7 +83,7 @@
     padding: 0px 1px;
     align-items: center;
     gap: 6px;
-    
+
     color: #333;
     font-size: 12px;
     font-style: normal;
