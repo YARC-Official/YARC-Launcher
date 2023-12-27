@@ -5,8 +5,8 @@ import * as Progress from "@radix-ui/react-progress";
 import { useEffect, useState } from "react";
 import { InstallingIcon, QueueListIcon } from "@app/assets/Icons";
 import QueueStore from "@app/tasks/queue";
-import { IBaseTask } from "@app/tasks/Processors/base";
 import { usePayload } from "@app/tasks/payload";
+import { useCurrentTask } from "@app/tasks";
 
 function Queue() {
     // These are for the "You've been staring at this blank page for..."
@@ -15,7 +15,7 @@ function Queue() {
     const [time, setTime] = useState(Date.now());
 
     const queue = QueueStore.useQueue();
-    const currentTask: IBaseTask | undefined = queue.values().next().value;
+    const currentTask = useCurrentTask();
     const payload = usePayload(currentTask?.taskUUID);
 
     // Update the timer so the text also updates

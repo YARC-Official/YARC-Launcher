@@ -33,4 +33,11 @@ const useTask = (tag: TaskTag, profile: string) => {
     );
 };
 
-export { addTask, processNextTask, useTask };
+const useCurrentTask = () => {
+    return useStore(
+        QueueStore.store,
+        () => QueueStore.firstTask()
+    );
+};
+
+export { addTask, processNextTask, useTask, useCurrentTask };
