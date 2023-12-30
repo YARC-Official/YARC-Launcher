@@ -81,9 +81,8 @@ function Queue() {
         <div className={styles.main}>
             <QueueSection icon={<QueueListIcon />} title="QUEUE">
                 {
-                    queue.size > 0 ?
-                        // TO-DO: remove the first from queue list
-                        Array.from(queue).map(downloader => downloader.getQueueEntry(false)) :
+                    queue.size > 1 ?
+                        Array.from(queue).splice(1).map(downloader => downloader.getQueueEntry(false)) :
                         <div className={styles.empty_queue}>There are no downloads in the queue.</div>
                 }
             </QueueSection>
