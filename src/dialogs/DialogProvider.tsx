@@ -1,37 +1,28 @@
-import { createContext } from "react";
-import { useContext } from "react";
-import { DialogManager } from ".";
 import * as Dialog from "@radix-ui/react-dialog";
 import styles from "./DialogProvider.module.css";
+import { setDialogOpen, useDialog } from ".";
 
-export const DialogManagerContext = createContext<DialogManager>({} as DialogManager);
-
-function DialogContextInner() {
-    const dialogManager = useDialogManager();
+function DialogComponent() {
+    const dialog = useDialog();
 
     function prevent(e: Event) {
         e.preventDefault();
     }
 
-    const CurrentDialog = dialogManager.useDialog();
-    const dialogProps = dialogManager.useProps();
-
-    return <Dialog.Root open={dialogManager.useOpen()} onOpenChange={v => dialogManager.setOpen(v)}>
+    return <Dialog.Root open={dialog.open} onOpenChange={isOpen => setDialogOpen(isOpen)}>
         <Dialog.Portal>
             <Dialog.Overlay className={styles.overlay} />
             <Dialog.Content className={styles.content} onPointerDownOutside={prevent} onInteractOutside={prevent}>
-                {CurrentDialog ? <CurrentDialog {...dialogProps} /> : "No dialog assigned!"}
+                {dialog.content ? <dialog.content {...dialog.props} /> : "No dialog assigned!"}
             </Dialog.Content>
         </Dialog.Portal>
     </Dialog.Root>;
 }
 
-export const DialogManagerProvider: React.FC<React.PropsWithChildren> = ({ children }: React.PropsWithChildren) => {
-    return <DialogManagerContext.Provider value={new DialogManager()}>
+export const DialogProvider: React.FC<React.PropsWithChildren> = ({ children }: React.PropsWithChildren) => {
+    return <>
         {children}
 
-        <DialogContextInner />
-    </DialogManagerContext.Provider>;
+        <DialogComponent />
+    </>;
 };
-
-export const useDialogManager = () => useContext(DialogManagerContext);

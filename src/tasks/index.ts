@@ -1,6 +1,7 @@
 import { useStore } from "zustand";
 import { IBaseTask, TaskTag } from "./Processors/base";
 import QueueStore from "./queue";
+import { showErrorDialog } from "@app/dialogs/dialogUtil";
 
 const addTask = (task: IBaseTask) => {
     QueueStore.add(task);
@@ -19,7 +20,7 @@ const processNextTask = async () => {
         await next.start();
         next.onFinish?.();
     } catch (e) {
-        // TO-DO: reimplement dialog error message;
+        showErrorDialog(e as string);
         console.error(e);
     }
 

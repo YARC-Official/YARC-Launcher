@@ -1,11 +1,12 @@
 import { invoke } from "@tauri-apps/api";
-import { DialogManager } from ".";
 import { InstallFolderDialog } from "./Dialogs/InstallFolderDialog";
 import { ErrorDialog } from "./Dialogs/ErrorDialog";
+import { createAndShowDialog } from ".";
 
-export async function showInstallFolderDialog(dialogManager: DialogManager) {
+export async function showInstallFolderDialog() {
     if (!await invoke("is_initialized")) {
-        const dialogOutput = await dialogManager.createAndShowDialog(InstallFolderDialog);
+        const dialogOutput = await createAndShowDialog(InstallFolderDialog);
+
         if (dialogOutput === "cancel") {
             return false;
         } else {
@@ -22,6 +23,6 @@ export async function showInstallFolderDialog(dialogManager: DialogManager) {
     return true;
 }
 
-export async function showErrorDialog(dialogManager: DialogManager, error: string) {
-    await dialogManager.createAndShowDialog(ErrorDialog, { error: error });
+export async function showErrorDialog(error: string) {
+    await createAndShowDialog(ErrorDialog, { error: error });
 }

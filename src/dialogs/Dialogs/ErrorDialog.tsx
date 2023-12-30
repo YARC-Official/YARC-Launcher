@@ -3,6 +3,7 @@ import { BaseDialog } from "./BaseDialog";
 import styles from "./ErrorDialog.module.css";
 import { error as LogError } from "tauri-plugin-log-api";
 import { serializeError } from "serialize-error";
+import { closeDialog } from "..";
 
 export class ErrorDialog extends BaseDialog<Record<string, never>> {
     constructor(props: Record<string, unknown>) {
@@ -35,7 +36,7 @@ export class ErrorDialog extends BaseDialog<Record<string, never>> {
 
     getButtons() {
         return <>
-            <Button color={ButtonColor.GRAY} onClick={() => this.context.closeDialog()}>Okay</Button>
+            <Button color={ButtonColor.GRAY} onClick={() => closeDialog()}>Okay</Button>
         </>;
     }
 }

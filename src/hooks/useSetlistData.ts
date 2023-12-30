@@ -6,7 +6,6 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { showErrorDialog, showInstallFolderDialog } from "@app/dialogs/dialogUtil";
 import { addTask, useTask } from "@app/tasks";
 import { TaskPayload, usePayload } from "@app/tasks/payload";
-import { useDialogManager } from "@app/dialogs/DialogProvider";
 
 export enum SetlistStates {
     "AVAILABLE",
@@ -24,7 +23,6 @@ export type SetlistVersion = {
 
 export const useSetlistData = (setlistData: SetlistData | undefined, setlistId: string): SetlistVersion => {
     const { state, setState } = useSetlistState(setlistData?.version);
-    const dialogManager = useDialogManager();
     const task = useTask("setlist", setlistId);
     const payload = usePayload(task?.taskUUID);
 
@@ -56,7 +54,7 @@ export const useSetlistData = (setlistData: SetlistData | undefined, setlistId: 
         if (!setlistData || state === SetlistStates.DOWNLOADING) return;
 
         // Ask for a download location (if required)
-        if (!await showInstallFolderDialog(dialogManager)) {
+        if (!await showInstallFolderDialog()) {
             // Skip if the dialog is closed or it errors
             return;
         }
@@ -75,7 +73,7 @@ export const useSetlistData = (setlistData: SetlistData | undefined, setlistId: 
         } catch (e) {
             setState(SetlistStates.ERROR);
 
-            showErrorDialog(dialogManager, e as string);
+            showErrorDialog(e as string);
             console.error(e);
         }
     };

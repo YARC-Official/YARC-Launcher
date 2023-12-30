@@ -5,7 +5,6 @@ import { type } from "@tauri-apps/api/os";
 import { useYARGState } from "@app/stores/YARGStateStore";
 import { YARGDownload } from "@app/tasks/Processors/YARG";
 import { showErrorDialog, showInstallFolderDialog } from "@app/dialogs/dialogUtil";
-import { useDialogManager } from "@app/dialogs/DialogProvider";
 import { addTask, useTask } from "@app/tasks";
 import { usePayload, TaskPayload } from "@app/tasks/payload";
 
@@ -28,7 +27,6 @@ export type YARGVersion = {
 export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, profileName: YARGChannels): YARGVersion => {
     // Initialize hooks before returning
     const { state, setState } = useYARGState(releaseData?.tag_name);
-    const dialogManager = useDialogManager();
     const task = useTask("yarg", profileName);
     const payload = usePayload(task?.taskUUID);
 
@@ -78,7 +76,7 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, pro
         } catch (e) {
             setState(YARGStates.ERROR);
 
-            showErrorDialog(dialogManager, e as string);
+            showErrorDialog(e as string);
             console.error(e);
         }
     };
@@ -87,7 +85,7 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, pro
         if (!releaseData || state === YARGStates.DOWNLOADING) return;
 
         // Ask for a download location (if required)
-        if (!await showInstallFolderDialog(dialogManager)) {
+        if (!await showInstallFolderDialog()) {
             // Skip if the dialog is closed or it errors
             return;
         }
@@ -112,7 +110,7 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, pro
         } catch (e) {
             setState(YARGStates.ERROR);
 
-            showErrorDialog(dialogManager, e as string);
+            showErrorDialog(e as string);
             console.error(e);
         }
     };
