@@ -3,7 +3,7 @@ import { ExtendedReleaseData, getYARGReleaseZip, getYARGReleaseSigFromZipURL, YA
 import { invoke } from "@tauri-apps/api/tauri";
 import { type } from "@tauri-apps/api/os";
 import { useYARGState } from "@app/stores/YARGStateStore";
-import { YARGDownload } from "@app/tasks/Processors/YARG";
+import { YARGDownload, YARGUninstall } from "@app/tasks/Processors/YARG";
 import { showErrorDialog, showInstallFolderDialog } from "@app/dialogs/dialogUtil";
 import { addTask, useTask } from "@app/tasks";
 import { usePayload, TaskPayload } from "@app/tasks/payload";
@@ -21,6 +21,7 @@ export type YARGVersion = {
     state: YARGStates,
     play: () => Promise<void>,
     download: () => Promise<void>,
+    uninstall: () => Promise<void>,
     payload?: TaskPayload
 }
 
@@ -52,6 +53,7 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, pro
             state,
             play: async () => {},
             download: async () => {},
+            uninstall: async () => {},
         };
     }
 
@@ -115,5 +117,30 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, pro
         }
     };
 
-    return { state, play, download, payload };
+    const uninstall = async () => {
+        if (!releaseData || state === YARGStates.DOWNLOADING) return;
+
+        // You can't uninstall if the launcher is not initialized
+        if (!await invoke("is_initialized")) return;
+
+        setState(YARGStates.DOWNLOADING);
+
+        try {
+            const downloader = new YARGUninstall(
+                releaseData.channel,
+                releaseData.tag_name,
+                profileName,
+                () => { setState(YARGStates.NEW_UPDATE); }
+            );
+
+            addTask(downloader);
+        } catch (e) {
+            setState(YARGStates.ERROR);
+
+            showErrorDialog(e as string);
+            console.error(e);
+        }
+    };
+
+    return { state, play, download, uninstall, payload };
 };

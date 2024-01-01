@@ -1,6 +1,6 @@
 import { useSetlistState } from "@app/stores/SetlistStateStore";
 import { SetlistData } from "./useSetlistRelease";
-import { SetlistDownload } from "@app/tasks/Processors/Setlist";
+import { SetlistDownload, SetlistUninstall } from "@app/tasks/Processors/Setlist";
 import { useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { showErrorDialog, showInstallFolderDialog } from "@app/dialogs/dialogUtil";
@@ -18,6 +18,7 @@ export enum SetlistStates {
 export type SetlistVersion = {
     state: SetlistStates,
     download: () => Promise<void>,
+    uninstall: () => Promise<void>,
     payload?: TaskPayload
 }
 
@@ -47,6 +48,7 @@ export const useSetlistData = (setlistData: SetlistData | undefined, setlistId: 
         return {
             state,
             download: async () => {},
+            uninstall: async () => {},
         };
     }
 
@@ -78,5 +80,29 @@ export const useSetlistData = (setlistData: SetlistData | undefined, setlistId: 
         }
     };
 
-    return { state, download, payload };
+    const uninstall = async () => {
+        if (!setlistData || state === SetlistStates.DOWNLOADING) return;
+
+        // You can't uninstall if the launcher is not initialized
+        if (!await invoke("is_initialized")) return;
+
+        setState(SetlistStates.DOWNLOADING);
+
+        try {
+            const downloader = new SetlistUninstall(
+                setlistData.id,
+                setlistData.version,
+                () => { setState(SetlistStates.NEW_UPDATE); }
+            );
+
+            addTask(downloader);
+        } catch (e) {
+            setState(SetlistStates.ERROR);
+
+            showErrorDialog(e as string);
+            console.error(e);
+        }
+    };
+
+    return { state, download, uninstall, payload };
 };

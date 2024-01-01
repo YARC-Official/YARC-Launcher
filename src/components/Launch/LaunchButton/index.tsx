@@ -50,7 +50,7 @@ export function LaunchButton(props: LaunchButtonProps) {
         </>;
 
         const dropdownChildren = <>
-            <DropdownItem>
+            <DropdownItem onClick={() => version.uninstall()}>
                 Uninstall
             </DropdownItem>
         </>;

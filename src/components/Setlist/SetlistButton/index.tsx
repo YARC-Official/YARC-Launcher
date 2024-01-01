@@ -49,7 +49,7 @@ export function SetlistButton(props: SetlistButtonProps) {
         </>;
 
         const dropdownChildren = <>
-            <DropdownItem>
+            <DropdownItem onClick={() => version.uninstall()}>
                 Uninstall
             </DropdownItem>
         </>;

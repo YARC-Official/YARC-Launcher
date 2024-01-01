@@ -1,17 +1,17 @@
-import { SetlistDownload } from "@app/tasks/Processors/Setlist";
+import { SetlistTask } from "@app/tasks/Processors/Setlist";
 import BaseQueue from "./base";
 import SetlistIcon from "@app/assets/SourceIcons/Official.png";
 
 interface Props {
-    downloader: SetlistDownload,
+    setlistTask: SetlistTask,
     bannerMode: boolean,
 }
 
-const SetlistQueue: React.FC<Props> = ({ downloader, bannerMode }: Props) => {
+const SetlistQueue: React.FC<Props> = ({ setlistTask, bannerMode }: Props) => {
     return <BaseQueue
         name="YARG Setlist"
         icon={<img src={SetlistIcon} />}
-        versionChannel={downloader.version}
+        versionChannel={setlistTask.version}
         bannerMode={bannerMode}
     />;
 };
