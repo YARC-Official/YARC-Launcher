@@ -2,8 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Endpoints } from "@octokit/types";
 import { OsType } from "@tauri-apps/api/os";
 
-
-export type YARGChannels = "stable" | "nightly" | "newEngine";
+export type YARGChannels = "stable" | "nightly";
 
 type ReleaseData = Endpoints["GET /repos/{owner}/{repo}/releases/latest"]["response"]["data"];
 export type ExtendedReleaseData = ReleaseData & {
@@ -13,8 +12,7 @@ export type ExtendedReleaseData = ReleaseData & {
 export const useYARGRelease = (channel: YARGChannels) => {
     const repositoryName = {
         "stable": "YARG",
-        "nightly": "YARG-BleedingEdge",
-        "newEngine": "YARG-NewEngine"
+        "nightly": "YARG-BleedingEdge"
     };
 
     return useQuery({

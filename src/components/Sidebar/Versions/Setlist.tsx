@@ -9,13 +9,13 @@ interface Props {
 }
 
 const SetlistVersion: React.FC<Props> = ({ channel }: Props) => {
-    const setlistData = useSetlistRelease(channel);
-    const { state } = useSetlistData(setlistData);
+    const { data: setlistData } = useSetlistRelease(channel);
+    const { state } = useSetlistData(setlistData, channel);
 
     return (
         <NavLink to={"/setlist/" + channel}>
             <BaseVersion
-                icon={<img src={OfficialIcon} />} // TO-DO: create a util/sourceIcon to get source icon from 
+                icon={<img src={OfficialIcon} />} // TO-DO: create a util/sourceIcon to get source icon from
                 type={VersionType.SONG}
                 programName={setlistData?.locales["en-US"].title} // TO-DO: catch the BCP 47 code
                 versionChannel={`${setlistData?.songs?.length} songs`}

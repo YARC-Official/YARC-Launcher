@@ -12,18 +12,18 @@ function NightlyYARGPage() {
 
     if (error) return `An error has occurred: ${error}`;
 
-    if(isSuccess) {
+    if (isSuccess) {
         return (<>
-            <LaunchPage 
-                version={yargVersion} 
-                releaseTag={releaseData?.tag_name} 
-                playName="NIGHTLY" 
+            <LaunchPage
+                version={yargVersion}
+                releaseTag={releaseData?.tag_name}
+                playName="NIGHTLY"
                 description={<>
                     YARG Nightly (a.k.a. YARG bleeding-edge) is an alternative version of YARG that is updated twice
                     a day (if changes have been made). These builds are in an extremely early beta, so bugs are expected.
                     If you do notice a bug, please be sure to report it on GitHub, or on our Discord.
-                </>} 
-                websiteUrl="https://github.com/YARC-Official/YARG-BleedingEdge" 
+                </>}
+                websiteUrl="https://github.com/YARC-Official/YARG-BleedingEdge"
                 icon={NightlyYARGIcon}
                 banner={NightlyYARGBanner}
             />

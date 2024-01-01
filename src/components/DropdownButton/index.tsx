@@ -42,14 +42,17 @@ const DropdownButton: React.FC<DropdownProps> = (props: DropdownProps) => {
     </DropdownMenu.Root>;
 };
 
-type ItemProps = React.PropsWithChildren;
+type ItemProps = React.PropsWithChildren<{
+    onClick?: React.MouseEventHandler<HTMLDivElement>,
+}>;
 
 const DropdownItem: React.FC<ItemProps> = (props: ItemProps) => {
     const {
         children,
+        onClick
     } = props;
 
-    return <DropdownMenu.Item className={styles.dropdown_item}>
+    return <DropdownMenu.Item className={styles.dropdown_item} onClick={onClick}>
         {children}
     </DropdownMenu.Item>;
 };

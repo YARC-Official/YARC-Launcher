@@ -1,45 +1,62 @@
 import { useSetlistState } from "@app/stores/SetlistStateStore";
 import { SetlistData } from "./useSetlistRelease";
-import { useDownloadClient } from "@app/utils/Download/provider";
-import { SetlistDownload, generateSetlistUUID } from "@app/utils/Download/Processors/Setlist";
+import { SetlistDownload, SetlistUninstall } from "@app/tasks/Processors/Setlist";
 import { useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
-import { DialogManager } from "@app/dialogs";
 import { showErrorDialog, showInstallFolderDialog } from "@app/dialogs/dialogUtil";
+import { addTask, useTask } from "@app/tasks";
+import { TaskPayload, usePayload } from "@app/tasks/payload";
 
 export enum SetlistStates {
     "AVAILABLE",
     "DOWNLOADING",
     "ERROR",
+    "LOADING",
     "NEW_UPDATE"
 }
 
-export const useSetlistData = (setlistData: SetlistData) => {
-    const { state, setState } = useSetlistState(setlistData?.version);
+export type SetlistVersion = {
+    state: SetlistStates,
+    download: () => Promise<void>,
+    uninstall: () => Promise<void>,
+    payload?: TaskPayload
+}
 
-    const downloadClient = useDownloadClient();
-    const payload = downloadClient.usePayload(generateSetlistUUID(setlistData?.id, setlistData?.version));
+export const useSetlistData = (setlistData: SetlistData | undefined, setlistId: string): SetlistVersion => {
+    const { state, setState } = useSetlistState(setlistData?.version);
+    const task = useTask("setlist", setlistId);
+    const payload = usePayload(task?.taskUUID);
 
     useEffect(() => {
         (
             async () => {
                 if (state || !setlistData) return;
 
-                const exists = await invoke("version_exists_setlist", {
-                    id: setlistData.id,
-                    version: setlistData.version
+                const exists = await invoke("exists", {
+                    appName: "official_setlist",
+                    version: setlistData.version,
+                    profile: setlistData.id
                 });
 
                 setState(exists ? SetlistStates.AVAILABLE : SetlistStates.NEW_UPDATE);
             }
         )();
-    }, []);
+    }, [setlistData]);
 
-    const download = async (dialogManager: DialogManager) => {
+    // If we don't have a release data yet, return a dummy loading version;
+    if (!setlistData) {
+        return {
+            state,
+            download: async () => {},
+            uninstall: async () => {},
+        };
+    }
+
+    const download = async () => {
         if (!setlistData || state === SetlistStates.DOWNLOADING) return;
 
         // Ask for a download location (if required)
-        if (!await showInstallFolderDialog(dialogManager)) {
+        if (!await showInstallFolderDialog()) {
             // Skip if the dialog is closed or it errors
             return;
         }
@@ -54,14 +71,38 @@ export const useSetlistData = (setlistData: SetlistData) => {
                 () => { setState(SetlistStates.AVAILABLE); }
             );
 
-            downloadClient.add(downloader);
+            addTask(downloader);
         } catch (e) {
             setState(SetlistStates.ERROR);
 
-            showErrorDialog(dialogManager, e as string);
+            showErrorDialog(e as string);
             console.error(e);
         }
     };
 
-    return { state, payload, download };
+    const uninstall = async () => {
+        if (!setlistData || state === SetlistStates.DOWNLOADING) return;
+
+        // You can't uninstall if the launcher is not initialized
+        if (!await invoke("is_initialized")) return;
+
+        setState(SetlistStates.DOWNLOADING);
+
+        try {
+            const downloader = new SetlistUninstall(
+                setlistData.id,
+                setlistData.version,
+                () => { setState(SetlistStates.NEW_UPDATE); }
+            );
+
+            addTask(downloader);
+        } catch (e) {
+            setState(SetlistStates.ERROR);
+
+            showErrorDialog(e as string);
+            console.error(e);
+        }
+    };
+
+    return { state, download, uninstall, payload };
 };

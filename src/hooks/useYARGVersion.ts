@@ -1,13 +1,12 @@
 import { useEffect } from "react";
-import { ExtendedReleaseData, getYARGReleaseZip, getYARGReleaseSigFromZipURL } from "./useYARGRelease";
+import { ExtendedReleaseData, getYARGReleaseZip, getYARGReleaseSigFromZipURL, YARGChannels } from "./useYARGRelease";
 import { invoke } from "@tauri-apps/api/tauri";
 import { type } from "@tauri-apps/api/os";
 import { useYARGState } from "@app/stores/YARGStateStore";
-import { useDownloadClient } from "@app/utils/Download/provider";
-import { YARGDownload, generateYARGUUID } from "@app/utils/Download/Processors/YARG";
-import { DownloadPayload } from "@app/utils/Download";
+import { YARGDownload, YARGUninstall } from "@app/tasks/Processors/YARG";
 import { showErrorDialog, showInstallFolderDialog } from "@app/dialogs/dialogUtil";
-import { useDialogManager } from "@app/dialogs/DialogProvider";
+import { addTask, useTask } from "@app/tasks";
+import { usePayload, TaskPayload } from "@app/tasks/payload";
 
 export enum YARGStates {
     "AVAILABLE",
@@ -22,23 +21,24 @@ export type YARGVersion = {
     state: YARGStates,
     play: () => Promise<void>,
     download: () => Promise<void>,
-    payload?: DownloadPayload
+    uninstall: () => Promise<void>,
+    payload?: TaskPayload
 }
 
-export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, profileName: string): YARGVersion => {
+export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, profileName: YARGChannels): YARGVersion => {
     // Initialize hooks before returning
     const { state, setState } = useYARGState(releaseData?.tag_name);
-    const dialogManager = useDialogManager();
-    const downloadClient = useDownloadClient();
-    const payload = downloadClient.usePayload(releaseData ? generateYARGUUID(releaseData.tag_name) : undefined);
+    const task = useTask("yarg", profileName);
+    const payload = usePayload(task?.taskUUID);
 
     useEffect(() => {
         (
             async () => {
                 if (state || !releaseData) return;
 
-                const exists = await invoke("version_exists_yarg", {
-                    versionId: releaseData.tag_name,
+                const exists = await invoke("exists", {
+                    appName: "yarg",
+                    version: releaseData.tag_name,
                     profile: profileName
                 });
 
@@ -48,13 +48,14 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, pro
     }, [releaseData]);
 
     // If we don't have a release data yet, return a dummy loading version;
-    if(!releaseData) {
+    if (!releaseData) {
         return {
             state,
             play: async () => {},
             download: async () => {},
+            uninstall: async () => {},
         };
-    } 
+    }
 
     const play = async () => {
         if (!releaseData) return;
@@ -62,21 +63,22 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, pro
         setState(YARGStates.LOADING);
 
         try {
-            await invoke("play_yarg", {
-                versionId: releaseData.tag_name,
+            await invoke("launch", {
+                appName: "yarg",
+                version: releaseData.tag_name,
                 profile: profileName
             });
 
             setState(YARGStates.PLAYING);
 
-            // As we don't have a way to check if the YARG game process is closed, we set a timer to avoid locking the state to PLAYING 
+            // As we don't have a way to check if the YARG game process is closed, we set a timer to avoid locking the state to PLAYING
             setTimeout(() => {
                 setState(YARGStates.AVAILABLE);
             }, 10 * 1000);
         } catch (e) {
             setState(YARGStates.ERROR);
 
-            showErrorDialog(dialogManager, e as string);
+            showErrorDialog(e as string);
             console.error(e);
         }
     };
@@ -85,7 +87,7 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, pro
         if (!releaseData || state === YARGStates.DOWNLOADING) return;
 
         // Ask for a download location (if required)
-        if (!await showInstallFolderDialog(dialogManager)) {
+        if (!await showInstallFolderDialog()) {
             // Skip if the dialog is closed or it errors
             return;
         }
@@ -106,14 +108,39 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, pro
                 () => { setState(YARGStates.AVAILABLE); }
             );
 
-            downloadClient.add(downloader);
+            addTask(downloader);
         } catch (e) {
             setState(YARGStates.ERROR);
 
-            showErrorDialog(dialogManager, e as string);
+            showErrorDialog(e as string);
             console.error(e);
         }
     };
 
-    return { state, play, download, payload };
+    const uninstall = async () => {
+        if (!releaseData || state === YARGStates.DOWNLOADING) return;
+
+        // You can't uninstall if the launcher is not initialized
+        if (!await invoke("is_initialized")) return;
+
+        setState(YARGStates.DOWNLOADING);
+
+        try {
+            const downloader = new YARGUninstall(
+                releaseData.channel,
+                releaseData.tag_name,
+                profileName,
+                () => { setState(YARGStates.NEW_UPDATE); }
+            );
+
+            addTask(downloader);
+        } catch (e) {
+            setState(YARGStates.ERROR);
+
+            showErrorDialog(e as string);
+            console.error(e);
+        }
+    };
+
+    return { state, play, download, uninstall, payload };
 };

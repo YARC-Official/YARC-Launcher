@@ -20,8 +20,21 @@ const useSetlistStateStore = create<SetlistStateStore>()((set) => ({
     },
 }));
 
-export const useSetlistState = (version: string) => {
+interface useSetlistStateInterface {
+    state: SetlistStates;
+    setState: (newState: SetlistStates) => void;
+}
+
+export const useSetlistState = (version?: string): useSetlistStateInterface => {
     const store = useSetlistStateStore();
+
+    // If we don't have a version yet, return a dummy loading version;
+    if (!version) {
+        return {
+            state: SetlistStates.LOADING,
+            setState: () => {}
+        };
+    }
 
     const state = store.states[version];
     const setState = (newState: SetlistStates) => store.update(version, newState);

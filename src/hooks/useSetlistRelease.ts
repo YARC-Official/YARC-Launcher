@@ -37,5 +37,5 @@ export const useSetlistRelease = (id: SetlistID) => {
         queryFn: async (): Promise<SetlistData> => await fetch(
             `https://raw.githubusercontent.com/YARC-Official/Official-Setlist-Public/master/setlists/${id}.json`)
             .then(res => res.json())
-    }).data as SetlistData;
+    });
 };

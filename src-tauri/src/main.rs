@@ -2,29 +2,18 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod utils;
+mod app_profile;
 
+use app_profile::AppProfile;
+use app_profile::official_setlist::OfficialSetlistProfile;
+use app_profile::yarg::YARGAppProfile;
 use directories::BaseDirs;
-use minisign::{PublicKeyBox, SignatureBox};
-use std::fs::{self, remove_file};
-use std::path::{Path, PathBuf};
-use std::process::Command;
-use std::{fs::File, io::Write};
-use tauri::async_runtime::RwLock;
+use std::fs::{self, remove_file, File};
+use std::path::PathBuf;
+use std::sync::RwLock;
 use tauri::{AppHandle, Manager};
-use utils::{clear_folder, download, extract, extract_setlist_part};
+use utils::clear_folder;
 use window_shadows::set_shadow;
-
-// TODO: Move this to a file or something
-const YARG_PUB_KEY: &str = "untrusted comment: minisign public key C26EBBBEC4C1DB81
-RWSB28HEvrtuwvPn3pweVBodgVi/d+UH22xDsL3K8VBgeRqaIrDdTvps
-";
-
-#[derive(Clone, serde::Serialize)]
-pub struct ProgressPayload {
-    pub state: String,
-    pub total: u64,
-    pub current: u64,
-}
 
 #[derive(Default, serde::Serialize, serde::Deserialize)]
 pub struct Settings {
@@ -133,246 +122,128 @@ impl InnerState {
 
         Ok(())
     }
-
-    pub async fn download_yarg(
-        &self,
-        app: &AppHandle,
-        zip_url: String,
-        sig_url: Option<String>,
-        version_id: String,
-        profile: String,
-    ) -> Result<(), String> {
-        let mut folder = self.yarg_folder.join(&profile);
-
-        // Delete the old installation
-        clear_folder(&folder)?;
-
-        // Move into the version's folder
-        folder = folder.join(&version_id);
-
-        // Download the zip
-        let zip_path = &self.temp_folder.join("update.zip");
-        download(Some(app), &zip_url, &zip_path).await?;
-
-        // Verify (if signature is provided)
-        if let Some(sig_url) = sig_url {
-            // Emit the verification
-            let _ = app.emit_all(
-                "progress_info",
-                ProgressPayload {
-                    state: "verifying".to_string(),
-                    current: 0,
-                    total: 0,
-                },
-            );
-
-            // Download sig file (don't pass app so it doesn't emit an update)
-            let sig_path = &self.temp_folder.join("update.sig");
-            download(None, &sig_url, &sig_path).await?;
-
-            // Convert public key
-            let pk_box = PublicKeyBox::from_string(YARG_PUB_KEY).unwrap();
-            let pk = pk_box.into_public_key().unwrap();
-
-            // Create the signature box
-            let sig_box = SignatureBox::from_file(sig_path)
-                .map_err(|e| format!("Invalid signature file! Try reinstalling. If it keeps failing, let us know ASAP!\n{:?}", e))?;
-
-            // Verify
-            let zip_file = File::open(zip_path)
-                .map_err(|e| format!("Failed to open zip while verifying.\n{:?}", e))?;
-            minisign::verify(&pk, &sig_box, zip_file, true, false, false)
-                .map_err(|_| "Failed to verify downloaded zip file! Try reinstalling. If it keeps failing, let us know ASAP!")?;
-        }
-
-        // Emit the install
-        let _ = app.emit_all(
-            "progress_info",
-            ProgressPayload {
-                state: "installing".to_string(),
-                current: 0,
-                total: 0,
-            },
-        );
-
-        // Extract the zip to the game directory
-        extract(&zip_path, &folder)?;
-
-        // Delete zip
-        let _ = remove_file(&zip_path);
-
-        Ok(())
-    }
-
-    fn get_yarg_exec(&self, version_id: String, profile: String) -> Result<PathBuf, String> {
-        let mut path = self.yarg_folder.join(profile).join(version_id);
-        path = match get_os().as_str() {
-            "windows" => path.join("YARG.exe"),
-            "linux" => {
-                // Stable uses "YARG.x86_64", and nightly uses "YARG"
-                let mut p = path.join("YARG.x86_64");
-                if !p.exists() {
-                    p = path.join("YARG");
-                }
-                p
-            }
-            "macos" => path
-                .join("YARG.app")
-                .join("Contents")
-                .join("MacOS")
-                .join("YARG"),
-            _ => Err("Unknown platform for launch!")?,
-        };
-
-        Ok(path)
-    }
-
-    pub fn play_yarg(&self, version_id: String, profile: String) -> Result<(), String> {
-        let path = self.get_yarg_exec(version_id, profile)?;
-        Command::new(&path)
-            .spawn()
-            .map_err(|e| format!("Failed to start YARG. Is it installed?\n{:?}", e))?;
-
-        Ok(())
-    }
-
-    pub fn version_exists_yarg(&self, version_id: String, profile: String) -> bool {
-        Path::new(&self.yarg_folder.join(profile).join(version_id)).exists()
-    }
-
-    pub async fn download_setlist(
-        &self,
-        app: &AppHandle,
-        zip_urls: Vec<String>,
-        id: String,
-        version: String,
-    ) -> Result<(), String> {
-        let folder = self.setlist_folder.join(&id);
-
-        // Delete the old installation
-        clear_folder(&folder)?;
-
-        // Download the zip(s)
-        for (index, zip_url) in zip_urls.iter().enumerate() {
-            // Download the current zip
-            let zip_path = &self.temp_folder.join(format!("setlist_{}.7z", index));
-            download(Some(app), &zip_url, &zip_path).await?;
-
-            // Emit the install
-            let _ = app.emit_all(
-                "progress_info",
-                ProgressPayload {
-                    state: "installing".to_string(),
-                    current: 0,
-                    total: 0,
-                },
-            );
-
-            // Extract the zip to the game directory
-            extract_setlist_part(&zip_path, &folder)?;
-
-            // Delete zip
-            let _ = remove_file(zip_path);
-        }
-
-        // Create a version.txt
-        let mut file = File::create(folder.join("version.txt"))
-            .map_err(|e| format!("Failed to create version file in `{:?}`.\n{:?}", folder, e))?;
-        file.write_all(version.as_bytes())
-            .map_err(|e| format!("Failed to write version file in `{:?}`.\n{:?}", folder, e))?;
-
-        Ok(())
-    }
-
-    pub fn version_exists_setlist(&self, id: String, version: String) -> bool {
-        let path = self.setlist_folder.join(id);
-        if !Path::new(&path).exists() {
-            return false;
-        }
-
-        let contents = match fs::read_to_string(&path.join("version.txt")) {
-            Ok(contents) => contents,
-            _ => return false,
-        };
-
-        contents == version
-    }
 }
 
 pub struct State(pub RwLock<InnerState>);
 
-#[tauri::command]
-async fn init(state: tauri::State<'_, State>) -> Result<(), String> {
-    let mut state_guard = state.0.write().await;
+#[tauri::command(async)]
+fn init(state: tauri::State<State>) -> Result<(), String> {
+    let mut state_guard = state.0.write().unwrap();
     state_guard.init()?;
 
     Ok(())
 }
 
-#[tauri::command]
-async fn download_yarg(
-    app: AppHandle,
-    state: tauri::State<'_, State>,
-    zip_url: String,
-    sig_url: Option<String>,
-    version_id: String,
-    profile: String,
-) -> Result<(), String> {
-    let state_guard = state.0.read().await;
+#[tauri::command(async)]
+fn is_initialized(state: tauri::State<State>) -> Result<bool, String> {
+    let state_guard = state.0.read().unwrap();
+    Ok(state_guard.settings.initialized)
+}
 
-    state_guard
-        .download_yarg(&app, zip_url, sig_url, version_id, profile)
-        .await?;
+fn create_app_profile(
+    app_name: String,
+    state: &tauri::State<State>,
+    version: String,
+    profile: String
+) -> Result<Box<dyn AppProfile + Send>, String> {
+    let state_guard = state.0.read().unwrap();
 
-    Ok(())
+    Ok(match app_name.as_str() {
+        "yarg" => Box::new(YARGAppProfile {
+            root_folder: state_guard.yarg_folder.clone(),
+            temp_folder: state_guard.temp_folder.clone(),
+            version,
+            profile
+        }),
+        "official_setlist" => Box::new(OfficialSetlistProfile {
+            root_folder: state_guard.setlist_folder.clone(),
+            temp_folder: state_guard.temp_folder.clone(),
+            version,
+            profile
+        }),
+        _ => Err(format!("Unknown app profile `{}`.", app_name))?
+    })
 }
 
 #[tauri::command]
-async fn play_yarg(
+async fn download_and_install(
     state: tauri::State<'_, State>,
-    version_id: String,
+    app_handle: AppHandle,
+    app_name: String,
+    version: String,
     profile: String,
-) -> Result<(), String> {
-    let state_guard = state.0.read().await;
-    state_guard.play_yarg(version_id, profile)?;
-
-    Ok(())
-}
-
-#[tauri::command]
-async fn version_exists_yarg(
-    state: tauri::State<'_, State>,
-    version_id: String,
-    profile: String,
-) -> Result<bool, String> {
-    let state_guard = state.0.read().await;
-    Ok(state_guard.version_exists_yarg(version_id, profile))
-}
-
-#[tauri::command]
-async fn download_setlist(
-    app: AppHandle,
-    state: tauri::State<'_, State>,
     zip_urls: Vec<String>,
-    id: String,
-    version: String,
+    sig_urls: Vec<String>
 ) -> Result<(), String> {
-    let state_guard = state.0.read().await;
-    state_guard
-        .download_setlist(&app, zip_urls, id, version)
-        .await?;
+    let app_profile = create_app_profile(
+        app_name,
+        &state,
+        version,
+        profile
+    )?;
+
+    let result = app_profile.download_and_install(
+        &app_handle,
+        zip_urls,
+        sig_urls
+    );
+
+    result.await?;
 
     Ok(())
 }
 
-#[tauri::command]
-async fn version_exists_setlist(
-    state: tauri::State<'_, State>,
-    id: String,
+#[tauri::command(async)]
+fn uninstall(
+    state: tauri::State<State>,
+    app_name: String,
     version: String,
+    profile: String
+) -> Result<(), String> {
+    let app_profile = create_app_profile(
+        app_name,
+        &state,
+        version,
+        profile
+    )?;
+
+    app_profile.uninstall()?;
+
+    Ok(())
+}
+
+#[tauri::command(async)]
+fn exists(
+    state: tauri::State<State>,
+    app_name: String,
+    version: String,
+    profile: String
 ) -> Result<bool, String> {
-    let state_guard = state.0.read().await;
-    Ok(state_guard.version_exists_setlist(id, version))
+    let app_profile = create_app_profile(
+        app_name,
+        &state,
+        version,
+        profile
+    )?;
+
+    Ok(app_profile.exists())
+}
+
+#[tauri::command(async)]
+fn launch(
+    state: tauri::State<'_, State>,
+    app_name: String,
+    version: String,
+    profile: String
+) -> Result<(), String> {
+    let app_profile = create_app_profile(
+        app_name,
+        &state,
+        version,
+        profile
+    )?;
+
+    app_profile.launch()
 }
 
 #[tauri::command]
@@ -381,17 +252,19 @@ fn get_os() -> String {
 }
 
 #[tauri::command]
-async fn is_initialized(state: tauri::State<'_, State>) -> Result<bool, String> {
-    let state_guard = state.0.read().await;
-    Ok(state_guard.settings.initialized)
+fn is_dir_empty(path: String) -> bool {
+    match fs::read_dir(path) {
+        Ok(mut entries) => entries.next().is_none(),
+        Err(_) => false,
+    }
 }
 
-#[tauri::command]
+#[tauri::command(async)]
 async fn set_download_location(
     state: tauri::State<'_, State>,
     path: Option<String>,
 ) -> Result<(), String> {
-    let mut state_guard = state.0.write().await;
+    let mut state_guard = state.0.write().unwrap();
 
     // If this is None, just use the default
     if let Some(path) = path {
@@ -407,17 +280,9 @@ async fn set_download_location(
 }
 
 #[tauri::command]
-async fn get_download_location(state: tauri::State<'_, State>) -> Result<String, String> {
-    let state_guard = state.0.read().await;
+fn get_download_location(state: tauri::State<'_, State>) -> Result<String, String> {
+    let state_guard = state.0.read().unwrap();
     Ok(state_guard.settings.download_location.clone())
-}
-
-#[tauri::command]
-fn is_dir_empty(path: String) -> bool {
-    match fs::read_dir(path) {
-        Ok(mut entries) => entries.next().is_none(),
-        Err(_) => false,
-    }
 }
 
 fn main() {
@@ -433,16 +298,18 @@ fn main() {
         })))
         .invoke_handler(tauri::generate_handler![
             init,
-            download_yarg,
-            play_yarg,
-            version_exists_yarg,
-            download_setlist,
-            version_exists_setlist,
-            get_os,
             is_initialized,
+
+            download_and_install,
+            uninstall,
+            exists,
+            launch,
+
+            get_os,
+            is_dir_empty,
+
             set_download_location,
-            get_download_location,
-            is_dir_empty
+            get_download_location
         ])
         .setup(|app| {
             let window = app.get_window("main").unwrap();
