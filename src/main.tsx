@@ -7,8 +7,7 @@ import Router from "@app/routes";
 import { invoke } from "@tauri-apps/api/tauri";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./query";
-import { TaskClientProvider } from "@app/tasks/provider";
-import { DialogManagerProvider } from "./dialogs/DialogProvider";
+import { DialogProvider } from "./dialogs/DialogProvider";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorScreen, onError } from "./routes/ErrorScreen";
 import { error as LogError } from "tauri-plugin-log-api";
@@ -22,14 +21,12 @@ invoke("init").then(() => {
     ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <React.StrictMode>
             <ErrorBoundary FallbackComponent={ErrorScreen} onError={onError}>
-                <DialogManagerProvider>
-                    <TaskClientProvider>
-                        <TitleBar />
-                        <QueryClientProvider client={queryClient}>
-                            <RouterProvider router={Router} />
-                        </QueryClientProvider>
-                    </TaskClientProvider>
-                </DialogManagerProvider>
+                <DialogProvider>
+                    <TitleBar />
+                    <QueryClientProvider client={queryClient}>
+                        <RouterProvider router={Router} />
+                    </QueryClientProvider>
+                </DialogProvider>
             </ErrorBoundary>
         </React.StrictMode>
     );

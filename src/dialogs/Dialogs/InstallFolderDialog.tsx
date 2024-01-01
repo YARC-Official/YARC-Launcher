@@ -4,6 +4,7 @@ import { open } from "@tauri-apps/api/dialog";
 import styles from "./InstallFolderDialog.module.css";
 import { DriveIcon, WarningIcon } from "@app/assets/Icons";
 import { invoke } from "@tauri-apps/api";
+import { closeDialog } from "..";
 
 interface State {
     path?: string;
@@ -74,13 +75,13 @@ export class InstallFolderDialog extends BaseDialog<State> {
 
     getButtons() {
         return <>
-            <Button color={ButtonColor.GRAY} onClick={() => this.context.closeDialog("cancel")}>Cancel</Button>
+            <Button color={ButtonColor.GRAY} onClick={() => closeDialog("cancel")}>Cancel</Button>
             <Button color={ButtonColor.GREEN} onClick={() => {
                 if (!this.state.empty) {
                     return;
                 }
 
-                this.context.closeDialog(this.state.path);
+                closeDialog(this.state.path);
             }}>Okay</Button>
         </>;
     }

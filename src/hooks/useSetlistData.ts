@@ -1,24 +1,30 @@
 import { useSetlistState } from "@app/stores/SetlistStateStore";
 import { SetlistData } from "./useSetlistRelease";
-import { useTaskClient } from "@app/tasks/provider";
 import { SetlistDownload } from "@app/tasks/Processors/Setlist";
 import { useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
-import { DialogManager } from "@app/dialogs";
 import { showErrorDialog, showInstallFolderDialog } from "@app/dialogs/dialogUtil";
+import { addTask, useTask } from "@app/tasks";
+import { TaskPayload, usePayload } from "@app/tasks/payload";
 
 export enum SetlistStates {
     "AVAILABLE",
     "DOWNLOADING",
     "ERROR",
+    "LOADING",
     "NEW_UPDATE"
 }
 
-export const useSetlistData = (setlistData: SetlistData) => {
-    const { state, setState } = useSetlistState(setlistData?.version);
+export type SetlistVersion = {
+    state: SetlistStates,
+    download: () => Promise<void>,
+    payload?: TaskPayload
+}
 
-    const taskClient = useTaskClient();
-    const payload = taskClient.useNextPayloadOf("setlist", setlistData.id);
+export const useSetlistData = (setlistData: SetlistData | undefined, setlistId: string): SetlistVersion => {
+    const { state, setState } = useSetlistState(setlistData?.version);
+    const task = useTask("setlist", setlistId);
+    const payload = usePayload(task?.taskUUID);
 
     useEffect(() => {
         (
@@ -34,13 +40,21 @@ export const useSetlistData = (setlistData: SetlistData) => {
                 setState(exists ? SetlistStates.AVAILABLE : SetlistStates.NEW_UPDATE);
             }
         )();
-    }, []);
+    }, [setlistData]);
 
-    const download = async (dialogManager: DialogManager) => {
+    // If we don't have a release data yet, return a dummy loading version;
+    if (!setlistData) {
+        return {
+            state,
+            download: async () => {},
+        };
+    }
+
+    const download = async () => {
         if (!setlistData || state === SetlistStates.DOWNLOADING) return;
 
         // Ask for a download location (if required)
-        if (!await showInstallFolderDialog(dialogManager)) {
+        if (!await showInstallFolderDialog()) {
             // Skip if the dialog is closed or it errors
             return;
         }
@@ -55,14 +69,14 @@ export const useSetlistData = (setlistData: SetlistData) => {
                 () => { setState(SetlistStates.AVAILABLE); }
             );
 
-            taskClient.add(downloader);
+            addTask(downloader);
         } catch (e) {
             setState(SetlistStates.ERROR);
 
-            showErrorDialog(dialogManager, e as string);
+            showErrorDialog(e as string);
             console.error(e);
         }
     };
 
-    return { state, payload, download };
+    return { state, download, payload };
 };

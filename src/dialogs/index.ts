@@ -1,61 +1,51 @@
-import { createStore, useStore } from "zustand";
-import waitUntil, { WAIT_FOREVER } from "async-wait-until";
 import { Component } from "react";
+import { useStore } from "zustand";
+import { createStore } from "zustand/vanilla";
 
-export class DialogManager {
-    private dialogStore = createStore<typeof Component | undefined>(() => undefined);
-    private propsStore = createStore<Record<string, unknown> | undefined>(() => undefined);
-    private openStore = createStore<boolean>(() => false);
-
-    dialogOut?: string;
-
-    async createAndShowDialog(dialog: typeof Component, props?: Record<string, unknown>): Promise<string | undefined> {
-        console.log("Showing dialog!");
-
-        // If there's already a dialog open, close the current one
-        if (this.openStore.getState()) {
-            return undefined;
-        }
-
-        // Open the dialog
-        this.dialogStore.setState(() => dialog, true);
-        this.propsStore.setState(() => props, true);
-        this.openStore.setState(() => true, true);
-
-        // Subscribe to the close event
-        let done = false;
-        const unsubscribe = this.openStore.subscribe(newState => {
-            if (!newState) {
-                done = true;
-            }
-        });
-
-        // Wait until close
-        await waitUntil(() => done, {
-            timeout: WAIT_FOREVER
-        });
-        unsubscribe();
-        return this.dialogOut;
-    }
-
-    closeDialog(dialogOut?: string) {
-        this.openStore.setState(() => false, true);
-        this.dialogOut = dialogOut;
-    }
-
-    useDialog() {
-        return useStore(this.dialogStore);
-    }
-
-    useOpen() {
-        return useStore(this.openStore);
-    }
-
-    useProps() {
-        return useStore(this.propsStore);
-    }
-
-    setOpen(value: boolean) {
-        this.openStore.setState(() => value, true);
-    }
+type DialogStore = {
+    open: boolean,
+    props?: Record<string, unknown>,
+    content?: typeof Component,
+    output?: string
 }
+
+const store = createStore<DialogStore>(
+    () => ({open: false})
+);
+
+export const createAndShowDialog = async (content: typeof Component, props?: Record<string, unknown>): Promise<string|undefined> => {    
+    const current = store.getState();
+    if(current.open) return;
+
+    store.setState({
+        content,
+        props,
+        open: true,
+    });
+
+    return new Promise<string|undefined>((resolve) => {
+        const unsubscribe = store.subscribe(({open, output}) => {
+            if(open) return;
+
+            unsubscribe();
+            resolve(output);
+        });
+    });
+};
+
+export const closeDialog = (output?: string) => {
+    store.setState({
+        open: false,
+        output
+    });
+};
+
+export const useDialog = () => {
+    return useStore(store);
+};
+
+export const setDialogOpen = (open: boolean) => {
+    store.setState({
+        open
+    });
+};

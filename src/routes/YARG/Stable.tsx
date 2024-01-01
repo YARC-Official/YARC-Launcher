@@ -12,19 +12,19 @@ function StableYARGPage() {
 
     if (error) return `An error has occurred: ${error}`;
 
-    if(isSuccess) {
+    if (isSuccess) {
         return (<>
-            <LaunchPage 
-                version={yargVersion} 
-                releaseTag={releaseData?.tag_name} 
-                playName="STABLE" 
+            <LaunchPage
+                version={yargVersion}
+                releaseTag={releaseData?.tag_name}
+                playName="STABLE"
                 description={<>
                     YARG (a.k.a. Yet Another Rhythm Game) is a free, open-source, plastic guitar game that is
                     still in development. It supports guitar (five fret), drums (plastic or e-kit), vocals,
                     pro-guitar, and more!
-                </>} 
-                websiteUrl="https://github.com/YARC-Official/YARG" 
-                icon={StableYARGIcon} 
+                </>}
+                websiteUrl="https://github.com/YARC-Official/YARG"
+                icon={StableYARGIcon}
                 banner={StableYARGBanner}
             />
         </>);

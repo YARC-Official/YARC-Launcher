@@ -29,7 +29,7 @@ export const useYARGState = (version?: string): useYARGStateInterface => {
     const store = useYARGStateStore();
 
     // If we don't have a version yet, return a dummy loading version;
-    if(!version) {
+    if (!version) {
         return {
             state: YARGStates.LOADING,
             setState: () => {}

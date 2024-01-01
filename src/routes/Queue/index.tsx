@@ -1,10 +1,12 @@
 import styles from "./Queue.module.css";
 import QueueSection from "@app/components/Queue/QueueSection";
-import { useTaskClient } from "@app/tasks/provider";
 import PayloadProgress from "@app/components/PayloadProgress";
 import * as Progress from "@radix-ui/react-progress";
 import { useEffect, useState } from "react";
 import { InstallingIcon, QueueListIcon } from "@app/assets/Icons";
+import QueueStore from "@app/tasks/queue";
+import { usePayload } from "@app/tasks/payload";
+import { useCurrentTask } from "@app/tasks";
 
 function Queue() {
     // These are for the "You've been staring at this blank page for..."
@@ -12,10 +14,9 @@ function Queue() {
     const [startTime, setStartTime] = useState(Date.now());
     const [time, setTime] = useState(Date.now());
 
-    const taskClient = useTaskClient();
-    const queue = taskClient.useQueue();
-    const current = taskClient.useCurrent();
-    const payload = taskClient.usePayload(current?.taskUUID);
+    const queue = QueueStore.useQueue();
+    const currentTask = useCurrentTask();
+    const payload = usePayload(currentTask?.taskUUID);
 
     // Update the timer so the text also updates
     useEffect(() => {
@@ -34,14 +35,14 @@ function Queue() {
     }
 
     function getBanner() {
-        if (current) {
+        if (currentTask) {
             if (lastWasEmpty) {
                 setLastWasEmpty(false);
             }
 
             return <div className={styles.banner}>
                 <span className={styles.downloading_text}>DOWNLOADING</span>
-                {current?.getQueueEntry(true)}
+                {currentTask?.getQueueEntry(true)}
                 <div className={styles.progress_container}>
                     <div className={styles.progress_info}>
                         <PayloadProgress payload={payload} fullMode />
@@ -80,8 +81,8 @@ function Queue() {
         <div className={styles.main}>
             <QueueSection icon={<QueueListIcon />} title="QUEUE">
                 {
-                    queue.size > 0 ?
-                        Array.from(queue).map(downloader => downloader.getQueueEntry(false)) :
+                    queue.size > 1 ?
+                        Array.from(queue).splice(1).map(downloader => downloader.getQueueEntry(false)) :
                         <div className={styles.empty_queue}>There are no downloads in the queue.</div>
                 }
             </QueueSection>

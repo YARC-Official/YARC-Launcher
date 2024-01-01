@@ -1,13 +1,12 @@
 import { useEffect } from "react";
-import { ExtendedReleaseData, getYARGReleaseZip, getYARGReleaseSigFromZipURL } from "./useYARGRelease";
+import { ExtendedReleaseData, getYARGReleaseZip, getYARGReleaseSigFromZipURL, YARGChannels } from "./useYARGRelease";
 import { invoke } from "@tauri-apps/api/tauri";
 import { type } from "@tauri-apps/api/os";
 import { useYARGState } from "@app/stores/YARGStateStore";
-import { useTaskClient } from "@app/tasks/provider";
 import { YARGDownload } from "@app/tasks/Processors/YARG";
-import { TaskPayload } from "@app/tasks";
 import { showErrorDialog, showInstallFolderDialog } from "@app/dialogs/dialogUtil";
-import { useDialogManager } from "@app/dialogs/DialogProvider";
+import { addTask, useTask } from "@app/tasks";
+import { usePayload, TaskPayload } from "@app/tasks/payload";
 
 export enum YARGStates {
     "AVAILABLE",
@@ -25,14 +24,11 @@ export type YARGVersion = {
     payload?: TaskPayload
 }
 
-export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, profileName: string): YARGVersion => {
+export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, profileName: YARGChannels): YARGVersion => {
     // Initialize hooks before returning
     const { state, setState } = useYARGState(releaseData?.tag_name);
-    const dialogManager = useDialogManager();
-    const taskClient = useTaskClient();
-    const payload = releaseData
-        ? taskClient.useNextPayloadOf("setlist", profileName)
-        : undefined;
+    const task = useTask("yarg", profileName);
+    const payload = usePayload(task?.taskUUID);
 
     useEffect(() => {
         (
@@ -51,7 +47,7 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, pro
     }, [releaseData]);
 
     // If we don't have a release data yet, return a dummy loading version;
-    if(!releaseData) {
+    if (!releaseData) {
         return {
             state,
             play: async () => {},
@@ -80,7 +76,7 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, pro
         } catch (e) {
             setState(YARGStates.ERROR);
 
-            showErrorDialog(dialogManager, e as string);
+            showErrorDialog(e as string);
             console.error(e);
         }
     };
@@ -89,7 +85,7 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, pro
         if (!releaseData || state === YARGStates.DOWNLOADING) return;
 
         // Ask for a download location (if required)
-        if (!await showInstallFolderDialog(dialogManager)) {
+        if (!await showInstallFolderDialog()) {
             // Skip if the dialog is closed or it errors
             return;
         }
@@ -110,11 +106,11 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, pro
                 () => { setState(YARGStates.AVAILABLE); }
             );
 
-            taskClient.add(downloader);
+            addTask(downloader);
         } catch (e) {
             setState(YARGStates.ERROR);
 
-            showErrorDialog(dialogManager, e as string);
+            showErrorDialog(e as string);
             console.error(e);
         }
     };

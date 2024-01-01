@@ -1,104 +1,44 @@
 import { useStore } from "zustand";
 import { IBaseTask, TaskTag } from "./Processors/base";
-import { listen } from "@tauri-apps/api/event";
-import { TaskPayloadHandler as TaskPayloadHandler } from "./payload";
-import { TaskQueueHandler as TaskQueueHandler } from "./queue";
-import { throttle } from "lodash";
+import QueueStore from "./queue";
 import { showErrorDialog } from "@app/dialogs/dialogUtil";
-import { DialogManager } from "@app/dialogs";
 
-export type TaskState = "downloading" | "installing" | "verifying" | "waiting";
+const addTask = (task: IBaseTask) => {
+    QueueStore.add(task);
 
-export interface TaskPayload {
-    state: TaskState;
-    current: number;
-    total: number;
-}
+    if(QueueStore.firstTask() === task) {
+        processNextTask();
+    }
+};
 
-export class TaskClient {
-    private payloadHandler: TaskPayloadHandler;
-    private queueHandler: TaskQueueHandler;
+const processNextTask = async () => {
+    const next = QueueStore.next();
+    if(!next) return;
 
-    private dialogManager: DialogManager;
-
-    constructor(dialogManager: DialogManager) {
-        this.dialogManager = dialogManager;
-
-        this.payloadHandler = new TaskPayloadHandler();
-        this.queueHandler = new TaskQueueHandler();
-
-        const throttleTime = 25;
-
-        listen("progress_info",
-            throttle(
-                ({ payload }: { payload: TaskPayload }) => {
-                    this.update(payload);
-                }, throttleTime
-            )
-        );
+    try {
+        next.startedAt = new Date();
+        await next.start();
+        next.onFinish?.();
+    } catch (e) {
+        showErrorDialog(e as string);
+        console.error(e);
     }
 
-    add(task: IBaseTask) {
-        this.queueHandler.add(task);
-        this.payloadHandler.add(task);
+    processNextTask();
+};
 
-        if (!this.queueHandler.currentStore.getState()) {
-            this.processNext();
-        }
-    }
+const useTask = (tag: TaskTag, profile: string) => {
+    return useStore(
+        QueueStore.store,
+        queue => QueueStore.findTask(queue, tag, profile)
+    );
+};
 
-    private async processNext() {
-        const next = this.queueHandler.next();
-        if (!next) return;
+const useCurrentTask = () => {
+    return useStore(
+        QueueStore.store,
+        () => QueueStore.firstTask()
+    );
+};
 
-        try {
-            await next.start();
-            next.onFinish?.();
-        } catch (e) {
-            showErrorDialog(this.dialogManager, e as string);
-            console.error(e);
-        } finally {
-            this.payloadHandler.remove(next);
-        }
-
-        this.processNext();
-    }
-
-    update(payload: TaskPayload) {
-        const current = this.queueHandler.currentStore.getState();
-
-        if (!current) return;
-        this.payloadHandler.update(current, payload);
-    }
-
-    usePayload(uuid?: string) {
-        return useStore(
-            this.payloadHandler.payloadStore,
-            (state) => uuid ? state[uuid] : undefined
-        );
-    }
-
-    useNextPayloadOf(tag: TaskTag, profile: string) {
-        const queue = this.queueHandler.queueStore.getState();
-
-        for (const queued of queue.queue) {
-            if (queued.taskTag === tag || queued.profile === profile) {
-                return this.usePayload(queued.taskUUID);
-            }
-        }
-
-        return undefined;
-    }
-
-    useQueue() {
-        return useStore(
-            this.queueHandler.queueStore,
-            (store) => store.queue,
-            (oldStore, newStore) => oldStore.size === newStore.size
-        );
-    }
-
-    useCurrent() {
-        return useStore(this.queueHandler.currentStore);
-    }
-}
+export { addTask, processNextTask, useTask, useCurrentTask };

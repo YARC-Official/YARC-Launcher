@@ -1,37 +1,72 @@
 import { createStore } from "zustand/vanilla";
-import { TaskPayload } from ".";
 import { IBaseTask } from "./Processors/base";
+import QueueStore from "./queue";
+import { listen } from "@tauri-apps/api/event";
+import { throttle } from "lodash";
+import { useStore } from "zustand";
+
+export type TaskState = "downloading" | "installing" | "verifying" | "waiting";
+
+export interface TaskPayload {
+    state: TaskState;
+    current: number;
+    total: number;
+}
 
 interface TaskPayloadStore {
     [key: string]: TaskPayload,
 }
 
-export class TaskPayloadHandler {
-    payloadStore = createStore<TaskPayloadStore>(() => ({}));
+const store = createStore<TaskPayloadStore>(() => ({}));
 
-    add(task: IBaseTask) {
-        const initialPayload: TaskPayload = {
-            state: "waiting",
-            current: 0,
-            total: 0,
-        };
+const createPayload = (task: IBaseTask) => {
+    const initialPayload: TaskPayload = {
+        state: "waiting",
+        current: 0,
+        total: 0,
+    };
 
-        this.update(task, initialPayload);
-    }
+    setPayload(task, initialPayload);
+};
 
-    update(task: IBaseTask, payload: TaskPayload) {
-        const uuid = task.taskUUID;
-        return this.payloadStore.setState({ [uuid]: { ...payload } });
-    }
+const setPayload = (task: IBaseTask, payload: TaskPayload) => {
+    const uuid = task.taskUUID;
+    return store.setState({ [uuid]: { ...payload } });
+};
 
-    remove(task: IBaseTask) {
-        const uuid = task.taskUUID;
-        return this.payloadStore.setState({ [uuid]: undefined });
-    }
-}
+const removePayload = (task: IBaseTask) => {
+    const uuid = task.taskUUID;
+    return store.setState({ [uuid]: undefined });
+};
 
-export const calculatePayloadPercentage = (payload?: TaskPayload): number | undefined => {
+const usePayload = (uuid?: string) => {
+    return useStore(
+        store,
+        store => uuid ? store[uuid] : undefined
+    );
+};
+
+const calculatePayloadPercentage = (payload?: TaskPayload): number | undefined => {
     if (!payload) return undefined;
 
     return payload.total > 0 ? (payload.current / payload.total) * 100 : undefined;
+};
+
+export { store, createPayload, updatePayload, removePayload, usePayload, calculatePayloadPercentage };
+
+const throttleTime = 25;
+
+listen("progress_info",
+    throttle(
+        ({ payload }: { payload: TaskPayload }) => {
+            updatePayload(payload);
+        }, throttleTime
+    )
+);
+
+const updatePayload = (payload: TaskPayload) => {
+    const current = QueueStore.firstTask();
+    if(!current) return console.warn("Received a payload but no current task is loaded.");
+
+    return setPayload(current, payload);
 };

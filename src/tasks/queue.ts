@@ -1,35 +1,49 @@
 import { createStore } from "zustand/vanilla";
-import { IBaseTask } from "./Processors/base";
+import { IBaseTask, TaskTag } from "./Processors/base";
+import { useStore } from "zustand";
 
-type TaskQueueStore = {
-    queue: Set<IBaseTask>
+type TaskQueueStore = Set<IBaseTask>;
+
+const store = createStore<TaskQueueStore>(() => new Set<IBaseTask>());
+
+const firstTask = (): IBaseTask | undefined => {
+    const queue = store.getState();
+    return queue.values().next().value;
 };
 
-export class TaskQueueHandler {
-    queueStore = createStore<TaskQueueStore>(() => ({ queue: new Set() }));
-    currentStore = createStore<IBaseTask | undefined>(() => undefined);
+const add = (task: IBaseTask) => {
+    store.setState(previousQueue => new Set(previousQueue).add(task), true);
+};
 
-    add(task: IBaseTask) {
-        this.queueStore.setState((prev) => ({ queue: new Set(prev.queue).add(task) }), true);
+const remove = (task: IBaseTask) => {
+    store.setState(previousQueue => {
+        const queue = new Set(previousQueue);
+        queue.delete(task);
+
+        return queue;
+    }, true);
+};
+
+const next = () => {
+    const current = firstTask();
+    if(current?.startedAt) {
+        remove(current);
     }
 
-    delete(task?: IBaseTask) {
-        if (!task) return;
+    return firstTask();
+};
 
-        this.queueStore.setState((prev) => {
-            const newQueue = new Set(prev.queue);
-            newQueue.delete(task);
-
-            return { queue: newQueue };
-        }, true);
+const findTask = (queue: TaskQueueStore, tag: TaskTag, profile: string) => {        
+    for(const task of queue) {
+        if(task.taskTag === tag && task.profile === profile) return task;
     }
 
-    next() {
-        const next: IBaseTask | undefined = this.queueStore.getState().queue.values().next().value || undefined;
+    return undefined;
+};
 
-        this.currentStore.setState(() => next, true);
-        this.delete(next);
+const useQueue = () => {
+    return useStore(store);
+};
 
-        return next;
-    }
-}
+export const QueueStore = { store, firstTask, add, remove, next, findTask, useQueue };
+export default QueueStore;

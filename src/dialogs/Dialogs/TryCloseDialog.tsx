@@ -1,5 +1,6 @@
 import Button, { ButtonColor } from "@app/components/Button";
 import { BaseDialog } from "./BaseDialog";
+import { closeDialog } from "..";
 
 export class TryCloseDialog extends BaseDialog<Record<string, never>> {
     constructor(props: Record<string, unknown>) {
@@ -21,8 +22,8 @@ export class TryCloseDialog extends BaseDialog<Record<string, never>> {
 
     getButtons() {
         return <>
-            <Button color={ButtonColor.GREEN} onClick={() => this.context.closeDialog()}>Don&apos;t Close</Button>
-            <Button color={ButtonColor.YELLOW} onClick={() => this.context.closeDialog("close")}>
+            <Button color={ButtonColor.GREEN} onClick={() => closeDialog()}>Don&apos;t Close</Button>
+            <Button color={ButtonColor.YELLOW} onClick={() => closeDialog("close")}>
                 <strong>Force Close</strong>
             </Button>
         </>;
