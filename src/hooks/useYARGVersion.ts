@@ -22,6 +22,7 @@ export type YARGVersion = {
     play: () => Promise<void>,
     download: () => Promise<void>,
     uninstall: () => Promise<void>,
+    revealFolder: () => Promise<void>,
     payload?: TaskPayload
 }
 
@@ -54,6 +55,7 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, pro
             play: async () => {},
             download: async () => {},
             uninstall: async () => {},
+            revealFolder: async () => {},
         };
     }
 
@@ -142,5 +144,20 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, pro
         }
     };
 
-    return { state, play, download, uninstall, payload };
+    const revealFolder = async () => {
+        if (!releaseData) return;
+
+        try {
+            await invoke("reveal_folder", {
+                appName: "yarg",
+                version: releaseData.tag_name,
+                profile: profileName
+            });
+        } catch (e) {
+            showErrorDialog(e as string);
+            console.error(e);
+        }
+    };
+
+    return { state, play, download, uninstall, revealFolder, payload };
 };

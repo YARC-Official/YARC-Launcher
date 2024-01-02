@@ -53,6 +53,9 @@ export function LaunchButton(props: LaunchButtonProps) {
             <DropdownItem onClick={() => version.uninstall()}>
                 Uninstall
             </DropdownItem>
+            <DropdownItem onClick={() => version.revealFolder()}>
+                Open Install Folder
+            </DropdownItem>
         </>;
 
         return <DropdownButton

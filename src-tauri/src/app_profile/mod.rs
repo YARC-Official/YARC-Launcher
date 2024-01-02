@@ -39,4 +39,8 @@ pub trait AppProfile {
     fn launch(
         &self
     ) -> Result<(), String>;
+
+    fn reveal_folder(
+        &self
+    ) -> Result<(), String>;
 }

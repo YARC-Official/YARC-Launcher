@@ -97,4 +97,10 @@ impl AppProfile for OfficialSetlistProfile {
     ) -> Result<(), String> {
         Err("Cannot launch the setlist!".to_string())
     }
+
+    fn reveal_folder(
+        &self
+    ) -> Result<(), String> {
+        Err("Cannot reveal the setlist folder!".to_string())
+    }
 }

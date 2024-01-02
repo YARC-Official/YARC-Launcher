@@ -15,10 +15,16 @@ pub struct YARGAppProfile {
 }
 
 impl YARGAppProfile {
+    fn get_folder(
+        &self
+    ) -> PathBuf {
+        self.root_folder.join(&self.profile).join(&self.version)
+    }
+
     fn get_exec(
         &self
     ) -> Result<PathBuf, String> {
-        let mut path = self.root_folder.join(&self.profile).join(&self.version);
+        let mut path = self.get_folder();
 
         // Each OS has a different executable
         path = match std::env::consts::OS.to_string().as_str() {
@@ -136,7 +142,7 @@ impl AppProfile for YARGAppProfile {
     fn exists(
         &self
     ) -> bool {
-        Path::new(&self.root_folder.join(&self.profile).join(&self.version)).exists()
+        Path::new(&self.get_folder()).exists()
     }
 
     fn launch(
@@ -146,6 +152,19 @@ impl AppProfile for YARGAppProfile {
         Command::new(&path)
             .spawn()
             .map_err(|e| format!("Failed to start YARG. Is it installed?\n{:?}", e))?;
+        Ok(())
+    }
+
+    fn reveal_folder(
+        &self
+    ) -> Result<(), String> {
+        if !self.exists() {
+            return Err("Cannot reveal something that doesn't exist!".to_string());
+        }
+
+        opener::reveal(self.get_folder())
+            .map_err(|e| format!("Failed to reveal folder. Is it installed?\n{:?}", e))?;
+
         Ok(())
     }
 }

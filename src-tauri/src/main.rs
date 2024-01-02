@@ -246,6 +246,23 @@ fn launch(
     app_profile.launch()
 }
 
+#[tauri::command(async)]
+fn reveal_folder(
+    state: tauri::State<'_, State>,
+    app_name: String,
+    version: String,
+    profile: String
+) -> Result<(), String> {
+    let app_profile = create_app_profile(
+        app_name,
+        &state,
+        version,
+        profile
+    )?;
+
+    app_profile.reveal_folder()
+}
+
 #[tauri::command]
 fn get_os() -> String {
     std::env::consts::OS.to_string()
@@ -304,6 +321,7 @@ fn main() {
             uninstall,
             exists,
             launch,
+            reveal_folder,
 
             get_os,
             is_dir_empty,
