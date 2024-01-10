@@ -16,7 +16,7 @@
     --green-10: rgba(var(--green-rgb), .1);
 
     --titleBar_background: #000209;
-    --titleBar_primary: #fff;
+    --titleBar_primary: #FFF;
     --titleBar_accent: #868AA8;
     --titleBar_height: 30px;
 
@@ -34,7 +34,7 @@
     --buttonText_blue: #002A3D;
     --buttonText_yellow: #351A00;
     --buttonText_gray: #737373;
-    --buttonText_red: #fff;
+    --buttonText_red: #FFF;
 }
 
 * {

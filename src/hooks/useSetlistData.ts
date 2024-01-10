@@ -28,19 +28,17 @@ export const useSetlistData = (setlistData: SetlistData | undefined, setlistId: 
     const payload = usePayload(task?.taskUUID);
 
     useEffect(() => {
-        (
-            async () => {
-                if (state || !setlistData) return;
+        (async () => {
+            if (state || !setlistData) return;
 
-                const exists = await invoke("exists", {
-                    appName: "official_setlist",
-                    version: setlistData.version,
-                    profile: setlistData.id
-                });
+            const exists = await invoke("exists", {
+                appName: "official_setlist",
+                version: setlistData.version,
+                profile: setlistData.id
+            });
 
-                setState(exists ? SetlistStates.AVAILABLE : SetlistStates.NEW_UPDATE);
-            }
-        )();
+            setState(exists ? SetlistStates.AVAILABLE : SetlistStates.NEW_UPDATE);
+        })();
     }, [setlistData]);
 
     // If we don't have a release data yet, return a dummy loading version;

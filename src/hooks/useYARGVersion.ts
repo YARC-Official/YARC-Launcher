@@ -33,19 +33,17 @@ export const useYARGVersion = (releaseData: ExtendedReleaseData | undefined, pro
     const payload = usePayload(task?.taskUUID);
 
     useEffect(() => {
-        (
-            async () => {
-                if (state || !releaseData) return;
+        (async () => {
+            if (state || !releaseData) return;
 
-                const exists = await invoke("exists", {
-                    appName: "yarg",
-                    version: releaseData.tag_name,
-                    profile: profileName
-                });
+            const exists = await invoke("exists", {
+                appName: "yarg",
+                version: releaseData.tag_name,
+                profile: profileName
+            });
 
-                setState(exists ? YARGStates.AVAILABLE : YARGStates.NEW_UPDATE);
-            }
-        )();
+            setState(exists ? YARGStates.AVAILABLE : YARGStates.NEW_UPDATE);
+        })();
     }, [releaseData]);
 
     // If we don't have a release data yet, return a dummy loading version;

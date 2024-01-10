@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import "./styles.css";
 import TitleBar from "./components/TitleBar";
@@ -12,38 +12,67 @@ import { ErrorBoundary } from "react-error-boundary";
 import { ErrorScreen, onError } from "./routes/ErrorScreen";
 import { error as LogError } from "tauri-plugin-log-api";
 import { serializeError } from "serialize-error";
+import LoadingScreen from "./components/LoadingScreen";
 
 window.addEventListener("error", event => {
     LogError(JSON.stringify(serializeError(event)));
 });
 
-invoke("init").then(() => {
-    ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-        <React.StrictMode>
-            <ErrorBoundary FallbackComponent={ErrorScreen} onError={onError}>
-                <DialogProvider>
-                    <TitleBar />
-                    <QueryClientProvider client={queryClient}>
-                        <RouterProvider router={Router} />
-                    </QueryClientProvider>
-                </DialogProvider>
-            </ErrorBoundary>
-        </React.StrictMode>
-    );
-}).catch(e => {
-    console.error(e);
-    LogError(JSON.stringify(serializeError(e)));
+const App: React.FC = () => {
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<unknown>(null);
 
-    ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-        <React.StrictMode>
+    useEffect(() => {
+        (async () => {
+            try {
+                await invoke("init");
+
+                // Add a tiny bit of delay so the loading screen doesn't just instantly disappear
+                await new Promise(r => setTimeout(r, 500));
+            } catch (e) {
+                console.error(e);
+                LogError(JSON.stringify(serializeError(e)));
+
+                setError(e);
+            } finally {
+                setLoading(false);
+            }
+        })();
+    }, []);
+
+    // Show loading screen
+    if (loading) {
+        return <React.StrictMode>
+            <TitleBar />
+            <LoadingScreen />
+        </React.StrictMode>;
+    }
+
+    // Show error screen
+    if (error) {
+        return <React.StrictMode>
             <TitleBar />
             <p>
                 A fatal error has occurred when attempted to initalize the launcher.
                 Please report this to our Discord or GitHub immediately.
             </p>
             <p>
-                {e instanceof Error ? e.message : JSON.stringify(serializeError(e))}
+                {error instanceof Error ? error.message : JSON.stringify(serializeError(error))}
             </p>
-        </React.StrictMode>
-    );
-});
+        </React.StrictMode>;
+    }
+
+    // Show main screen
+    return <React.StrictMode>
+        <ErrorBoundary FallbackComponent={ErrorScreen} onError={onError}>
+            <DialogProvider>
+                <TitleBar />
+                <QueryClientProvider client={queryClient}>
+                    <RouterProvider router={Router} />
+                </QueryClientProvider>
+            </DialogProvider>
+        </ErrorBoundary>
+    </React.StrictMode>;
+};
+
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(<App />);
