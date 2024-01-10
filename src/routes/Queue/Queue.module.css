@@ -5,6 +5,8 @@
     align-items: flex-start;
     gap: 25px;
     align-self: stretch;
+
+    z-index: 1000;
 }
 
 .banner {
