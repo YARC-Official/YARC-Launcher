@@ -1,8 +1,12 @@
 import styles from "./LoadingScreen.module.css";
 import * as Progress from "@radix-ui/react-progress";
 
-const LoadingScreen: React.FC = () => {
-    return <div className={styles.container}>
+interface Props {
+    fadeOut: boolean;
+}
+
+const LoadingScreen: React.FC<Props> = (props: Props) => {
+    return <div className={styles.container} style={{opacity: props.fadeOut ? 0 : 1}}>
         <Progress.Root className={styles.progressRoot}>
             <Progress.Indicator className={styles.progressIndicator} />
         </Progress.Root>

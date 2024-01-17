@@ -14,12 +14,18 @@ import { error as LogError } from "tauri-plugin-log-api";
 import { serializeError } from "serialize-error";
 import LoadingScreen from "./components/LoadingScreen";
 
+enum LoadingState {
+    "LOADING",
+    "FADE_OUT",
+    "DONE"
+}
+
 window.addEventListener("error", event => {
     LogError(JSON.stringify(serializeError(event)));
 });
 
 const App: React.FC = () => {
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(LoadingState.LOADING);
     const [error, setError] = useState<unknown>(null);
 
     useEffect(() => {
@@ -28,25 +34,26 @@ const App: React.FC = () => {
                 await invoke("init");
 
                 // Add a tiny bit of delay so the loading screen doesn't just instantly disappear
-                await new Promise(r => setTimeout(r, 500));
+                await new Promise(r => setTimeout(r, 250));
             } catch (e) {
                 console.error(e);
                 LogError(JSON.stringify(serializeError(e)));
 
+                // If there's an error, just instantly hide the loading screen
                 setError(e);
-            } finally {
-                setLoading(false);
+                setLoading(LoadingState.DONE);
+
+                return;
             }
+
+            // The loading screen takes 250ms to fade out
+            setLoading(LoadingState.FADE_OUT);
+            await new Promise(r => setTimeout(r, 250));
+
+            // Done!
+            setLoading(LoadingState.DONE);
         })();
     }, []);
-
-    // Show loading screen
-    if (loading) {
-        return <React.StrictMode>
-            <TitleBar />
-            <LoadingScreen />
-        </React.StrictMode>;
-    }
 
     // Show error screen
     if (error) {
@@ -64,6 +71,10 @@ const App: React.FC = () => {
 
     // Show main screen
     return <React.StrictMode>
+        {loading != LoadingState.DONE &&
+            <LoadingScreen fadeOut={loading == LoadingState.FADE_OUT} />
+        }
+
         <ErrorBoundary FallbackComponent={ErrorScreen} onError={onError}>
             <DialogProvider>
                 <TitleBar />

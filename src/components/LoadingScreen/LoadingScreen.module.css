@@ -1,4 +1,7 @@
 .container {
+    position: fixed;
+    inset: 0;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -14,6 +17,11 @@
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+
+    z-index: 10000;
+
+    opacity: 1;
+    transition: opacity 250ms;
 }
 
 .factContainer {
@@ -59,7 +67,7 @@
     background: var(--accent);
 
     animation-name: progressAnimation;
-    animation-duration: 2s;
+    animation-duration: 1s;
 }
 
 @keyframes progressAnimation {
