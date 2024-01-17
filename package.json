@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@octokit/types": "^12.4.0",
-    "@tauri-apps/cli": "^1.5.8",
+    "@tauri-apps/cli": "^1.5.9",
     "@types/dompurify": "^3.0.5",
     "@types/node": "^20.10.4",
     "@types/react": "^18.2.45",
