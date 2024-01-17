@@ -1,59 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import "./styles.css";
 import TitleBar from "./components/TitleBar";
 import { RouterProvider } from "react-router-dom";
 import Router from "@app/routes";
-import { invoke } from "@tauri-apps/api/tauri";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./query";
 import { DialogProvider } from "./dialogs/DialogProvider";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorScreen, onError } from "./routes/ErrorScreen";
-import { error as LogError } from "tauri-plugin-log-api";
+import { error as logError } from "tauri-plugin-log-api";
 import { serializeError } from "serialize-error";
 import LoadingScreen from "./components/LoadingScreen";
 
-enum LoadingState {
-    "LOADING",
-    "FADE_OUT",
-    "DONE"
-}
-
 window.addEventListener("error", event => {
-    LogError(JSON.stringify(serializeError(event)));
+    logError(JSON.stringify(serializeError(event)));
 });
 
 const App: React.FC = () => {
-    const [loading, setLoading] = useState(LoadingState.LOADING);
     const [error, setError] = useState<unknown>(null);
-
-    useEffect(() => {
-        (async () => {
-            try {
-                await invoke("init");
-
-                // Add a tiny bit of delay so the loading screen doesn't just instantly disappear
-                await new Promise(r => setTimeout(r, 250));
-            } catch (e) {
-                console.error(e);
-                LogError(JSON.stringify(serializeError(e)));
-
-                // If there's an error, just instantly hide the loading screen
-                setError(e);
-                setLoading(LoadingState.DONE);
-
-                return;
-            }
-
-            // The loading screen takes 250ms to fade out
-            setLoading(LoadingState.FADE_OUT);
-            await new Promise(r => setTimeout(r, 250));
-
-            // Done!
-            setLoading(LoadingState.DONE);
-        })();
-    }, []);
 
     // Show error screen
     if (error) {
@@ -71,9 +36,7 @@ const App: React.FC = () => {
 
     // Show main screen
     return <React.StrictMode>
-        {loading != LoadingState.DONE &&
-            <LoadingScreen fadeOut={loading == LoadingState.FADE_OUT} />
-        }
+        <LoadingScreen setError={setError} />
 
         <ErrorBoundary FallbackComponent={ErrorScreen} onError={onError}>
             <DialogProvider>
