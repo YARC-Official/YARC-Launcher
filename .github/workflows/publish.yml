@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
         keyPassword:
-          description: "Key Password"
+          description: 'Key Password'
           required: true
           type: string
 
@@ -15,7 +15,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [macos-latest, ubuntu-20.04, windows-latest]
+        - platform: 'macos-latest'
+          args: '--target universal-apple-darwin'
+        - platform: 'ubuntu-20.04'
+          args: ''
+        - platform: 'windows-latest'
+          args: ''
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -40,7 +45,8 @@ jobs:
           TAURI_KEY_PASSWORD: ${{ inputs.keyPassword }}
         with:
           tagName: v__VERSION__
-          releaseName: 'YARG Launcher v__VERSION__'
+          releaseName: 'YARC Launcher v__VERSION__'
           releaseBody: 'See the assets to download this version and install.'
           releaseDraft: true
           prerelease: false
+          args: ${{ matrix.args }}
