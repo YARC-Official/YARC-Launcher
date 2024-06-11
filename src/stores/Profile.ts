@@ -1,13 +1,19 @@
 export type Profile = ApplicationProfile | SetlistProfile;
 
+interface ReleaseContent {
+    name: string,
+    platforms?: string[],
+    files: {
+        url: string,
+        type: "normal" | "zip" | "encrypted",
+        signature: string,
+    }[];
+}
+
 interface ApplicationProfile {
     type: "application",
     uuid: string,
-    listOrder: number,
-
-    // For applications, the current version is fetched directly from the repo's releases.
-    // This property represents the repo name from YARC-Official.
-    repoName: string,
+    version: string,
 
     metadata: {
         locales: {
@@ -25,20 +31,21 @@ interface ApplicationProfile {
 
         releaseDate: Date,
         websiteUrl: string,
+    },
+
+    content: ReleaseContent[],
+    launchOptions: {
+        [platform: string]: {
+            executablePath: string,
+            arguments: string
+        }
     }
 }
 
 interface SetlistProfile {
     type: "setlist",
     uuid: string,
-    listOrder: number,
-
-    // For setlists, versions are stored on the disk directly. If the version specified on disk
-    // does not match that of the profile, the user will be prompted to update.
     version: string,
-    // Downloads can come from anywhere, not just GitHub. Downloads may be split up, so this is
-    // an array.
-    downloads: string[],
 
     metadata: {
         locales: {
@@ -61,5 +68,7 @@ interface SetlistProfile {
             name: string,
             url: string,
         }[]
-    }
+    },
+
+    content: ReleaseContent[],
 }
