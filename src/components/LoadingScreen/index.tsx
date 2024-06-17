@@ -22,7 +22,7 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
     useEffect(() => {
         (async () => {
             try {
-                await invoke("init");
+                // await invoke("init");
 
                 // Add a tiny bit of delay so the loading screen doesn't just instantly disappear
                 await new Promise(r => setTimeout(r, 250));
