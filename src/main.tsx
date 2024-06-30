@@ -36,9 +36,9 @@ const App: React.FC = () => {
 
     // Show main screen
     return <React.StrictMode>
-        <LoadingScreen setError={setError} />
-
         <ErrorBoundary FallbackComponent={ErrorScreen} onError={onError}>
+            <LoadingScreen setError={setError} />
+
             <DialogProvider>
                 <TitleBar />
                 <QueryClientProvider client={queryClient}>

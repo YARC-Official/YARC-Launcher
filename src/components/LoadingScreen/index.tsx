@@ -4,6 +4,7 @@ import * as Progress from "@radix-ui/react-progress";
 import { error as logError } from "tauri-plugin-log-api";
 import { serializeError } from "serialize-error";
 import { invoke } from "@tauri-apps/api/tauri";
+import { CustomDirs, ImportantDirs, useProfileStore } from "@app/stores/ProfileStore";
 
 enum LoadingState {
     "LOADING",
@@ -17,12 +18,23 @@ interface Props {
 
 const LoadingScreen: React.FC<Props> = (props: Props) => {
     const [loading, setLoading] = useState(LoadingState.LOADING);
+    const profileStore = useProfileStore();
 
     // Load
     useEffect(() => {
         (async () => {
             try {
-                // await invoke("init");
+                // Get the important and custom directories
+                const importantDirs = await invoke("get_important_dirs");
+                const customDirs = await invoke("get_custom_dirs", {
+                    downloadLocation: "F:/test/"
+                });
+
+                // Set the directories within the store
+                profileStore.setDirs(importantDirs as ImportantDirs, customDirs as CustomDirs);
+
+                console.log(importantDirs);
+                console.log(customDirs);
 
                 // Add a tiny bit of delay so the loading screen doesn't just instantly disappear
                 await new Promise(r => setTimeout(r, 250));
