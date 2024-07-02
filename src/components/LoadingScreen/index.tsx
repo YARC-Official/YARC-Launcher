@@ -5,6 +5,7 @@ import { error as logError } from "tauri-plugin-log-api";
 import { serializeError } from "serialize-error";
 import { invoke } from "@tauri-apps/api/tauri";
 import { CustomDirs, ImportantDirs, useProfileStore } from "@app/stores/ProfileStore";
+import { settingsManager } from "@app/settings";
 
 enum LoadingState {
     "LOADING",
@@ -24,14 +25,21 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
     useEffect(() => {
         (async () => {
             try {
-                // Get the important and custom directories
-                const importantDirs = await invoke("get_important_dirs");
-                const customDirs = await invoke("get_custom_dirs", {
-                    downloadLocation: "F:/test/"
+                await settingsManager.initialize();
+
+                const importantDirs: ImportantDirs = await invoke("get_important_dirs");
+
+                // If the download location is empty, set the default one
+                let downloadLocation = settingsManager.getCache("downloadLocation");
+                if (downloadLocation === "") {
+                    downloadLocation = importantDirs.yarcFolder;
+                }
+
+                const customDirs: CustomDirs = await invoke("get_custom_dirs", {
+                    downloadLocation: downloadLocation
                 });
 
-                // Set the directories within the store
-                profileStore.setDirs(importantDirs as ImportantDirs, customDirs as CustomDirs);
+                profileStore.setDirs(importantDirs, customDirs);
 
                 console.log(importantDirs);
                 console.log(customDirs);

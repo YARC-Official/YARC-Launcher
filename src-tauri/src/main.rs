@@ -8,6 +8,7 @@ use tauri::Manager;
 use window_shadows::set_shadow;
 
 #[derive(Default, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ImportantDirs {
     pub yarc_folder: String,
     pub launcher_folder: String,
@@ -15,6 +16,7 @@ pub struct ImportantDirs {
 }
 
 #[derive(Default, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct CustomDirs {
     pub yarg_folder: String,
     pub setlist_folder: String,
