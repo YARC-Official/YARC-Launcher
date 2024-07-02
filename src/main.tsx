@@ -12,6 +12,7 @@ import { ErrorScreen, onError } from "./routes/ErrorScreen";
 import { error as logError } from "tauri-plugin-log-api";
 import { serializeError } from "serialize-error";
 import LoadingScreen from "./components/LoadingScreen";
+import Onboarding from "./components/Onboarding";
 
 window.addEventListener("error", event => {
     logError(JSON.stringify(serializeError(event)));
@@ -19,6 +20,7 @@ window.addEventListener("error", event => {
 
 const App: React.FC = () => {
     const [error, setError] = useState<unknown>(null);
+    const [onboarding, setOnboarding] = useState(false);
 
     // Show error screen
     if (error) {
@@ -37,11 +39,15 @@ const App: React.FC = () => {
     // Show main screen
     return <React.StrictMode>
         <ErrorBoundary FallbackComponent={ErrorScreen} onError={onError}>
-            <LoadingScreen setError={setError} />
+            <LoadingScreen setError={setError} setOnboarding={setOnboarding} />
 
             <DialogProvider>
                 <TitleBar />
                 <QueryClientProvider client={queryClient}>
+                    {onboarding &&
+                        <Onboarding setOnboarding={setOnboarding} />
+                    }
+
                     <RouterProvider router={Router} />
                 </QueryClientProvider>
             </DialogProvider>

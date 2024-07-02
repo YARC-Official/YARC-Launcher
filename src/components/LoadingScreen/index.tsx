@@ -15,6 +15,7 @@ enum LoadingState {
 
 interface Props {
     setError: React.Dispatch<unknown>;
+    setOnboarding: React.Dispatch<boolean>;
 }
 
 const LoadingScreen: React.FC<Props> = (props: Props) => {
@@ -27,22 +28,23 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
             try {
                 await settingsManager.initialize();
 
-                const importantDirs: ImportantDirs = await invoke("get_important_dirs");
+                if (!settingsManager.getCache("onboardingCompleted")) {
+                    props.setOnboarding(true);
+                } else {
+                    const importantDirs: ImportantDirs = await invoke("get_important_dirs");
 
-                // If the download location is empty, set the default one
-                let downloadLocation = settingsManager.getCache("downloadLocation");
-                if (downloadLocation === "") {
-                    downloadLocation = importantDirs.yarcFolder;
+                    // If the download location is empty, set the default one
+                    let downloadLocation = settingsManager.getCache("downloadLocation");
+                    if (downloadLocation === "") {
+                        downloadLocation = importantDirs.yarcFolder;
+                    }
+
+                    const customDirs: CustomDirs = await invoke("get_custom_dirs", {
+                        downloadLocation: downloadLocation
+                    });
+
+                    profileStore.setDirs(importantDirs, customDirs);
                 }
-
-                const customDirs: CustomDirs = await invoke("get_custom_dirs", {
-                    downloadLocation: downloadLocation
-                });
-
-                profileStore.setDirs(importantDirs, customDirs);
-
-                console.log(importantDirs);
-                console.log(customDirs);
 
                 // Add a tiny bit of delay so the loading screen doesn't just instantly disappear
                 await new Promise(r => setTimeout(r, 250));

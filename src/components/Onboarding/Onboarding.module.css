@@ -1,0 +1,9 @@
+.container {
+    position: fixed;
+    inset: 0;
+    top: 30px;
+
+    background: var(--sideBar_background);
+
+    z-index: 9999;
+}

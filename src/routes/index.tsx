@@ -18,32 +18,26 @@ const Router = createBrowserRouter([
                 path: "/",
                 element: <Home />
             },
-
             {
                 path: "/settings",
                 element: <Settings />
             },
-
             {
                 path: "/queue",
                 element: <Queue />
             },
-
             {
                 path: "/yarg/stable",
                 element: <StableYARGPage />
             },
-
             {
                 path: "/yarg/nightly",
                 element: <NightlyYARGPage />
             },
-
             {
                 path: "/setlist/official",
                 element: <OfficialSetlistPage />
             },
-
             {
                 path: "/news/:md",
                 element: <NewsPage />
