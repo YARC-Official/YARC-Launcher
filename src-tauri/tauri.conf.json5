@@ -12,13 +12,8 @@
   },
   "tauri": {
     "allowlist": {
-      "all": false,
-      "shell": {
-        "all": false,
-        "open": true
-      },
       "window": {
-        "all": false,
+        // Used for the essential functions of the title bar
         "close": true,
         "hide": true,
         "show": true,
@@ -29,15 +24,24 @@
         "startDragging": true
       },
       "dialog": {
-        "all": true,
-        "ask": true,
-        "confirm": true,
-        "message": true,
-        "open": true,
-        "save": true
+        // Used primarily for the file picker dialog
+        "all": true
       },
       "os": {
+        // Used to determine what OS the user is on
         "all": true
+      },
+      "path": {
+        // Required for tauri-settings
+        "all": true
+      },
+      "fs": {
+        // Required for tauri-settings
+        "createDir": true,
+        "readDir": true,
+        "readFile": true,
+        "writeFile": true,
+        "scope": [ "$APPCONFIG", "$APPCONFIG/*" ]
       }
     },
     "bundle": {
