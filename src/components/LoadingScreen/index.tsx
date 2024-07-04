@@ -28,11 +28,13 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
             try {
                 await settingsManager.initialize();
 
+                const importantDirs: ImportantDirs = await invoke("get_important_dirs");
+
                 if (!settingsManager.getCache("onboardingCompleted")) {
+                    profileStore.setDirs(importantDirs);
+
                     props.setOnboarding(true);
                 } else {
-                    const importantDirs: ImportantDirs = await invoke("get_important_dirs");
-
                     // If the download location is empty, set the default one
                     let downloadLocation = settingsManager.getCache("downloadLocation");
                     if (downloadLocation === "") {

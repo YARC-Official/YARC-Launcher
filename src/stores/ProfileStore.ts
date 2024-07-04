@@ -15,7 +15,7 @@ interface ProfileStore {
     importantDirs?: ImportantDirs,
     customDirs?: CustomDirs,
 
-    setDirs: (important: ImportantDirs, custom: CustomDirs) => void,
+    setDirs: (important: ImportantDirs, custom?: CustomDirs) => void,
 }
 
 export const useProfileStore = create<ProfileStore>()((set) => ({
