@@ -3,8 +3,7 @@ import styles from "./LoadingScreen.module.css";
 import * as Progress from "@radix-ui/react-progress";
 import { error as logError } from "tauri-plugin-log-api";
 import { serializeError } from "serialize-error";
-import { invoke } from "@tauri-apps/api/tauri";
-import { CustomDirs, ImportantDirs, useProfileStore } from "@app/stores/ProfileStore";
+import { useProfileStore } from "@app/stores/ProfileStore";
 import { settingsManager } from "@app/settings";
 
 enum LoadingState {
@@ -28,24 +27,12 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
             try {
                 await settingsManager.initialize();
 
-                const importantDirs: ImportantDirs = await invoke("get_important_dirs");
-
                 if (!settingsManager.getCache("onboardingCompleted")) {
-                    profileStore.setDirs(importantDirs);
-
+                    profileStore.setDirs();
                     props.setOnboarding(true);
                 } else {
-                    // If the download location is empty, set the default one
-                    let downloadLocation = settingsManager.getCache("downloadLocation");
-                    if (downloadLocation === "") {
-                        downloadLocation = importantDirs.yarcFolder;
-                    }
-
-                    const customDirs: CustomDirs = await invoke("get_custom_dirs", {
-                        downloadLocation: downloadLocation
-                    });
-
-                    profileStore.setDirs(importantDirs, customDirs);
+                    const downloadLocation = settingsManager.getCache("downloadLocation");
+                    profileStore.setDirs(downloadLocation);
                 }
 
                 // Add a tiny bit of delay so the loading screen doesn't just instantly disappear

@@ -39,6 +39,7 @@ const Onboarding: React.FC<Props> = (props: Props) => {
         settingsManager.setCache("onboardingCompleted", true);
         await settingsManager.syncCache();
 
+        profileStore.setDirs();
         props.setOnboarding(false);
     }
 
