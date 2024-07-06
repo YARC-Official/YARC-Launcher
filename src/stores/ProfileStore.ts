@@ -1,5 +1,6 @@
 import { invoke } from "@tauri-apps/api";
 import { create } from "zustand";
+import { Profile } from "./ProfileTypes";
 
 export interface ImportantDirs {
     yarcFolder: string,
@@ -16,10 +17,38 @@ interface ProfileStore {
     importantDirs?: ImportantDirs,
     customDirs?: CustomDirs,
 
+    profiles: Profile[],
+
     setDirs: (downloadLocation?: string) => Promise<void>,
 }
 
 export const useProfileStore = create<ProfileStore>()((set) => ({
+    profiles: [
+        {
+            type: "application",
+            uuid: "2d78800c-1397-496a-83c1-50759607999a",
+            version: "v0.12.4",
+
+            metadata: {
+                locales: {
+                    "en-US": {
+                        name: "YARG",
+                        releaseName: "Stable",
+
+                        description: "This is the stable verison of YARG",
+
+                        iconUrl: "",
+                        bannerBackUrl: ""
+                    }
+                },
+                releaseDate: new Date(),
+                websiteUrl: "https://yarg.in/"
+            },
+
+            content: [],
+            launchOptions: {}
+        }
+    ],
     setDirs: async (downloadLocation) => {
         const importantDirs: ImportantDirs = await invoke("get_important_dirs");
 
