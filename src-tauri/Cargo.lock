@@ -5444,6 +5444,7 @@ dependencies = [
  "reqwest 0.12.4",
  "serde",
  "serde_json",
+ "serde_repr",
  "sevenz-rust",
  "tauri",
  "tauri-build",

@@ -4,7 +4,8 @@
 use std::{fs, path::PathBuf};
 
 use directories::BaseDirs;
-use tauri::Manager;
+use serde_repr::{Deserialize_repr, Serialize_repr};
+use tauri::{api::version, Manager};
 use window_shadows::set_shadow;
 
 #[derive(Default, serde::Serialize, serde::Deserialize)]
@@ -20,6 +21,14 @@ pub struct ImportantDirs {
 pub struct CustomDirs {
     pub yarg_folder: String,
     pub setlist_folder: String,
+}
+
+#[derive(Serialize_repr, Deserialize_repr, PartialEq, Debug)]
+#[repr(u8)]
+enum ProfileFolderState {
+    UpToDate = 0,
+    UpdateRequired = 1,
+    Error = 2,
 }
 
 fn path_to_string(p: PathBuf) -> Result<String, String> {
@@ -83,15 +92,38 @@ fn get_custom_dirs(download_location: String) -> Result<CustomDirs, String> {
 }
 
 #[tauri::command]
-fn get_os() -> String {
-    std::env::consts::OS.to_string()
-}
-
-#[tauri::command]
 fn is_dir_empty(path: String) -> bool {
     match fs::read_dir(path) {
         Ok(mut entries) => entries.next().is_none(),
         Err(_) => false,
+    }
+}
+
+// TODO: Protections random paths
+
+#[tauri::command(async)]
+fn profile_folder_state(path: String, current_version: String) -> ProfileFolderState {
+    let mut version_file = PathBuf::from(&path);
+    version_file.push("version.txt");
+
+    let version_file_exists = version_file.try_exists();
+    if let Ok(exists) = version_file_exists {
+        if !exists {
+            return ProfileFolderState::UpdateRequired;
+        }
+
+        let version = fs::read_to_string(version_file);
+        if let Ok(version_string) = version {
+            if version_string.trim() == current_version {
+                return ProfileFolderState::UpToDate;
+            } else {
+                return ProfileFolderState::UpdateRequired;
+            }
+        } else {
+            return ProfileFolderState::Error;
+        }
+    } else {
+        return ProfileFolderState::Error;
     }
 }
 
@@ -101,9 +133,9 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             get_important_dirs,
             get_custom_dirs,
-
-            get_os,
             is_dir_empty,
+
+            profile_folder_state
         ])
         .setup(|app| {
             // Show the window's shadow

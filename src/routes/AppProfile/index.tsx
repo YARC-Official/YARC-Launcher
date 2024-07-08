@@ -13,10 +13,15 @@ function AppProfile() {
         return <></>;
     }
 
+    async function download() {
+
+    }
+
     return <div>
         <p>{profile.metadata.locales["en-US"].name}</p>
         <p>{profile.version}</p>
         <p>{profile.metadata.locales["en-US"].description}</p>
+        <button onClick={download}>Download</button>
     </div>;
 }
 
