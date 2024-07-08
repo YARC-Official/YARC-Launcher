@@ -2,7 +2,7 @@ import styles from "./Sidebar.module.css";
 import { DiscordIcon, TwitterIcon, GithubIcon, HomeIcon, QueueIcon } from "@app/assets/Icons";
 import SidebarMenuButton from "./SidebarMenuButton";
 import { NavLink } from "react-router-dom";
-import VersionsList from "./Versions/List";
+import ProfilesList from "./Versions/List";
 import { useEffect, useState } from "react";
 import { getVersion } from "@tauri-apps/api/app";
 import QueueStore from "@app/tasks/queue";
@@ -32,7 +32,7 @@ const Sidebar: React.FC = () => {
             </NavLink>
         </div>
 
-        <VersionsList />
+        <ProfilesList />
 
         <div className={styles.footer}>
             <div className={styles.credits}>v{launcherVersion}</div>

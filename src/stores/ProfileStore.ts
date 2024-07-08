@@ -19,10 +19,11 @@ interface ProfileStore {
 
     profiles: Profile[],
 
+    getProfileByUUID: (uuid: string) => Profile | undefined,
     setDirs: (downloadLocation?: string) => Promise<void>,
 }
 
-export const useProfileStore = create<ProfileStore>()((set) => ({
+export const useProfileStore = create<ProfileStore>()((set, get) => ({
     profiles: [
         {
             type: "application",
@@ -49,6 +50,9 @@ export const useProfileStore = create<ProfileStore>()((set) => ({
             launchOptions: {}
         }
     ],
+    getProfileByUUID: (uuid) => {
+        return get().profiles.find(i => i.uuid === uuid);
+    },
     setDirs: async (downloadLocation) => {
         const importantDirs: ImportantDirs = await invoke("get_important_dirs");
 

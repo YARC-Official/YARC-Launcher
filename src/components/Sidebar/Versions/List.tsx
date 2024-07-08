@@ -1,21 +1,24 @@
-import YARGVersion from "./YARG";
 import styles from "./Versions.module.css";
-import SetlistVersion from "./Setlist";
 import VersionSeparator from "./Separator";
 import { AddIcon } from "@app/assets/Icons";
+import { useProfileStore } from "@app/stores/ProfileStore";
+import { NavLink } from "react-router-dom";
 
-const VersionsList: React.FC = () => {
+const ProfilesList: React.FC = () => {
+    const profileStore = useProfileStore();
+
     return <div className={styles.list}>
         <VersionSeparator name="Applications">
             <AddIcon className={styles.add} />
         </VersionSeparator>
-        <YARGVersion channel="stable" />
-        <YARGVersion channel="nightly" />
-        <VersionSeparator name="Songs">
-            <AddIcon className={styles.add} />
-        </VersionSeparator>
-        <SetlistVersion channel="official" />
+        {
+            profileStore.profiles.filter(i => i.type === "application").map(i =>
+                <NavLink to={`/app-profile/${i.uuid}`} key={i.uuid}>
+                    {i.metadata.locales["en-US"].name} ({i.version})
+                </NavLink>
+            )
+        }
     </div>;
 };
 
-export default VersionsList;
+export default ProfilesList;

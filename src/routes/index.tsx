@@ -8,6 +8,7 @@ import NightlyYARGPage from "./YARG/Nightly";
 import OfficialSetlistPage from "./Setlist/Official";
 import Queue from "@app/routes/Queue";
 import NewsPage from "./NewsPage";
+import AppProfile from "./AppProfile";
 
 const Router = createBrowserRouter([
     {
@@ -27,16 +28,8 @@ const Router = createBrowserRouter([
                 element: <Queue />
             },
             {
-                path: "/yarg/stable",
-                element: <StableYARGPage />
-            },
-            {
-                path: "/yarg/nightly",
-                element: <NightlyYARGPage />
-            },
-            {
-                path: "/setlist/official",
-                element: <OfficialSetlistPage />
+                path: "/app-profile/:uuid",
+                element: <AppProfile />
             },
             {
                 path: "/news/:md",
