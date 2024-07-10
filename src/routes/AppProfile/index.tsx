@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useProfileStore } from "@app/stores/ProfileStore";
+import { LaunchButton } from "@app/components/Launch/LaunchButton";
 
 function AppProfile() {
     const { uuid } = useParams();
@@ -21,7 +22,7 @@ function AppProfile() {
         <p>{profile.metadata.locales["en-US"].name}</p>
         <p>{profile.version}</p>
         <p>{profile.metadata.locales["en-US"].description}</p>
-        <button onClick={download}>Download</button>
+        <LaunchButton profileUUID={profile.uuid} />
     </div>;
 }
 

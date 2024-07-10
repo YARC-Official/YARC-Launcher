@@ -1,59 +1,102 @@
-import { YARGStates, YARGVersion } from "@app/hooks/useYARGVersion";
 import { ButtonColor } from "../../Button";
 import { InstallingIcon, UpdateIcon } from "@app/assets/Icons";
 import { calculatePayloadPercentage } from "@app/tasks/payload";
 import PayloadProgress from "../../PayloadProgress";
 import Button from "@app/components/Button";
 import { DropdownButton, DropdownItem } from "@app/components/DropdownButton";
+import { useEffect, useState } from "react";
+import { invoke } from "@tauri-apps/api";
+import { getPathForProfile, useProfileStore } from "@app/stores/ProfileStore";
+
+enum ProfileFolderState {
+    Error = 0,
+    UpToDate = 1,
+    UpdateRequired = 2,
+    FirstDownload = 3
+}
 
 interface LaunchButtonProps extends React.PropsWithChildren {
-    version: YARGVersion,
-    playName: string,
+    profileUUID: string,
     style?: React.CSSProperties
 }
 
-export function LaunchButton(props: LaunchButtonProps) {
-    const { version, playName } = props;
+export function LaunchButton({ profileUUID, ...props }: LaunchButtonProps) {
+    const [folderState, setFolderState] = useState<ProfileFolderState>(0);
+    const profiles = useProfileStore();
 
-    if (version.state === YARGStates.NEW_UPDATE) {
-        const buttonChildren = <>
-            <UpdateIcon /> Update {playName}
-        </>;
+    const profile = profiles.getProfileByUUID(profileUUID);
+    if (profile === undefined) {
+        return <></>;
+    }
+
+    useEffect(() => {
+        (async () => {
+            const result = await invoke("profile_folder_state", {
+                path: await getPathForProfile(profiles, profile),
+                currentVersion: profile.version
+            }) as ProfileFolderState;
+            setFolderState(result);
+        })();
+    }, []);
+
+    let releaseName = "";
+    if (profile.type === "application") {
+        releaseName = profile.metadata.locales["en-US"].releaseName;
+    }
+
+    if (folderState === ProfileFolderState.UpdateRequired || folderState === ProfileFolderState.FirstDownload) {
+        let buttonChildren;
+        if (folderState === ProfileFolderState.UpdateRequired) {
+            buttonChildren = <>
+                <UpdateIcon /> Update {releaseName}
+            </>;
+        } else {
+            buttonChildren = <>
+                <UpdateIcon /> Install {releaseName}
+            </>;
+        }
 
         return <Button
             style={props.style}
             color={ButtonColor.GREEN}
-            onClick={() => version.download()}>
+            onClick={() => {}}>
 
             {buttonChildren}
         </Button>;
     }
 
-    if (version.state === YARGStates.DOWNLOADING) {
-        const buttonChildren = <>
-            <InstallingIcon />
-            <PayloadProgress payload={version.payload} />
-        </>;
+    // if (version.state === YARGStates.DOWNLOADING) {
+    //     const buttonChildren = <>
+    //         <InstallingIcon />
+    //         <PayloadProgress payload={version.payload} />
+    //     </>;
 
-        return <Button
-            style={props.style}
-            progress={calculatePayloadPercentage(version.payload)}
-            color={ButtonColor.YELLOW}>
+    //     return <Button
+    //         style={props.style}
+    //         progress={calculatePayloadPercentage(version.payload)}
+    //         color={ButtonColor.YELLOW}>
 
-            {buttonChildren}
-        </Button>;
-    }
+    //         {buttonChildren}
+    //     </Button>;
+    // }
 
-    if (version.state === YARGStates.AVAILABLE) {
-        const buttonChildren = <>
-            Play {playName}
-        </>;
+    if (folderState === ProfileFolderState.UpToDate) {
+        let buttonChildren;
+        if (profile.type === "application") {
+            buttonChildren = <>
+                Launch {releaseName}
+            </>;
+        } else {
+            buttonChildren = <>
+                Installed
+            </>;
+        }
 
         const dropdownChildren = <>
-            <DropdownItem onClick={() => version.uninstall()}>
+            <DropdownItem onClick={() => {}}>
                 Uninstall
             </DropdownItem>
-            <DropdownItem onClick={() => version.revealFolder()}>
+            <DropdownItem onClick={() => {}}>
                 Open Install Folder
             </DropdownItem>
         </>;
@@ -61,27 +104,27 @@ export function LaunchButton(props: LaunchButtonProps) {
         return <DropdownButton
             style={props.style}
             color={ButtonColor.BLUE}
-            onClick={() => version.play()}
+            onClick={() => {}}
             dropdownChildren={dropdownChildren}>
 
             {buttonChildren}
         </DropdownButton>;
     }
 
-    if (version.state === YARGStates.PLAYING) {
-        const buttonChildren = <>
-            Opening YARG {playName}
-        </>;
+    // if (folderState === ProfileFolderState) {
+    //     const buttonChildren = <>
+    //         Opening YARG {playName}
+    //     </>;
 
-        return <Button
-            color={ButtonColor.GRAY}
-            style={props.style}>
+    //     return <Button
+    //         color={ButtonColor.GRAY}
+    //         style={props.style}>
 
-            {buttonChildren}
-        </Button>;
-    }
+    //         {buttonChildren}
+    //     </Button>;
+    // }
 
-    if (version.state === YARGStates.ERROR) {
+    if (folderState === ProfileFolderState.Error) {
         const buttonChildren = <>
             Error!
         </>;

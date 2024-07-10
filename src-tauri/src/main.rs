@@ -26,9 +26,10 @@ pub struct CustomDirs {
 #[derive(Serialize_repr, Deserialize_repr, PartialEq, Debug)]
 #[repr(u8)]
 enum ProfileFolderState {
-    UpToDate = 0,
-    UpdateRequired = 1,
-    Error = 2,
+    Error = 0,
+    UpToDate = 1,
+    UpdateRequired = 2,
+    FirstDownload = 3
 }
 
 fn path_to_string(p: PathBuf) -> Result<String, String> {
@@ -109,7 +110,7 @@ fn profile_folder_state(path: String, current_version: String) -> ProfileFolderS
     let version_file_exists = version_file.try_exists();
     if let Ok(exists) = version_file_exists {
         if !exists {
-            return ProfileFolderState::UpdateRequired;
+            return ProfileFolderState::FirstDownload;
         }
 
         let version = fs::read_to_string(version_file);
@@ -120,9 +121,11 @@ fn profile_folder_state(path: String, current_version: String) -> ProfileFolderS
                 return ProfileFolderState::UpdateRequired;
             }
         } else {
+            println!("Failed to read version file at `{}`", path);
             return ProfileFolderState::Error;
         }
     } else {
+        println!("Failed to find if the profile exists at `{}`", path);
         return ProfileFolderState::Error;
     }
 }
