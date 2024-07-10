@@ -6,10 +6,15 @@ use std::time::{Duration, Instant};
 use std::{fs::File, io::Write};
 use tauri::{AppHandle, Manager};
 
-use crate::app_profile::ProgressPayload;
-
 const LETTERS: &str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const EMIT_BUFFER_RATE: f64 = 1.0 / 15.0;
+
+#[derive(Clone, serde::Serialize)]
+pub struct ProgressPayload {
+    pub state: String,
+    pub total: u64,
+    pub current: u64,
+}
 
 pub fn clear_folder(path: &Path) -> Result<(), String> {
     std::fs::remove_dir_all(path).ok();
@@ -25,7 +30,7 @@ pub fn clear_folder(path: &Path) -> Result<(), String> {
 }
 
 pub async fn download(
-    app: Option<&AppHandle>,
+    app: &AppHandle,
     url: &str,
     output_path: &Path,
 ) -> Result<(), String> {
@@ -60,21 +65,18 @@ pub async fn download(
             current_downloaded = total_size;
         }
 
-        // Emit the download progress
-        if let Some(app) = app {
-            // Emitting too often could cause crashes, so buffer it to the buffer rate
-            if emit_timer.elapsed() >= Duration::from_secs_f64(EMIT_BUFFER_RATE) {
-                let _ = app.emit_all(
-                    "progress_info",
-                    ProgressPayload {
-                        state: "downloading".to_string(),
-                        current: current_downloaded,
-                        total: total_size,
-                    },
-                );
+        // Emitting too often could cause crashes, so buffer it to the buffer rate
+        if emit_timer.elapsed() >= Duration::from_secs_f64(EMIT_BUFFER_RATE) {
+            let _ = app.emit_all(
+                "progress_info",
+                ProgressPayload {
+                    state: "downloading".to_string(),
+                    current: current_downloaded,
+                    total: total_size,
+                },
+            );
 
-                emit_timer = Instant::now();
-            }
+            emit_timer = Instant::now();
         }
     }
 
@@ -83,8 +85,6 @@ pub async fn download(
 }
 
 pub fn extract(from: &Path, to: &Path) -> Result<(), String> {
-    clear_folder(to)?;
-
     let file = File::open(from).map_err(|e| format!("Error while opening file.\n{:?}", e))?;
     zip_extract::extract(file, to, false)
         .map_err(|e| format!("Error while extracting zip.\n{:?}", e))?;
@@ -92,7 +92,7 @@ pub fn extract(from: &Path, to: &Path) -> Result<(), String> {
     Ok(())
 }
 
-pub fn extract_setlist_part(zip: &Path, output_path: &Path) -> Result<(), String> {
+pub fn extract_encrypted(from: &Path, to: &Path) -> Result<(), String> {
     // Idiot prevention
     let mut chars = Vec::new();
     for i in 0i32..64 {
@@ -108,11 +108,11 @@ pub fn extract_setlist_part(zip: &Path, output_path: &Path) -> Result<(), String
     }
 
     let p: &[u16] = &chars;
-    sevenz_rust::decompress_file_with_password(zip, output_path, Password::from(p)).map_err(
+    sevenz_rust::decompress_file_with_password(from, to, Password::from(p)).map_err(
         |e| {
             format!(
                 "Failed to extract setlist part `{}`.\n{:?}",
-                zip.display(),
+                from.display(),
                 e
             )
         },

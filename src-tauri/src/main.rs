@@ -1,12 +1,15 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::{fs, path::PathBuf};
+mod utils;
+
+use std::{fmt::format, fs, path::PathBuf};
 
 use directories::BaseDirs;
 use serde_repr::{Deserialize_repr, Serialize_repr};
-use tauri::{api::version, Manager};
+use tauri::{AppHandle, Manager};
 use window_shadows::set_shadow;
+use utils::{clear_folder, download, extract, extract_encrypted};
 
 #[derive(Default, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -21,6 +24,22 @@ pub struct ImportantDirs {
 pub struct CustomDirs {
     pub yarg_folder: String,
     pub setlist_folder: String,
+}
+
+#[derive(Default, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ReleaseContent {
+    pub name: String,
+    pub platforms: Vec<String>,
+    pub files: Vec<ReleaseContentFile>,
+}
+
+#[derive(Default, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ReleaseContentFile {
+    pub url: String,
+    pub file_type: String,
+    pub signature: String,
 }
 
 #[derive(Serialize_repr, Deserialize_repr, PartialEq, Debug)]
@@ -100,10 +119,8 @@ fn is_dir_empty(path: String) -> bool {
     }
 }
 
-// TODO: Protections random paths
-
 #[tauri::command(async)]
-fn profile_folder_state(path: String, current_version: String) -> ProfileFolderState {
+fn profile_folder_state(path: String, profile_version: String) -> ProfileFolderState {
     let mut version_file = PathBuf::from(&path);
     version_file.push("version.txt");
 
@@ -115,7 +132,7 @@ fn profile_folder_state(path: String, current_version: String) -> ProfileFolderS
 
         let version = fs::read_to_string(version_file);
         if let Ok(version_string) = version {
-            if version_string.trim() == current_version {
+            if version_string.trim() == profile_version {
                 return ProfileFolderState::UpToDate;
             } else {
                 return ProfileFolderState::UpdateRequired;
@@ -130,6 +147,50 @@ fn profile_folder_state(path: String, current_version: String) -> ProfileFolderS
     }
 }
 
+#[tauri::command(async)]
+async fn download_and_install_profile(handle: AppHandle, profile_path: String, uuid: String, version: String,
+    temp_path: String, content: Vec<ReleaseContent>) -> Result<(), String> {
+
+    let mut temp_file = PathBuf::from(&temp_path);
+    temp_file.push(format!("{}.temp", uuid));
+    let _ = fs::remove_file(&temp_file);
+
+    let mut install_path = PathBuf::from(&profile_path);
+    install_path.push("installation");
+    clear_folder(&install_path)?;
+
+    // Download and install all content
+    let current_os = std::env::consts::OS.to_string();
+    for c in content {
+        // Skip release content that is not for this OS
+        if !c.platforms.iter().any(|i| i.to_owned() == current_os)  {
+            continue;
+        }
+
+        for file in c.files {
+            // Download
+            download(&handle, &file.url, &temp_file).await?;
+
+            // Extract/install
+            if file.file_type == "zip" {
+                extract(&temp_file, &install_path)?;
+            } else if file.file_type == "encrpyted" {
+                extract_encrypted(&temp_file, &install_path)?;
+            } else {
+                return Err("Unhandled release file type.".to_string());
+            }
+        }
+    }
+
+    let mut version_file = PathBuf::from(&profile_path);
+    version_file.push("version.txt");
+
+    // Write version.txt file
+    fs::write(&version_file, version).map_err(|e| format!("Failed to write version file.\n{:?}", e))?;
+
+    Ok(())
+}
+
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_log::Builder::default().build())
@@ -138,7 +199,8 @@ fn main() {
             get_custom_dirs,
             is_dir_empty,
 
-            profile_folder_state
+            profile_folder_state,
+            download_and_install_profile,
         ])
         .setup(|app| {
             // Show the window's shadow

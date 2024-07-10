@@ -33,7 +33,7 @@ export function LaunchButton({ profileUUID, ...props }: LaunchButtonProps) {
         (async () => {
             const result = await invoke("profile_folder_state", {
                 path: await getPathForProfile(profiles, profile),
-                currentVersion: profile.version
+                profileVersion: profile.version
             }) as ProfileFolderState;
             setFolderState(result);
         })();
