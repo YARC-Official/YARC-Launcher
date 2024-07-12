@@ -5,8 +5,8 @@ interface ReleaseContent {
     platforms?: string[],
     files: {
         url: string,
-        type: "zip" | "encrypted",
-        signature: string,
+        fileType: "zip" | "encrypted",
+        signature?: string,
     }[];
 }
 

@@ -3,7 +3,7 @@
 
 mod utils;
 
-use std::{fmt::format, fs, path::PathBuf};
+use std::{fs, path::PathBuf};
 
 use directories::BaseDirs;
 use serde_repr::{Deserialize_repr, Serialize_repr};
@@ -39,7 +39,7 @@ pub struct ReleaseContent {
 pub struct ReleaseContentFile {
     pub url: String,
     pub file_type: String,
-    pub signature: String,
+    pub signature: Option<String>,
 }
 
 #[derive(Serialize_repr, Deserialize_repr, PartialEq, Debug)]

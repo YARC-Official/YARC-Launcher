@@ -46,7 +46,18 @@ export const useProfileStore = create<ProfileStore>()((set, get) => ({
                 websiteUrl: "https://yarg.in/"
             },
 
-            content: [],
+            content: [
+                {
+                    name: "YARG - Windows",
+                    platforms: ["windows"],
+                    files: [
+                        {
+                            url: "https://github.com/YARC-Official/YARG/releases/download/v0.12.4/YARG_v0.12.4-Windows-x64.zip",
+                            fileType: "zip"
+                        }
+                    ]
+                }
+            ],
             launchOptions: {}
         }
     ],
