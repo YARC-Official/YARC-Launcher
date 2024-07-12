@@ -7,6 +7,7 @@ import { DropdownButton, DropdownItem } from "@app/components/DropdownButton";
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api";
 import { getPathForProfile, useProfileStore } from "@app/stores/ProfileStore";
+import { showErrorDialog } from "@app/dialogs/dialogUtil";
 
 enum ProfileFolderState {
     Error = 0,
@@ -59,7 +60,19 @@ export function LaunchButton({ profileUUID, ...props }: LaunchButtonProps) {
         return <Button
             style={props.style}
             color={ButtonColor.GREEN}
-            onClick={() => {}}>
+            onClick={async () => {
+                try {
+                    await invoke("download_and_install_profile", {
+                        profilePath: await getPathForProfile(profiles, profile),
+                        uuid: profile.uuid,
+                        version: profile.version,
+                        tempPath: profiles.importantDirs?.tempFolder,
+                        content: profile.content
+                    });
+                } catch (e) {
+                    showErrorDialog(e as string);
+                }
+            }}>
 
             {buttonChildren}
         </Button>;
