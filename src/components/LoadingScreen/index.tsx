@@ -28,11 +28,11 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
                 await settingsManager.initialize();
 
                 if (!settingsManager.getCache("onboardingCompleted")) {
-                    profileStore.setDirs();
+                    await profileStore.setDirs();
                     props.setOnboarding(true);
                 } else {
                     const downloadLocation = settingsManager.getCache("downloadLocation");
-                    profileStore.setDirs(downloadLocation);
+                    await profileStore.setDirs(downloadLocation);
                 }
 
                 // Add a tiny bit of delay so the loading screen doesn't just instantly disappear
