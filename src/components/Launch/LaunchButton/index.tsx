@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api";
 import { getPathForProfile, useProfileStore } from "@app/stores/ProfileStore";
 import { showErrorDialog } from "@app/dialogs/dialogUtil";
+import { getOS } from "@app/utils/os";
 
 enum ProfileFolderState {
     Error = 0,
@@ -117,7 +118,28 @@ export function LaunchButton({ profileUUID, ...props }: LaunchButtonProps) {
         return <DropdownButton
             style={props.style}
             color={ButtonColor.BLUE}
-            onClick={() => {}}
+            onClick={async () => {
+                if (profile.type !== "application") {
+                    return;
+                }
+
+                const os = await getOS();
+                if (!(os in profile.launchOptions)) {
+                    showErrorDialog(`Launch options not configured on profile for "${os}"!`);
+                    return;
+                }
+
+                const launchOptions = profile.launchOptions[os];
+                try {
+                    await invoke("launch_profile", {
+                        profilePath: await getPathForProfile(profiles, profile),
+                        execPath: launchOptions.executablePath,
+                        arguments: launchOptions.arguments
+                    });
+                } catch (e) {
+                    showErrorDialog(e as string);
+                }
+            }}
             dropdownChildren={dropdownChildren}>
 
             {buttonChildren}

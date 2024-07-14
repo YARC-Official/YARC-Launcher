@@ -58,7 +58,12 @@ export const useProfileStore = create<ProfileStore>()((set, get) => ({
                     ]
                 }
             ],
-            launchOptions: {}
+            launchOptions: {
+                "windows": {
+                    executablePath: "./YARG.exe",
+                    arguments: []
+                }
+            }
         }
     ],
     getProfileByUUID: (uuid) => {

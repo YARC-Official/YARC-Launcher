@@ -3,7 +3,7 @@
 
 mod utils;
 
-use std::{fs, path::PathBuf};
+use std::{fs, path::PathBuf, process::Command};
 
 use directories::BaseDirs;
 use serde_repr::{Deserialize_repr, Serialize_repr};
@@ -191,6 +191,20 @@ async fn download_and_install_profile(handle: AppHandle, profile_path: String, u
     Ok(())
 }
 
+#[tauri::command]
+fn launch_profile(profile_path: String, exec_path: String, arguments: Vec<String>) -> Result<(), String> {
+    let mut path = PathBuf::from(&profile_path);
+    path.push("installation");
+    path.push(exec_path);
+
+    Command::new(path)
+        .args(arguments)
+        .spawn()
+        .map_err(|e| format!("Failed to launch profile? Is the executable installed?\n{:?}", e))?;
+
+    Ok(())
+}
+
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_log::Builder::default().build())
@@ -201,6 +215,7 @@ fn main() {
 
             profile_folder_state,
             download_and_install_profile,
+            launch_profile,
         ])
         .setup(|app| {
             // Show the window's shadow

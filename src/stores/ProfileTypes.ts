@@ -1,8 +1,10 @@
+import { OS } from "@app/utils/os";
+
 export type Profile = ApplicationProfile | SetlistProfile;
 
 interface ReleaseContent {
     name: string,
-    platforms?: string[],
+    platforms?: OS[],
     files: {
         url: string,
         fileType: "zip" | "encrypted",
@@ -35,9 +37,9 @@ interface ApplicationProfile {
 
     content: ReleaseContent[],
     launchOptions: {
-        [platform: string]: {
+        [platform in OS]?: {
             executablePath: string,
-            arguments: string
+            arguments: string[]
         }
     }
 }
