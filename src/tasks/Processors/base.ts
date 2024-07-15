@@ -1,12 +1,12 @@
+import { Profile } from "@app/stores/ProfileTypes";
 import { v4 as generateUUID } from "uuid";
 
-export type TaskTag = "yarg" | "setlist";
-
 export interface IBaseTask {
-    startedAt?: Date,
-    taskUUID: string,
-    taskTag: TaskTag,
-    profile: string,
+    startedAt?: Date;
+    taskUUID: string;
+
+    profile: Profile;
+    profilePath: string;
 
     onFinish?: () => void;
 
@@ -15,13 +15,20 @@ export interface IBaseTask {
 }
 
 export class BaseTask {
+    startedAt?: Date;
     taskUUID: string;
-    taskTag: TaskTag;
-    profile: string;
 
-    constructor(taskTag: TaskTag, profile: string) {
+    profile: Profile;
+    profilePath: string;
+
+    tempPath: string;
+
+    constructor(profile: Profile, profilePath: string, tempPath: string) {
         this.taskUUID = generateUUID();
-        this.taskTag = taskTag;
+
         this.profile = profile;
+        this.profilePath = profilePath;
+
+        this.tempPath = tempPath;
     }
 }

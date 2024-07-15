@@ -13,7 +13,7 @@ export interface CustomDirs {
     setlistFolder: string,
 }
 
-interface ProfileStore {
+export interface ProfileStore {
     importantDirs?: ImportantDirs,
     customDirs?: CustomDirs,
 

@@ -1,21 +1,8 @@
 import { ButtonColor } from "../../Button";
 import { InstallingIcon, UpdateIcon } from "@app/assets/Icons";
-import { calculatePayloadPercentage } from "@app/tasks/payload";
-import PayloadProgress from "../../PayloadProgress";
 import Button from "@app/components/Button";
 import { DropdownButton, DropdownItem } from "@app/components/DropdownButton";
-import { useEffect, useState } from "react";
-import { invoke } from "@tauri-apps/api";
-import { getPathForProfile, useProfileStore } from "@app/stores/ProfileStore";
-import { showErrorDialog } from "@app/dialogs/dialogUtil";
-import { getOS } from "@app/utils/os";
-
-enum ProfileFolderState {
-    Error = 0,
-    UpToDate = 1,
-    UpdateRequired = 2,
-    FirstDownload = 3
-}
+import { ProfileFolderState, useProfileState } from "@app/hooks/useProfileState";
 
 interface LaunchButtonProps extends React.PropsWithChildren {
     profileUUID: string,
@@ -23,27 +10,41 @@ interface LaunchButtonProps extends React.PropsWithChildren {
 }
 
 export function LaunchButton({ profileUUID, ...props }: LaunchButtonProps) {
-    const [folderState, setFolderState] = useState<ProfileFolderState>(0);
-    const profiles = useProfileStore();
+    const {
+        loading,
+        profile,
+        folderState,
+        currentTask,
+        downloadAndInstall,
+        launch
+    } = useProfileState(profileUUID);
 
-    const profile = profiles.getProfileByUUID(profileUUID);
-    if (profile === undefined) {
-        return <></>;
+    if (loading) {
+        return <Button
+            style={props.style}>
+            Loading...
+        </Button>;
     }
-
-    useEffect(() => {
-        (async () => {
-            const result = await invoke("profile_folder_state", {
-                path: await getPathForProfile(profiles, profile),
-                profileVersion: profile.version
-            }) as ProfileFolderState;
-            setFolderState(result);
-        })();
-    }, []);
 
     let releaseName = "";
     if (profile.type === "application") {
         releaseName = profile.metadata.locales["en-US"].releaseName;
+    }
+
+    if (currentTask !== undefined) {
+        const buttonChildren = <>
+            <InstallingIcon />
+            Installing...
+            {/* <PayloadProgress payload={version.payload} /> */}
+        </>;
+
+        return <Button
+            style={props.style}
+            // progress={calculatePayloadPercentage(version.payload)}
+            color={ButtonColor.YELLOW}>
+
+            {buttonChildren}
+        </Button>;
     }
 
     if (folderState === ProfileFolderState.UpdateRequired || folderState === ProfileFolderState.FirstDownload) {
@@ -61,38 +62,11 @@ export function LaunchButton({ profileUUID, ...props }: LaunchButtonProps) {
         return <Button
             style={props.style}
             color={ButtonColor.GREEN}
-            onClick={async () => {
-                try {
-                    await invoke("download_and_install_profile", {
-                        profilePath: await getPathForProfile(profiles, profile),
-                        uuid: profile.uuid,
-                        version: profile.version,
-                        tempPath: profiles.importantDirs?.tempFolder,
-                        content: profile.content
-                    });
-                } catch (e) {
-                    showErrorDialog(e as string);
-                }
-            }}>
+            onClick={async () => await downloadAndInstall()}>
 
             {buttonChildren}
         </Button>;
     }
-
-    // if (version.state === YARGStates.DOWNLOADING) {
-    //     const buttonChildren = <>
-    //         <InstallingIcon />
-    //         <PayloadProgress payload={version.payload} />
-    //     </>;
-
-    //     return <Button
-    //         style={props.style}
-    //         progress={calculatePayloadPercentage(version.payload)}
-    //         color={ButtonColor.YELLOW}>
-
-    //         {buttonChildren}
-    //     </Button>;
-    // }
 
     if (folderState === ProfileFolderState.UpToDate) {
         let buttonChildren;
@@ -118,28 +92,7 @@ export function LaunchButton({ profileUUID, ...props }: LaunchButtonProps) {
         return <DropdownButton
             style={props.style}
             color={ButtonColor.BLUE}
-            onClick={async () => {
-                if (profile.type !== "application") {
-                    return;
-                }
-
-                const os = await getOS();
-                if (!(os in profile.launchOptions)) {
-                    showErrorDialog(`Launch options not configured on profile for "${os}"!`);
-                    return;
-                }
-
-                const launchOptions = profile.launchOptions[os];
-                try {
-                    await invoke("launch_profile", {
-                        profilePath: await getPathForProfile(profiles, profile),
-                        execPath: launchOptions.executablePath,
-                        arguments: launchOptions.arguments
-                    });
-                } catch (e) {
-                    showErrorDialog(e as string);
-                }
-            }}
+            onClick={async () => await launch()}
             dropdownChildren={dropdownChildren}>
 
             {buttonChildren}

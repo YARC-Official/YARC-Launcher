@@ -4,12 +4,12 @@ import stylesBanner from "./QueueEntryBanner.module.css";
 interface Props {
     icon?: React.ReactNode;
     name?: string;
-    versionChannel?: string;
+    releaseName?: string;
     version?: string;
     bannerMode: boolean;
 }
 
-const BaseQueue: React.FC<Props> = ({ icon, name, versionChannel, version, bannerMode }: Props) => {
+const QueueEntry: React.FC<Props> = ({ icon, name, releaseName, version, bannerMode }: Props) => {
     // Choose the right style
     let styles = stylesNormal;
     if (bannerMode) {
@@ -21,7 +21,7 @@ const BaseQueue: React.FC<Props> = ({ icon, name, versionChannel, version, banne
             <div className={styles.icon}>{icon}</div>
             <div className={styles.info}>
                 <span className={styles.info_header}>{name} {version}</span>
-                {versionChannel}
+                {releaseName}
             </div>
         </div>
         <div className={styles.extra}>
@@ -29,4 +29,4 @@ const BaseQueue: React.FC<Props> = ({ icon, name, versionChannel, version, banne
     </div>;
 };
 
-export default BaseQueue;
+export default QueueEntry;
