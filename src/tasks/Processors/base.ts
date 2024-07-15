@@ -21,14 +21,10 @@ export class BaseTask {
     profile: Profile;
     profilePath: string;
 
-    tempPath: string;
-
-    constructor(profile: Profile, profilePath: string, tempPath: string) {
+    constructor(profile: Profile, profilePath: string) {
         this.taskUUID = generateUUID();
 
         this.profile = profile;
         this.profilePath = profilePath;
-
-        this.tempPath = tempPath;
     }
 }

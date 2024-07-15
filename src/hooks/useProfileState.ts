@@ -2,7 +2,8 @@ import { showErrorDialog } from "@app/dialogs/dialogUtil";
 import { getPathForProfile, useProfileStore } from "@app/stores/ProfileStore";
 import { Profile } from "@app/stores/ProfileTypes";
 import { addTask, useTask } from "@app/tasks";
-import { DownloadAndInstallTask } from "@app/tasks/Processors/DownloadAndInstall";
+import { DownloadAndInstallTask } from "@app/tasks/Processors/DownloadAndInstallTask";
+import { UninstallTask } from "@app/tasks/Processors/UninstallTask";
 import { IBaseTask } from "@app/tasks/Processors/base";
 import { getOS } from "@app/utils/os";
 import { invoke } from "@tauri-apps/api";
@@ -25,6 +26,7 @@ export interface ProfileState {
     currentTask?: IBaseTask;
 
     downloadAndInstall: () => Promise<void>;
+    uninstall: () => Promise<void>;
     launch: () => Promise<void>;
 }
 
@@ -74,6 +76,17 @@ export const useProfileState = (profileUUID: string): ProfileState => {
 
             const task = new DownloadAndInstallTask(profile, profilePath, profiles.importantDirs.tempFolder, () => {
                 setFolderState(ProfileFolderState.UpToDate);
+            });
+
+            addTask(task);
+        },
+        uninstall: async () => {
+            if (loading || profiles.importantDirs === undefined) {
+                return;
+            }
+
+            const task = new UninstallTask(profile, profilePath, () => {
+                setFolderState(ProfileFolderState.FirstDownload);
             });
 
             addTask(task);

@@ -16,6 +16,7 @@ export function LaunchButton({ profileUUID, ...props }: LaunchButtonProps) {
         folderState,
         currentTask,
         downloadAndInstall,
+        uninstall,
         launch
     } = useProfileState(profileUUID);
 
@@ -81,7 +82,7 @@ export function LaunchButton({ profileUUID, ...props }: LaunchButtonProps) {
         }
 
         const dropdownChildren = <>
-            <DropdownItem onClick={() => {}}>
+            <DropdownItem onClick={async () => await uninstall()}>
                 Uninstall
             </DropdownItem>
             <DropdownItem onClick={() => {}}>

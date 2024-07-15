@@ -5,23 +5,18 @@ import { showErrorDialog } from "@app/dialogs/dialogUtil";
 import { ReactNode } from "react";
 import QueueEntry from "@app/components/Queue/QueueEntry";
 
-export class DownloadAndInstallTask extends BaseTask implements IBaseTask {
+export class UninstallTask extends BaseTask implements IBaseTask {
     onFinish?: () => void;
 
-    constructor(profile: Profile, profilePath: string, tempPath: string, onFinish?: () => void) {
-        super(profile, profilePath, tempPath);
+    constructor(profile: Profile, profilePath: string, onFinish?: () => void) {
+        super(profile, profilePath);
         this.onFinish = onFinish;
     }
 
     async start(): Promise<void> {
-        console.log("Downloading profile...");
         try {
-            await invoke("download_and_install_profile", {
-                profilePath: this.profilePath,
-                uuid: this.profile.uuid,
-                version: this.profile.version,
-                tempPath: this.tempPath,
-                content: this.profile.content
+            await invoke("uninstall_profile", {
+                profilePath: this.profilePath
             });
         } catch (e) {
             showErrorDialog(e as string);

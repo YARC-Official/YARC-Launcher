@@ -191,6 +191,19 @@ async fn download_and_install_profile(handle: AppHandle, profile_path: String, u
     Ok(())
 }
 
+#[tauri::command(async)]
+fn uninstall_profile(profile_path: String) -> Result<(), String> {
+    let mut install_path = PathBuf::from(&profile_path);
+    install_path.push("installation");
+    clear_folder(&install_path)?;
+
+    let mut version_file = PathBuf::from(&profile_path);
+    version_file.push("version.txt");
+    fs::remove_file(version_file).map_err(|e| format!("Failed to remove version file.\n{:?}", e))?;
+
+    Ok(())
+}
+
 #[tauri::command]
 fn launch_profile(profile_path: String, exec_path: String, arguments: Vec<String>) -> Result<(), String> {
     let mut path = PathBuf::from(&profile_path);
@@ -215,6 +228,7 @@ fn main() {
 
             profile_folder_state,
             download_and_install_profile,
+            uninstall_profile,
             launch_profile,
         ])
         .setup(|app| {
