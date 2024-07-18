@@ -4,12 +4,21 @@ import { useProfileStore } from "@app/stores/ProfileStore";
 import { open } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api";
 import { settingsManager } from "@app/settings";
+import OnboardingSidebar from "./Sidebar";
+
+export enum OnboardingStep {
+    LANGUAGE = 0,
+    INSTALL_PATH = 1,
+    COMPONENTS = 2,
+}
 
 interface Props {
     setOnboarding: React.Dispatch<boolean>;
 }
 
 const Onboarding: React.FC<Props> = (props: Props) => {
+    const [step, setStep] = useState<OnboardingStep>(OnboardingStep.LANGUAGE);
+
     const profileStore = useProfileStore();
 
     const defaultDownload = profileStore.importantDirs?.yarcFolder;
@@ -43,23 +52,11 @@ const Onboarding: React.FC<Props> = (props: Props) => {
         props.setOnboarding(false);
     }
 
-    return <div className={styles.container}>
-        <div>
-            Pick an installation folder:
+    return <main className={styles.mainContainer}>
+        <div className={styles.container}>
+            <OnboardingSidebar onboardingStep={step} />
         </div>
-        <button onClick={() => askForFolder()}>
-            { downloadLocation === null ? "Loading..." : downloadLocation }
-        </button>
-        {!downloadEmpty &&
-            <div>
-                Install path is not empty!
-            </div>
-        }
-        <br/>
-        <button onClick={() => finish()}>
-            Done
-        </button>
-    </div>;
+    </main>;
 };
 
 export default Onboarding;
