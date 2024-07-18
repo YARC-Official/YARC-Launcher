@@ -17,7 +17,8 @@ export function LaunchButton({ profileUUID, ...props }: LaunchButtonProps) {
         currentTask,
         downloadAndInstall,
         uninstall,
-        launch
+        launch,
+        openInstallFolder
     } = useProfileState(profileUUID);
 
     if (loading) {
@@ -85,9 +86,11 @@ export function LaunchButton({ profileUUID, ...props }: LaunchButtonProps) {
             <DropdownItem onClick={async () => await uninstall()}>
                 Uninstall
             </DropdownItem>
-            <DropdownItem onClick={() => {}}>
-                Open Install Folder
-            </DropdownItem>
+            {profile.type === "application" &&
+                <DropdownItem onClick={async () => await openInstallFolder()}>
+                    Open Install Folder
+                </DropdownItem>
+            }
         </>;
 
         return <DropdownButton

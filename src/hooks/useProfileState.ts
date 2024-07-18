@@ -28,6 +28,7 @@ export interface ProfileState {
     downloadAndInstall: () => Promise<void>;
     uninstall: () => Promise<void>;
     launch: () => Promise<void>;
+    openInstallFolder: () => Promise<void>;
 }
 
 export const useProfileState = (profileUUID: string): ProfileState => {
@@ -47,6 +48,12 @@ export const useProfileState = (profileUUID: string): ProfileState => {
 
     // Initialize
     useEffect(() => {
+        // Set everything to default values
+        // TODO: this is hacky
+        setLoading(true);
+        setProfilePath("");
+        setFolderState(0);
+
         (async () => {
             const path = await getPathForProfile(profiles, profile);
             const result = await invoke("profile_folder_state", {
@@ -58,7 +65,7 @@ export const useProfileState = (profileUUID: string): ProfileState => {
             setProfilePath(path);
             setLoading(false);
         })();
-    }, []);
+    }, [profileUUID]);
 
     return {
         loading,
@@ -108,6 +115,19 @@ export const useProfileState = (profileUUID: string): ProfileState => {
                     profilePath: profilePath,
                     execPath: launchOptions.executablePath,
                     arguments: launchOptions.arguments
+                });
+            } catch (e) {
+                showErrorDialog(e as string);
+            }
+        },
+        openInstallFolder: async() => {
+            if (profile.type !== "application") {
+                return;
+            }
+
+            try {
+                await invoke("open_folder_profile", {
+                    profilePath: profilePath
                 });
             } catch (e) {
                 showErrorDialog(e as string);

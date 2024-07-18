@@ -174,7 +174,7 @@ async fn download_and_install_profile(handle: AppHandle, profile_path: String, u
             // Extract/install
             if file.file_type == "zip" {
                 extract(&temp_file, &install_path)?;
-            } else if file.file_type == "encrpyted" {
+            } else if file.file_type == "encrypted" {
                 extract_encrypted(&temp_file, &install_path)?;
             } else {
                 return Err("Unhandled release file type.".to_string());
@@ -218,6 +218,17 @@ fn launch_profile(profile_path: String, exec_path: String, arguments: Vec<String
     Ok(())
 }
 
+#[tauri::command]
+fn open_folder_profile(profile_path: String) -> Result<(), String> {
+    let mut path = PathBuf::from(&profile_path);
+    path.push("installation");
+
+    opener::reveal(path)
+        .map_err(|e| format!("Failed to reveal folder. Is it installed?\n{:?}", e))?;
+
+    Ok(())
+}
+
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_log::Builder::default().build())
@@ -230,6 +241,7 @@ fn main() {
             download_and_install_profile,
             uninstall_profile,
             launch_profile,
+            open_folder_profile
         ])
         .setup(|app| {
             // Show the window's shadow

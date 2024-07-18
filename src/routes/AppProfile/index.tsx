@@ -15,6 +15,7 @@ function AppProfile() {
     }
 
     return <div>
+        <p>{uuid}</p>
         <p>{profile.metadata.locales["en-US"].name}</p>
         <p>{profile.version}</p>
         <p>{profile.metadata.locales["en-US"].description}</p>

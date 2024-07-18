@@ -64,6 +64,42 @@ export const useProfileStore = create<ProfileStore>()((set, get) => ({
                     arguments: []
                 }
             }
+        },
+        {
+            type: "setlist",
+            uuid: "f5d7d7e1-a2ae-4b0e-aa40-d5daf8ef6903",
+            version: "official-2024-06-12-0",
+
+            metadata: {
+                locales: {
+                    "en-US": {
+                        name: "YARG Official Setlist",
+
+                        description: "This is the official setlist for YARG",
+
+                        iconUrl: "",
+                        bannerBackUrl: ""
+                    }
+                },
+                releaseDate: new Date(),
+                websiteUrl: "https://yarg.in/",
+
+                organizer: "Hububble",
+                credits: []
+            },
+
+            content: [
+                {
+                    name: "YARG Official Setlist Songs",
+                    platforms: ["windows", "macos", "linux"],
+                    files: [
+                        {
+                            url: "https://github.com/YARC-Official/Official-Setlist-Public/releases/download/official-2024-06-12-0/official_0.7z",
+                            fileType: "encrypted"
+                        }
+                    ]
+                }
+            ]
         }
     ],
     getProfileByUUID: (uuid) => {
