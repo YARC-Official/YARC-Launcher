@@ -76,9 +76,9 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
                     } else {
                         showErrorDialog("Invalid profile specified: " + launchOption);
                     }
-                    // Add a tiny bit of delay so the loading screen doesn't just instantly disappear
-                    await new Promise(r => setTimeout(r, 250));
                 } 
+                // Add a tiny bit of delay so the loading screen doesn't just instantly disappear
+                await new Promise(r => setTimeout(r, 250));
 
             } catch (e) {
                 console.error(e);
