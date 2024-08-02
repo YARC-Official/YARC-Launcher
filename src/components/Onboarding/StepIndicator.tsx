@@ -8,7 +8,7 @@ interface Props {
 }
 
 const StepIndicator: React.FC<Props> = ({ text, activeStep, completedStep }: Props) => {
-    let classes = [styles.navigationButton];
+    const classes = [styles.navigationButton];
     if (activeStep) {
         classes.push(styles.activeStep);
     }

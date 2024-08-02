@@ -147,6 +147,8 @@ fn profile_folder_state(path: String, profile_version: String) -> ProfileFolderS
     }
 }
 
+// when i was getting disk space in rust i used "free_space" from the fs2 crate because it takes a path and works out what drive that would be
+
 #[tauri::command(async)]
 async fn download_and_install_profile(handle: AppHandle, profile_path: String, uuid: String, version: String,
     temp_path: String, content: Vec<ReleaseContent>) -> Result<(), String> {

@@ -1,0 +1,86 @@
+.warningBox {
+    display: flex;
+    padding: 20px;
+    align-items: center;
+    gap: 15px;
+    align-self: stretch;
+
+    border-radius: 12px;
+    background: rgba(46, 217, 255, 0.15);
+
+    color: #D3F7FF;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.folderSelection {
+    display: flex;
+    height: 80px;
+    align-items: flex-start;
+    align-self: stretch;
+
+    border-radius: 8px;
+    background: #030307;
+}
+
+.selectedFolder {
+    display: flex;
+    height: 80px;
+    padding: 25px;
+    align-items: center;
+    gap: 15px;
+    flex: 1 0 0;
+    justify-content: space-between;
+}
+
+.browseButtonContainer {
+    display: flex;
+    padding: 0px 15px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+}
+
+.componentContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 25px;
+    align-self: stretch;
+}
+
+.componentCategory {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    align-self: stretch;
+}
+
+.componentCategory > header {
+    color: #9194B1;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.componentOptionContainer {
+    display: flex;
+    height: 124px;
+    align-items: flex-start;
+    gap: 15px;
+    align-self: stretch;
+}
+
+.componentOption {
+    display: flex;
+    height: 124px;
+    padding: 25px;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1 0 0;
+
+    border-radius: 15px;
+    border: 2px solid #0D0F23;
+    background: linear-gradient(0deg, rgba(13, 15, 35, 0.50) 0%, rgba(13, 15, 35, 0.50) 100%), #030307;
+}

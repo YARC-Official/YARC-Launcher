@@ -11,9 +11,9 @@ const OnboardingSidebar: React.FC<Props> = ({ onboardingStep }: Props) => {
         <div className={styles.sidebarTop}>
             <header>Welcome to YARG!</header>
             <div className={styles.navigation}>
-                <StepIndicator text="Language"
+                {/* <StepIndicator text="Language"
                     activeStep={onboardingStep === OnboardingStep.LANGUAGE}
-                    completedStep={onboardingStep > OnboardingStep.LANGUAGE} />
+                    completedStep={onboardingStep > OnboardingStep.LANGUAGE} /> */}
                 <StepIndicator text="Installation Folder"
                     activeStep={onboardingStep === OnboardingStep.INSTALL_PATH}
                     completedStep={onboardingStep > OnboardingStep.INSTALL_PATH} />

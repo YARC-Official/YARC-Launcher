@@ -5,9 +5,12 @@ import { open } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api";
 import { settingsManager } from "@app/settings";
 import OnboardingSidebar from "./Sidebar";
+import Button from "../Button";
+import InstallFolderPage from "./Pages/InstallFolderPage";
+import ComponentsPage from "./Pages/ComponentsPage";
 
 export enum OnboardingStep {
-    LANGUAGE = 0,
+    // LANGUAGE = 0,
     INSTALL_PATH = 1,
     COMPONENTS = 2,
 }
@@ -17,7 +20,7 @@ interface Props {
 }
 
 const Onboarding: React.FC<Props> = (props: Props) => {
-    const [step, setStep] = useState<OnboardingStep>(OnboardingStep.LANGUAGE);
+    const [step, setStep] = useState<OnboardingStep>(OnboardingStep.INSTALL_PATH);
 
     const profileStore = useProfileStore();
 
@@ -55,6 +58,45 @@ const Onboarding: React.FC<Props> = (props: Props) => {
     return <main className={styles.mainContainer}>
         <div className={styles.container}>
             <OnboardingSidebar onboardingStep={step} />
+            <div className={styles.content}>
+                <div className={styles.contentContainer}>
+                    <div className={styles.stepContainer}>
+                        {step === OnboardingStep.INSTALL_PATH &&
+                            <InstallFolderPage
+                                downloadLocation={downloadLocation}
+                                downloadEmpty={downloadEmpty}
+                                askForFolder={askForFolder} />
+                        }
+                        {step === OnboardingStep.COMPONENTS &&
+                            <ComponentsPage />
+                        }
+                    </div>
+                    <div className={styles.stepNavigation}>
+                        <div className={styles.stepNavigationButtons}>
+                            <Button onClick={() => {
+                                if (step > OnboardingStep.INSTALL_PATH) {
+                                    setStep(step - 1);
+                                }
+                            }}>
+                                Back
+                            </Button>
+                            <Button onClick={() => {
+                                switch (step) {
+                                    case OnboardingStep.INSTALL_PATH:
+                                        if (downloadEmpty) {
+                                            setStep(step + 1);
+                                        }
+                                        break;
+                                    case OnboardingStep.COMPONENTS:
+                                        finish();
+                                }
+                            }}>
+                                Next
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>;
 };
