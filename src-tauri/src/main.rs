@@ -250,6 +250,8 @@ fn main() {
     let args = Args::parse();
 
     {
+        // Stores the launch option in a static so the frontend can request it later.
+        // TODO: Maybe change this to something more generic so the frontend can request any argument
         let mut launch_option = DO_LAUNCH.lock().unwrap();
         *launch_option = args.launch;
     }

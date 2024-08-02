@@ -19,8 +19,8 @@ export interface ProfileStore {
 
     profiles: Profile[],
 
-    getProfileByUUID: (uuid: string) => Profile | undefined,
-    setDirs: (downloadLocation?: string) => Promise<void>,
+        getProfileByUUID: (uuid: string) => Profile | undefined,
+    setDirs: (downloadLocation?: string) => Promise<ProfileStore>,
 }
 
 export const useProfileStore = create<ProfileStore>()((set, get) => ({
@@ -109,9 +109,10 @@ export const useProfileStore = create<ProfileStore>()((set, get) => ({
         const importantDirs: ImportantDirs = await invoke("get_important_dirs");
 
         if (downloadLocation === undefined) {
-            return set({
+            set({
                 importantDirs: importantDirs
             });
+            return get();
         } else {
             // If the download location is empty for whatever reason, just set it to the default one
             if (downloadLocation === "") {
@@ -122,10 +123,11 @@ export const useProfileStore = create<ProfileStore>()((set, get) => ({
                 downloadLocation: downloadLocation
             });
 
-            return set({
+            set({
                 importantDirs: importantDirs,
                 customDirs: customDirs
             });
+            return get(); // This function returns the profile store itself because this does not immediately update it for the rest of the scope.
         }
     }
 }));
