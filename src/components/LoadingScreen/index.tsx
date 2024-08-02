@@ -24,7 +24,7 @@ interface Props {
 
 const LoadingScreen: React.FC<Props> = (props: Props) => {
     const [loading, setLoading] = useState(LoadingState.LOADING);
-    var profileStore = useProfileStore();
+    let profileStore = useProfileStore();
 
     // Load
     useEffect(() => {
