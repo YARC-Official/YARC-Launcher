@@ -2,61 +2,18 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod utils;
+mod types;
 
-use std::{fs, path::PathBuf, process::Command, sync::{LazyLock, Mutex}};
+use std::{fs, path::PathBuf, process::Command, sync::Mutex};
 
 use directories::BaseDirs;
-use serde_repr::{Deserialize_repr, Serialize_repr};
 use tauri::{AppHandle, Manager};
 use window_shadows::set_shadow;
-use utils::{clear_folder, download, extract, extract_encrypted};
+use utils::*;
+use types::*;
 use clap::Parser;
 
-#[derive(Default, serde::Serialize, serde::Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct ImportantDirs {
-    pub yarc_folder: String,
-    pub launcher_folder: String,
-    pub temp_folder: String,
-}
-
-#[derive(Default, serde::Serialize, serde::Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct CustomDirs {
-    pub yarg_folder: String,
-    pub setlist_folder: String,
-}
-
-#[derive(Default, serde::Serialize, serde::Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct ReleaseContent {
-    pub name: String,
-    pub platforms: Vec<String>,
-    pub files: Vec<ReleaseContentFile>,
-}
-
-#[derive(Default, serde::Serialize, serde::Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct ReleaseContentFile {
-    pub url: String,
-    pub file_type: String,
-    pub signature: Option<String>,
-}
-
-#[derive(Serialize_repr, Deserialize_repr, PartialEq, Debug)]
-#[repr(u8)]
-enum ProfileFolderState {
-    Error = 0,
-    UpToDate = 1,
-    UpdateRequired = 2,
-    FirstDownload = 3
-}
-
-fn path_to_string(p: PathBuf) -> Result<String, String> {
-    Ok(p.into_os_string()
-        .into_string()
-        .map_err(|e| format!("Failed to convert path to string!\n{:?}", e))?)
-}
+static COMMAND_LINE_ARG_LAUNCH: Mutex<Option<String>> = Mutex::new(None);
 
 #[tauri::command(async)]
 fn get_important_dirs() -> Result<ImportantDirs, String> {
@@ -234,27 +191,16 @@ fn open_folder_profile(profile_path: String) -> Result<(), String> {
 
 #[tauri::command(async)]
 fn get_launch_argument() -> Option<String> {
-    let launch_arg = DO_LAUNCH.lock().unwrap();
+    let launch_arg = COMMAND_LINE_ARG_LAUNCH.lock().unwrap();
     return launch_arg.to_owned();
 }
 
-#[derive(Parser, Debug)]
-#[command(version, about, long_about = None)]
-struct Args {
-    /// UUID of the profile to launch
-    #[arg(short, long)]
-    launch: Option<String>
-}
-
-static DO_LAUNCH: LazyLock<Mutex<Option<String>>> = LazyLock::new(|| Mutex::new(None));
-
 fn main() {
-    let args = Args::parse();
+    let args = CommandLineArgs::parse();
 
     {
         // Stores the launch option in a static so the frontend can request it later.
-        // TODO: Maybe change this to something more generic so the frontend can request any argument
-        let mut launch_option = DO_LAUNCH.lock().unwrap();
+        let mut launch_option = COMMAND_LINE_ARG_LAUNCH.lock().unwrap();
         *launch_option = args.launch;
     }
 
