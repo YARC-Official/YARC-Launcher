@@ -3,13 +3,14 @@
 
 mod utils;
 
-use std::{fs, path::PathBuf, process::Command};
+use std::{fs, path::PathBuf, process::Command, sync::{LazyLock, Mutex}};
 
 use directories::BaseDirs;
 use serde_repr::{Deserialize_repr, Serialize_repr};
 use tauri::{AppHandle, Manager};
 use window_shadows::set_shadow;
 use utils::{clear_folder, download, extract, extract_encrypted};
+use clap::Parser;
 
 #[derive(Default, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -231,7 +232,32 @@ fn open_folder_profile(profile_path: String) -> Result<(), String> {
     Ok(())
 }
 
+#[tauri::command(async)]
+fn get_launch_argument() -> Option<String> {
+    let launch_arg = DO_LAUNCH.lock().unwrap();
+    return launch_arg.to_owned();
+}
+
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Args {
+    /// UUID of the profile to launch
+    #[arg(short, long)]
+    launch: Option<String>
+}
+
+static DO_LAUNCH: LazyLock<Mutex<Option<String>>> = LazyLock::new(|| Mutex::new(None));
+
 fn main() {
+    let args = Args::parse();
+
+    {
+        // Stores the launch option in a static so the frontend can request it later.
+        // TODO: Maybe change this to something more generic so the frontend can request any argument
+        let mut launch_option = DO_LAUNCH.lock().unwrap();
+        *launch_option = args.launch;
+    }
+
     tauri::Builder::default()
         .plugin(tauri_plugin_log::Builder::default().build())
         .invoke_handler(tauri::generate_handler![
@@ -243,7 +269,9 @@ fn main() {
             download_and_install_profile,
             uninstall_profile,
             launch_profile,
-            open_folder_profile
+            open_folder_profile,
+
+            get_launch_argument
         ])
         .setup(|app| {
             // Show the window's shadow

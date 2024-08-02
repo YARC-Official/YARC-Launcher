@@ -46,6 +46,7 @@ window-shadows = "0.2.2"
 minisign = "0.7.6"
 opener = { version = "0.7.1", features = ["reveal"] }
 async-trait = "0.1.74"
+clap = { version = "4.5.13", features = ["derive"] }
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
