@@ -9,6 +9,7 @@ import { invoke } from "@tauri-apps/api";
 import { getOS } from "@app/utils/os";
 import { showErrorDialog } from "@app/dialogs/dialogUtil";
 import { appWindow } from "@tauri-apps/api/window";
+import { launch } from "@app/profiles/actions";
 
 enum LoadingState {
     "LOADING",
@@ -39,47 +40,25 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
                     const downloadLocation = settingsManager.getCache("downloadLocation");
                     profileStore = await profileStore.setDirs(downloadLocation);
                 }
-                console.log(profileStore.customDirs);
 
                 // Check if a profile was requested to be launched by cmdline arguments
-                const launchOption: string = await invoke("get_launch_argument");
-                //console.log(launch_option);
-                if (launchOption) {
+                const launchOption: string | null = await invoke("get_launch_argument");
+                if (launchOption !== null) {
                     setLoading(LoadingState.LAUNCHING);
 
                     const profile = profileStore.getProfileByUUID(launchOption);
                     if (profile) {
-                        if (profile.type !== "application") {
-                            showErrorDialog(`The specified profile (${profile.uuid}) is not an application.`);
-                            return;
-                        }
+                        const path = await getPathForProfile(profileStore, profile);
+                        await launch(profile, path);
 
-                        const os = await getOS();
-                        const launchOptions = profile.launchOptions[os];
-                        if (launchOptions === undefined) {
-                            showErrorDialog(`Launch options not configured on profile for "${os}"!`);
-                            return;
-                        }
-
-                        const profilePath = await getPathForProfile(profileStore, profile);
-
-                        try {
-                            await invoke("launch_profile", {
-                                profilePath: profilePath,
-                                execPath: launchOptions.executablePath,
-                                arguments: launchOptions.arguments
-                            });
-                            appWindow.close();
-                        } catch (e) {
-                            showErrorDialog(e as string);
-                        }
+                        appWindow.close();
                     } else {
                         showErrorDialog("Invalid profile specified: " + launchOption);
                     }
                 }
+
                 // Add a tiny bit of delay so the loading screen doesn't just instantly disappear
                 await new Promise(r => setTimeout(r, 250));
-
             } catch (e) {
                 console.error(e);
                 logError(JSON.stringify(serializeError(e)));

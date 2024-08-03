@@ -1,11 +1,8 @@
-import { showErrorDialog } from "@app/dialogs/dialogUtil";
+import { downloadAndInstall, launch, openInstallFolder, uninstall } from "@app/profiles/actions";
 import { getPathForProfile, useProfileStore } from "@app/profiles/store";
 import { Profile } from "@app/profiles/types";
-import { addTask, useTask } from "@app/tasks";
-import { DownloadAndInstallTask } from "@app/tasks/Processors/DownloadAndInstallTask";
-import { UninstallTask } from "@app/tasks/Processors/UninstallTask";
+import { useTask } from "@app/tasks";
 import { IBaseTask } from "@app/tasks/Processors/base";
-import { getOS } from "@app/utils/os";
 import { invoke } from "@tauri-apps/api";
 import { useEffect, useState } from "react";
 
@@ -77,61 +74,36 @@ export const useProfileState = (profileUUID: string): ProfileState => {
         currentTask,
 
         downloadAndInstall: async () => {
-            if (loading || profiles.importantDirs === undefined) {
+            if (loading) {
                 return;
             }
 
-            const task = new DownloadAndInstallTask(profile, profilePath, profiles.importantDirs.tempFolder, () => {
+            await downloadAndInstall(profile, profiles, profilePath, () => {
                 setFolderState(ProfileFolderState.UpToDate);
             });
-
-            addTask(task);
         },
         uninstall: async () => {
-            if (loading || profiles.importantDirs === undefined) {
+            if (loading) {
                 return;
             }
 
-            const task = new UninstallTask(profile, profilePath, () => {
+            await uninstall(profile, profiles, profilePath, () => {
                 setFolderState(ProfileFolderState.FirstDownload);
             });
-
-            addTask(task);
         },
         launch: async () => {
-            if (profile.type !== "application") {
+            if (loading) {
                 return;
             }
 
-            const os = await getOS();
-            const launchOptions = profile.launchOptions[os];
-            if (launchOptions === undefined) {
-                showErrorDialog(`Launch options not configured on profile for "${os}"!`);
-                return;
-            }
-
-            try {
-                await invoke("launch_profile", {
-                    profilePath: profilePath,
-                    execPath: launchOptions.executablePath,
-                    arguments: launchOptions.arguments
-                });
-            } catch (e) {
-                showErrorDialog(e as string);
-            }
+            await launch(profile, profilePath);
         },
         openInstallFolder: async() => {
-            if (profile.type !== "application") {
+            if (loading) {
                 return;
             }
 
-            try {
-                await invoke("open_folder_profile", {
-                    profilePath: profilePath
-                });
-            } catch (e) {
-                showErrorDialog(e as string);
-            }
+            await openInstallFolder(profile, profilePath);
         }
     };
 };
