@@ -1,4 +1,4 @@
-import { Profile } from "@app/stores/ProfileTypes";
+import { Profile } from "@app/profiles/types";
 import { BaseTask, IBaseTask } from "./base";
 import { invoke } from "@tauri-apps/api";
 import { showErrorDialog } from "@app/dialogs/dialogUtil";

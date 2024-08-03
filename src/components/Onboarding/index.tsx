@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styles from "./Onboarding.module.css";
-import { useProfileStore } from "@app/stores/ProfileStore";
+import { useProfileStore } from "@app/profiles/store";
 import { open } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api";
 import { settingsManager } from "@app/settings";

@@ -1,6 +1,6 @@
 import { showErrorDialog } from "@app/dialogs/dialogUtil";
-import { getPathForProfile, useProfileStore } from "@app/stores/ProfileStore";
-import { Profile } from "@app/stores/ProfileTypes";
+import { getPathForProfile, useProfileStore } from "@app/profiles/store";
+import { Profile } from "@app/profiles/types";
 import { addTask, useTask } from "@app/tasks";
 import { DownloadAndInstallTask } from "@app/tasks/Processors/DownloadAndInstallTask";
 import { UninstallTask } from "@app/tasks/Processors/UninstallTask";

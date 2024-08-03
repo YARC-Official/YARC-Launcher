@@ -3,7 +3,7 @@ import styles from "./LoadingScreen.module.css";
 import * as Progress from "@radix-ui/react-progress";
 import { error as logError } from "tauri-plugin-log-api";
 import { serializeError } from "serialize-error";
-import { getPathForProfile, useProfileStore } from "@app/stores/ProfileStore";
+import { getPathForProfile, useProfileStore } from "@app/profiles/store";
 import { settingsManager } from "@app/settings";
 import { invoke } from "@tauri-apps/api";
 import { getOS } from "@app/utils/os";
@@ -40,29 +40,29 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
                     profileStore = await profileStore.setDirs(downloadLocation);
                 }
                 console.log(profileStore.customDirs);
-                
+
                 // Check if a profile was requested to be launched by cmdline arguments
                 const launchOption: string = await invoke("get_launch_argument");
                 //console.log(launch_option);
                 if (launchOption) {
                     setLoading(LoadingState.LAUNCHING);
-                    
+
                     const profile = profileStore.getProfileByUUID(launchOption);
                     if (profile) {
                         if (profile.type !== "application") {
                             showErrorDialog(`The specified profile (${profile.uuid}) is not an application.`);
                             return;
                         }
-                        
+
                         const os = await getOS();
                         const launchOptions = profile.launchOptions[os];
                         if (launchOptions === undefined) {
                             showErrorDialog(`Launch options not configured on profile for "${os}"!`);
                             return;
                         }
-    
+
                         const profilePath = await getPathForProfile(profileStore, profile);
-                        
+
                         try {
                             await invoke("launch_profile", {
                                 profilePath: profilePath,
@@ -76,7 +76,7 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
                     } else {
                         showErrorDialog("Invalid profile specified: " + launchOption);
                     }
-                } 
+                }
                 // Add a tiny bit of delay so the loading screen doesn't just instantly disappear
                 await new Promise(r => setTimeout(r, 250));
 
@@ -113,17 +113,17 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
 
 
         <div className={styles.factContainer}>
-            {loading == LoadingState.LAUNCHING ? 
+            {loading == LoadingState.LAUNCHING ?
                 <>
                     <p className={styles.factHeader}>Launching...</p>
                     Sit tight...
-                </> : 
+                </> :
                 <>
                     <p className={styles.factHeader}>Fun Fact</p>
                     YARG stands for Yet Another Rhythm Game
                 </>
             }
-            
+
         </div>
     </div>;
 };

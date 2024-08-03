@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useProfileStore } from "@app/stores/ProfileStore";
+import { useProfileStore } from "@app/profiles/store";
 import { LaunchButton } from "@app/components/Launch/LaunchButton";
 
 function AppProfile() {

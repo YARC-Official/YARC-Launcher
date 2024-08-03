@@ -1,4 +1,4 @@
-import { Profile } from "@app/stores/ProfileTypes";
+import { Profile } from "@app/profiles/types";
 import { v4 as generateUUID } from "uuid";
 
 export interface IBaseTask {

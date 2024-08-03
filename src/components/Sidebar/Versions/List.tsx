@@ -1,7 +1,7 @@
 import styles from "./Versions.module.css";
 import VersionSeparator from "./Separator";
 import { AddIcon } from "@app/assets/Icons";
-import { useProfileStore } from "@app/stores/ProfileStore";
+import { useProfileStore } from "@app/profiles/store";
 import { NavLink } from "react-router-dom";
 
 const ProfilesList: React.FC = () => {

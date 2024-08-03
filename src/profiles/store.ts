@@ -1,6 +1,6 @@
 import { invoke, path } from "@tauri-apps/api";
 import { create } from "zustand";
-import { Profile } from "./ProfileTypes";
+import { Profile } from "./types";
 
 export interface ImportantDirs {
     yarcFolder: string,
