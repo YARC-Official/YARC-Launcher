@@ -4,7 +4,7 @@
 mod utils;
 mod types;
 
-use std::{fs, path::PathBuf, process::Command, sync::Mutex};
+use std::{fs, path::PathBuf, process::Command, sync::{LazyLock, Mutex}};
 
 use directories::BaseDirs;
 use tauri::{AppHandle, Manager};
@@ -13,7 +13,7 @@ use utils::*;
 use types::*;
 use clap::Parser;
 
-static COMMAND_LINE_ARG_LAUNCH: Mutex<Option<String>> = Mutex::new(None);
+static COMMAND_LINE_ARG_LAUNCH: LazyLock<Mutex<Option<String>>> = LazyLock::new(|| Mutex::new(None));
 
 #[tauri::command(async)]
 fn get_important_dirs() -> Result<ImportantDirs, String> {
