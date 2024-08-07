@@ -2,6 +2,8 @@ import { useParams } from "react-router-dom";
 import { useProfileState } from "@app/hooks/useProfileState";
 import styles from "./AppProfile.module.css";
 import { VerifiedIcon } from "@app/assets/Icons";
+import Button from "@app/components/Button";
+import { LaunchButton } from "./LaunchButton";
 
 function AppProfile() {
     const { uuid } = useParams();
@@ -28,6 +30,19 @@ function AppProfile() {
                         Official Build <VerifiedIcon />
                     </div>
                     {metadata.name}
+                </div>
+            </div>
+            <div className={styles.bannerOptions}>
+                <div className={styles.bannerOptionsStats}>
+                    {/* <div>
+                        Last played 3 days ago
+                    </div>
+                    <div>
+                        400 hours played
+                    </div> */}
+                </div>
+                <div className={styles.bannerOptionsMain}>
+                    <LaunchButton profileState={profileState} />
                 </div>
             </div>
         </div>

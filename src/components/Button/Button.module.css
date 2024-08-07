@@ -29,6 +29,7 @@
 
 .rounded {
     --borderRadius: 50px;
+    padding: 15px 35px;
 }
 
 .colorsGreen {

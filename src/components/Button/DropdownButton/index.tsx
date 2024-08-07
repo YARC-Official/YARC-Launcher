@@ -1,5 +1,5 @@
 import { DropdownIcon } from "@app/assets/Icons";
-import Button, { ButtonProps } from "../Button";
+import Button, { ButtonProps } from "..";
 import styles from "./DropdownButton.module.css";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
