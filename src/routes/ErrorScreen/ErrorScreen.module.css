@@ -1,6 +1,6 @@
 .error {
-    background: var(--titleBar_background);
-    color: var(--titleBar_accent);
+    background: var(--titleBarBackground);
+    color: var(--titleBarAccent);
 
     display: flex;
     flex-direction: column;

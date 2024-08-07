@@ -15,26 +15,29 @@
     --green: rgb(var(--green-rgb));
     --green-10: rgba(var(--green-rgb), .1);
 
-    --titleBar_background: #000209;
-    --titleBar_primary: #FFF;
-    --titleBar_accent: #868AA8;
-    --titleBar_height: 30px;
+    --titleBarBackground: #000209;
+    --titleBarPrimary: #FFF;
+    --titleBarAccent: #868AA8;
+    --titleBarHeight: 30px;
 
-    --sideBar_background: #05060B;
-    --sideBar_separator_color: #394452;
-    --sideBar_selection: rgba(255, 255, 255, 0.1);
+    --sideBarBackground: #05060B;
+    --sideBarSeparatorColor: #394452;
+    --sideBarSelection: rgba(255, 255, 255, 0.1);
 
-    --button_green: #46E74F;
-    --button_blue: #2ED9FF;
-    --button_yellow: #FFB800;
-    --button_gray: #E6E6E6;
-    --button_red: #F32B37;
+    --buttonGreen: #17E289;
+    --buttonBlue: #2ED9FF;
+    --buttonYellow: #FCD548;
+    --buttonGray: #0F121D;
+    --buttonRed: #F32B37;
 
-    --buttonText_green: #003C03;
-    --buttonText_blue: #002A3D;
-    --buttonText_yellow: #351A00;
-    --buttonText_gray: #737373;
-    --buttonText_red: #FFF;
+    --buttonGreenText: #005832;
+    --buttonBlueText: #03596B;
+    --buttonYellowText: #4F2600;
+    --buttonGrayText: #E0E1E7;
+    --buttonRedText: #FFF;
+
+    --buttonLightBorder: rgba(255, 255, 255, 0.4);
+    --buttonDarkBorder: #222638;
 }
 
 * {
@@ -82,7 +85,7 @@ a {
     width: 100%;
     height: 100%;
     display: flex;
-    padding-top: var(--titleBar_height);
+    padding-top: var(--titleBarHeight);
 }
 
 #content {

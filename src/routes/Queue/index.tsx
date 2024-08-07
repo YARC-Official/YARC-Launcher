@@ -7,6 +7,7 @@ import { InstallingIcon, QueueListIcon } from "@app/assets/Icons";
 import QueueStore from "@app/tasks/queue";
 import { usePayload } from "@app/tasks/payload";
 import { useCurrentTask } from "@app/tasks";
+import Button, { ButtonColor } from "@app/components/Button";
 
 function Queue() {
     // These are for the "You've been staring at this blank page for..."

@@ -1,6 +1,6 @@
 .title_bar {
-    background: var(--titleBar_background);
-    color: var(--titleBar_primary);
+    background: var(--titleBarBackground);
+    color: var(--titleBarPrimary);
     user-select: none;
 
     height: 30px;
@@ -15,11 +15,11 @@
 .text {
     display: flex;
     gap: 10px;
-    color: var(--titleBar_accent);
+    color: var(--titleBarAccent);
 }
 
 .text span:first-of-type {
-    color: var(--titleBar_primary);
+    color: var(--titleBarPrimary);
 }
 
 .buttons {
@@ -37,7 +37,7 @@
 }
 
 .button:hover {
-    background: var(--titleBar_accent);
+    background: var(--titleBarAccent);
 }
 
 .button svg {

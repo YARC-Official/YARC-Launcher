@@ -3,7 +3,7 @@
     inset: 0;
     top: 30px;
 
-    background: var(--sideBar_background);
+    background: var(--sideBarBackground);
     color: white;
 
     z-index: 9999;

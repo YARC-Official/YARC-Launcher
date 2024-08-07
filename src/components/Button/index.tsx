@@ -19,37 +19,47 @@ export type ButtonProps = React.PropsWithChildren<{
     style?: React.CSSProperties,
     onClick?: React.MouseEventHandler<HTMLButtonElement>,
 
+    border?: boolean,
+    rounded?: boolean,
     color?: ButtonColor,
-    progress?: number,
+
     width?: number,
     height?: number,
 }>;
 
 const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
     // Get the button color class
-    let colorClass;
+    let classes;
     switch (props.color) {
         case ButtonColor.BLUE:
-            colorClass = styles.colors_blue;
+            classes = [styles.colorsBlue];
             break;
         case ButtonColor.GREEN:
-            colorClass = styles.colors_green;
+            classes = [styles.colorsGreen];
             break;
         case ButtonColor.YELLOW:
-            colorClass = styles.colors_yellow;
+            classes = [styles.colorsYellow];
             break;
         case ButtonColor.GRAY:
-            colorClass = styles.colors_gray;
+            classes = [styles.colorsGray];
             break;
         case ButtonColor.BLACK:
-            colorClass = styles.colors_black;
+            classes = [styles.colorsBlack];
             break;
         case ButtonColor.RED:
-            colorClass = styles.colors_red;
+            classes = [styles.colorsRed];
             break;
         default:
-            colorClass = styles.colors_blue;
+            classes = [styles.colorsBlue];
             break;
+    }
+
+    if (props.border) {
+        classes.push(styles.border);
+    }
+
+    if (props.rounded) {
+        classes.push(styles.rounded);
     }
 
     // Get the styles
@@ -57,13 +67,10 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
         width: props.width,
         height: props.height,
         ...props.style,
-
-        "--progress": props.progress ? `${props.progress}%` : undefined
     } as ButtonCSS;
 
-    return <button className={[styles.button, colorClass, props.className].join(" ")} style={newStyles} onClick={props.onClick}>
-        <div className={styles.top}>{props.children}</div>
-        <div className={styles.bottom}>{props.children}</div>
+    return <button className={[styles.button, ...classes, props.className].join(" ")} style={newStyles} onClick={props.onClick}>
+        {props.children}
     </button>;
 };
 

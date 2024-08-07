@@ -29,14 +29,14 @@
     gap: 10px;
     flex-shrink: 0;
 
-    background: var(--sideBar_background);
+    background: var(--sideBarBackground);
     border: none;
     cursor: pointer;
 }
 
 .dropdown_content {
     width: 300px;
-    background: var(--sideBar_background);
+    background: var(--sideBarBackground);
 
     border-radius: 8px;
     padding: 5px;
@@ -67,9 +67,9 @@
 }
 
 .dropdown_item[data-highlighted] {
-    background: var(--sideBar_selection);
+    background: var(--sideBarSelection);
 }
 
 .dropdown_arrow {
-    fill: var(--sideBar_background);
+    fill: var(--sideBarBackground);
 }
