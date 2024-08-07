@@ -38,8 +38,7 @@ export const useProfileState = (profileUUID: string): ProfileState => {
     const currentTask = useTask(profileUUID);
 
     const profile = profiles.getProfileByUUID(profileUUID);
-    if (profile === undefined || profiles.importantDirs === undefined) {
-        // TODO: Better error handeling here
+    if (profile === undefined) {
         throw new Error("Undefined profile");
     }
 
@@ -50,6 +49,11 @@ export const useProfileState = (profileUUID: string): ProfileState => {
         setLoading(true);
         setProfilePath("");
         setFolderState(0);
+
+        // If the important directories aren't loaded yet, wait for them to
+        if (profiles.importantDirs === undefined) {
+            return;
+        }
 
         (async () => {
             const path = await getPathForProfile(profiles, profile);
@@ -62,7 +66,7 @@ export const useProfileState = (profileUUID: string): ProfileState => {
             setProfilePath(path);
             setLoading(false);
         })();
-    }, [profileUUID]);
+    }, [profiles.importantDirs, profileUUID]);
 
     return {
         loading,
