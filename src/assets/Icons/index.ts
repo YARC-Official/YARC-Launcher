@@ -1,7 +1,7 @@
 /**
  * Note for adding new icons:
  * For auto-converting SVG to React Components, we're currently using vite-plugin-svgr.
- * When referencing the path for the svg, insert "?react" at the end of the path to auto-convert into a React Component. 
+ * When referencing the path for the svg, insert "?react" at the end of the path to auto-convert into a React Component.
  * Also if possible, replace the static colors inside the SVG file with "currentColor" for dynamic color.
  */
 
@@ -32,6 +32,7 @@ import UnknownUserIcon from "./UnknownUser.svg?react";
 import BackIcon from "./Back.svg?react";
 import WarningIcon from "./Warning.svg?react";
 import DropdownIcon from "./Dropdown.svg?react";
+import VerifiedIcon from "./Verified.svg?react";
 
 export {
     AddIcon,
@@ -60,5 +61,6 @@ export {
     UnknownUserIcon,
     BackIcon,
     WarningIcon,
-    DropdownIcon
+    DropdownIcon,
+    VerifiedIcon
 };

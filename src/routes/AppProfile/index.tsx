@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
-import { useProfileStore } from "@app/profiles/store";
-import { LaunchButton } from "@app/components/Launch/LaunchButton";
+import { useProfileState } from "@app/hooks/useProfileState";
+import styles from "./AppProfile.module.css";
+import { VerifiedIcon } from "@app/assets/Icons";
 
 function AppProfile() {
     const { uuid } = useParams();
@@ -8,19 +9,29 @@ function AppProfile() {
         return <></>;
     }
 
-    const profileStore = useProfileStore();
-    const profile = profileStore.getProfileByUUID(uuid);
-    if (!profile) {
+    const profileState = useProfileState(uuid);
+    const profile = profileState.profile;
+    if (profileState.loading) {
         return <></>;
     }
 
-    return <div>
-        <p>{uuid}</p>
-        <p>{profile.metadata.locales["en-US"].name}</p>
-        <p>{profile.version}</p>
-        <p>{profile.metadata.locales["en-US"].description}</p>
-        <LaunchButton profileUUID={profile.uuid} />
-    </div>;
+    const metadata = profile.metadata.locales["en-US"];
+
+    return <main className={styles.main}>
+        <div className={styles.bannerContainer}
+            style={{"--bannerBack": `url(${metadata.bannerBackUrl})`} as React.CSSProperties}>
+
+            <div className={styles.bannerApp}>
+                <img src={metadata.iconUrl} alt={metadata.name} />
+                <div>
+                    <div className={styles.verifiedTag}>
+                        Official Build <VerifiedIcon />
+                    </div>
+                    {metadata.name}
+                </div>
+            </div>
+        </div>
+    </main>;
 }
 
 export default AppProfile;

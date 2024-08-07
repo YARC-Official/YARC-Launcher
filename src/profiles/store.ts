@@ -38,8 +38,8 @@ export const useProfileStore = create<ProfileStore>()((set, get) => ({
 
                         description: "This is the stable verison of YARG",
 
-                        iconUrl: "",
-                        bannerBackUrl: ""
+                        iconUrl: "/src/assets/StableYARGIcon.png",
+                        bannerBackUrl: "/src/assets/Banner/Stable.png"
                     }
                 },
                 releaseDate: new Date(),
