@@ -26,49 +26,57 @@ export interface ProfileStore {
 export const useProfileStore = create<ProfileStore>()((set, get) => ({
     profiles: [
         {
-            type: "application",
-            uuid: "2d78800c-1397-496a-83c1-50759607999a",
-            metadata: {
-                name: "YARG",
-                description: "This is the stable version of YARG",
-                releaseName: "Stable",
+            "type": "application",
+            "uuid": "2d78800c-1397-496a-83c1-50759607999a",
+            "metadata": {
+                "name": "YARG",
+                "description": "YARG (a.k.a. Yet Another Rhythm Game) is a free, open-source, plastic guitar game that is still in development. It supports guitar (five fret), drums (plastic or e-kit), vocals, pro-guitar, and more!",
+                "releaseName": "Stable",
 
-                iconUrl: "/src/assets/Profiles/Icons/Stable.png",
-                bannerBackUrl: "/src/assets/Profiles/Banners/Stable.png",
+                "iconUrl": "/src/assets/Profiles/Icons/Stable.png",
+                "bannerBackUrl": "/src/assets/Profiles/Banners/Stable.png",
 
-                initialRelease: new Date(),
+                "initialRelease": new Date("2023-03-09T05:00:00.000Z"),
 
-                links: {
+                "links": {
                     "website": {
-                        name: "Official Website",
-                        url: "https://yarg.in"
-                    }
+                        "name": "Official Website",
+                        "url": "https://yarg.in"
+                    },
+                    "github": {
+                        "name": "GitHub Repository",
+                        "url": "https://github.com/YARC-Official/YARG/"
+                    },
+                    "roadmap": {
+                        "name": "YARG Roadmap",
+                        "url": "https://yarg.youtrack.cloud/agiles/147-7/current"
+                    },
                 },
 
-                localeOverrides: {},
+                "localeOverrides": {},
             },
-            version: {
-                type: "embedded",
+            "version": {
+                "type": "embedded",
 
-                version: {
-                    uuid: "c8d67887-019e-4662-ba1e-0f6ba1839a42",
-                    tag: "v0.12.4",
-                    release: new Date(),
-                    content: [
+                "version": {
+                    "uuid": "c8d67887-019e-4662-ba1e-0f6ba1839a42",
+                    "tag": "v0.12.4",
+                    "release": new Date(),
+                    "content": [
                         {
-                            platforms: ["windows"],
-                            files: [
+                            "platforms": ["windows"],
+                            "files": [
                                 {
-                                    url: "https://github.com/YARC-Official/YARG/releases/download/v0.12.4/YARG_v0.12.4-Windows-x64.zip",
-                                    fileType: "zip"
+                                    "url": "https://github.com/YARC-Official/YARG/releases/download/v0.12.4/YARG_v0.12.4-Windows-x64.zip",
+                                    "fileType": "zip"
                                 }
                             ]
                         }
                     ],
-                    launchOptions: {
+                    "launchOptions": {
                         "windows": {
-                            executablePath: "./YARG.exe",
-                            arguments: []
+                            "executablePath": "./YARG.exe",
+                            "arguments": []
                         }
                     }
                 }
