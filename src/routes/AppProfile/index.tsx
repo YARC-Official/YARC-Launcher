@@ -3,7 +3,7 @@ import { useProfileState } from "@app/hooks/useProfileState";
 import styles from "./AppProfile.module.css";
 import { VerifiedIcon } from "@app/assets/Icons";
 import { LaunchButton } from "./LaunchButton";
-import { localizeMetadata } from "@app/profiles/utils";
+import { localizeMetadata, processAssetUrl } from "@app/profiles/utils";
 
 function AppProfile() {
     const { uuid } = useParams();
@@ -21,10 +21,10 @@ function AppProfile() {
 
     return <main className={styles.main}>
         <div className={styles.bannerContainer}
-            style={{"--bannerBack": `url(${metadata.bannerBackUrl})`} as React.CSSProperties}>
+            style={{"--bannerBack": `url(${processAssetUrl(metadata.bannerBackUrl)})`} as React.CSSProperties}>
 
             <div className={styles.bannerApp}>
-                <img src={metadata.iconUrl} alt={metadata.name} />
+                <img src={processAssetUrl(metadata.iconUrl)} alt={metadata.name} />
                 <div>
                     <div className={styles.verifiedTag}>
                         Official <VerifiedIcon />

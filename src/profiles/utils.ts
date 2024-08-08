@@ -22,3 +22,10 @@ export const localizeMetadata = (profile: Profile, locale: string): Metadata => 
 
     return out;
 };
+
+export const processAssetUrl = (url: string): string => {
+    if (url.startsWith("@/")) {
+        return url.replace("@/", "/profileAssets/");
+    }
+    return url;
+};

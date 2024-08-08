@@ -33,8 +33,8 @@ export const useProfileStore = create<ProfileStore>()((set, get) => ({
                 "description": "YARG (a.k.a. Yet Another Rhythm Game) is a free, open-source, plastic guitar game that is still in development. It supports guitar (five fret), drums (plastic or e-kit), vocals, pro-guitar, and more!",
                 "releaseName": "Stable",
 
-                "iconUrl": "/src/assets/Profiles/Icons/Stable.png",
-                "bannerBackUrl": "/src/assets/Profiles/Banners/Stable.png",
+                "iconUrl": "@/icons/Stable.png",
+                "bannerBackUrl": "@/banners/Stable.png",
 
                 "initialRelease": new Date("2023-03-09T05:00:00.000Z"),
 
