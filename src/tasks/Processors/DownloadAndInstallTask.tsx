@@ -1,18 +1,23 @@
-import { Profile } from "@app/profiles/types";
+import { Profile, Version } from "@app/profiles/types";
 import { BaseTask, IBaseTask } from "./base";
 import { invoke } from "@tauri-apps/api";
 import { showErrorDialog } from "@app/dialogs/dialogUtil";
 import { ReactNode } from "react";
 import QueueEntry from "@app/components/Queue/QueueEntry";
+import { localizeObject } from "@app/utils/localized";
 
 export class DownloadAndInstallTask extends BaseTask implements IBaseTask {
     onFinish?: () => void;
+
+    version: Version;
     tempPath: string;
 
-    constructor(profile: Profile, profilePath: string, tempPath: string, onFinish?: () => void) {
+    constructor(profile: Profile, version: Version, profilePath: string, tempPath: string, onFinish?: () => void) {
         super(profile, profilePath);
 
         this.onFinish = onFinish;
+
+        this.version = version;
         this.tempPath = tempPath;
     }
 
@@ -21,9 +26,9 @@ export class DownloadAndInstallTask extends BaseTask implements IBaseTask {
             await invoke("download_and_install_profile", {
                 profilePath: this.profilePath,
                 uuid: this.profile.uuid,
-                version: this.profile.version,
+                tag: this.version.tag,
                 tempPath: this.tempPath,
-                content: this.profile.content
+                content: this.version.content
             });
         } catch (e) {
             showErrorDialog(e as string);
@@ -32,19 +37,19 @@ export class DownloadAndInstallTask extends BaseTask implements IBaseTask {
 
     getQueueEntry(bannerMode: boolean): ReactNode {
         if (this.profile.type === "application") {
-            const metadata = this.profile.metadata.locales["en-US"];
+            const metadata = localizeObject(this.profile.metadata, "en-US");
 
             return <QueueEntry
                 name={metadata.name}
                 releaseName={metadata.releaseName}
-                version={this.profile.version}
+                tag={this.version.tag}
                 bannerMode={bannerMode} />;
         } else {
-            const metadata = this.profile.metadata.locales["en-US"];
+            const metadata = localizeObject(this.profile.metadata, "en-US");
 
             return <QueueEntry
                 name={metadata.name}
-                version={this.profile.version}
+                tag={this.version.tag}
                 bannerMode={bannerMode} />;
         }
     }

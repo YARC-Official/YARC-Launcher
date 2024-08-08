@@ -78,25 +78,25 @@ fn is_dir_empty(path: String) -> bool {
 }
 
 #[tauri::command(async)]
-fn profile_folder_state(path: String, profile_version: String) -> ProfileFolderState {
-    let mut version_file = PathBuf::from(&path);
-    version_file.push("version.txt");
+fn profile_folder_state(path: String, wanted_tag: String) -> ProfileFolderState {
+    let mut tag_file = PathBuf::from(&path);
+    tag_file.push("tag.txt");
 
-    let version_file_exists = version_file.try_exists();
-    if let Ok(exists) = version_file_exists {
+    let tag_file_exists = tag_file.try_exists();
+    if let Ok(exists) = tag_file_exists {
         if !exists {
             return ProfileFolderState::FirstDownload;
         }
 
-        let version = fs::read_to_string(version_file);
-        if let Ok(version_string) = version {
-            if version_string.trim() == profile_version {
+        let tag = fs::read_to_string(tag_file);
+        if let Ok(tag_string) = tag {
+            if tag_string.trim() == wanted_tag {
                 return ProfileFolderState::UpToDate;
             } else {
                 return ProfileFolderState::UpdateRequired;
             }
         } else {
-            println!("Failed to read version file at `{}`", path);
+            println!("Failed to read tag file at `{}`", path);
             return ProfileFolderState::Error;
         }
     } else {
@@ -108,7 +108,7 @@ fn profile_folder_state(path: String, profile_version: String) -> ProfileFolderS
 // when i was getting disk space in rust i used "free_space" from the fs2 crate because it takes a path and works out what drive that would be
 
 #[tauri::command(async)]
-async fn download_and_install_profile(handle: AppHandle, profile_path: String, uuid: String, version: String,
+async fn download_and_install_profile(handle: AppHandle, profile_path: String, uuid: String, tag: String,
     temp_path: String, content: Vec<ReleaseContent>) -> Result<(), String> {
 
     let mut temp_file = PathBuf::from(&temp_path);
@@ -142,11 +142,9 @@ async fn download_and_install_profile(handle: AppHandle, profile_path: String, u
         }
     }
 
-    let mut version_file = PathBuf::from(&profile_path);
-    version_file.push("version.txt");
-
-    // Write version.txt file
-    fs::write(&version_file, version).map_err(|e| format!("Failed to write version file.\n{:?}", e))?;
+    let mut tag_file = PathBuf::from(&profile_path);
+    tag_file.push("tag.txt");
+    fs::write(&tag_file, tag).map_err(|e| format!("Failed to write tag file.\n{:?}", e))?;
 
     Ok(())
 }
@@ -157,9 +155,9 @@ fn uninstall_profile(profile_path: String) -> Result<(), String> {
     install_path.push("installation");
     clear_folder(&install_path)?;
 
-    let mut version_file = PathBuf::from(&profile_path);
-    version_file.push("version.txt");
-    fs::remove_file(version_file).map_err(|e| format!("Failed to remove version file.\n{:?}", e))?;
+    let mut tag_file = PathBuf::from(&profile_path);
+    tag_file.push("tag.txt");
+    fs::remove_file(tag_file).map_err(|e| format!("Failed to remove tag file.\n{:?}", e))?;
 
     Ok(())
 }

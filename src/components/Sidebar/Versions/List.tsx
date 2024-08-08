@@ -3,6 +3,8 @@ import VersionSeparator from "./Separator";
 import { AddIcon } from "@app/assets/Icons";
 import { useProfileStore } from "@app/profiles/store";
 import { NavLink } from "react-router-dom";
+import { localize } from "@app/utils/localized";
+import { ApplicationMetadata, SetlistMetadata } from "@app/profiles/types";
 
 const ProfilesList: React.FC = () => {
     const profileStore = useProfileStore();
@@ -14,7 +16,7 @@ const ProfilesList: React.FC = () => {
         {
             profileStore.profiles.filter(i => i.type === "application").map(i =>
                 <NavLink to={`/app-profile/${i.uuid}`} key={i.uuid}>
-                    {i.metadata.locales["en-US"].name} ({i.version})
+                    {localize(i.metadata as ApplicationMetadata, "name", "en-US")}
                 </NavLink>
             )
         }
@@ -24,7 +26,7 @@ const ProfilesList: React.FC = () => {
         {
             profileStore.profiles.filter(i => i.type === "setlist").map(i =>
                 <NavLink to={`/app-profile/${i.uuid}`} key={i.uuid}>
-                    {i.metadata.locales["en-US"].name}
+                    {localize(i.metadata as SetlistMetadata, "name", "en-US")}
                 </NavLink>
             )
         }

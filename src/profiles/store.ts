@@ -19,7 +19,7 @@ export interface ProfileStore {
 
     profiles: Profile[],
 
-        getProfileByUUID: (uuid: string) => Profile | undefined,
+    getProfileByUUID: (uuid: string) => Profile | undefined,
     setDirs: (downloadLocation?: string) => Promise<ProfileStore>,
 }
 
@@ -28,78 +28,51 @@ export const useProfileStore = create<ProfileStore>()((set, get) => ({
         {
             type: "application",
             uuid: "2d78800c-1397-496a-83c1-50759607999a",
-            version: "v0.12.4",
-
             metadata: {
-                locales: {
-                    "en-US": {
-                        name: "YARG",
-                        releaseName: "Stable",
+                name: "YARG",
+                description: "This is the stable version of YARG",
+                releaseName: "Stable",
 
-                        description: "This is the stable verison of YARG",
+                iconUrl: "/src/assets/Profiles/Icons/Stable.png",
+                bannerBackUrl: "/src/assets/Profiles/Banners/Stable.png",
 
-                        iconUrl: "/src/assets/Profiles/Icons/Stable.png",
-                        bannerBackUrl: "/src/assets/Profiles/Banners/Stable.png"
+                initialRelease: new Date(),
+
+                links: {
+                    "website": {
+                        name: "Official Website",
+                        url: "https://yarg.in"
                     }
                 },
-                releaseDate: new Date(),
-                websiteUrl: "https://yarg.in/"
+
+                localeOverrides: {},
             },
+            version: {
+                type: "embedded",
 
-            content: [
-                {
-                    name: "YARG - Windows",
-                    platforms: ["windows"],
-                    files: [
+                version: {
+                    uuid: "c8d67887-019e-4662-ba1e-0f6ba1839a42",
+                    tag: "v0.12.4",
+                    release: new Date(),
+                    content: [
                         {
-                            url: "https://github.com/YARC-Official/YARG/releases/download/v0.12.4/YARG_v0.12.4-Windows-x64.zip",
-                            fileType: "zip"
+                            platforms: ["windows"],
+                            files: [
+                                {
+                                    url: "https://github.com/YARC-Official/YARG/releases/download/v0.12.4/YARG_v0.12.4-Windows-x64.zip",
+                                    fileType: "zip"
+                                }
+                            ]
                         }
-                    ]
-                }
-            ],
-            launchOptions: {
-                "windows": {
-                    executablePath: "./YARG.exe",
-                    arguments: []
-                }
-            }
-        },
-        {
-            type: "setlist",
-            uuid: "f5d7d7e1-a2ae-4b0e-aa40-d5daf8ef6903",
-            version: "official-2024-06-12-0",
-
-            metadata: {
-                locales: {
-                    "en-US": {
-                        name: "YARG Official Setlist",
-
-                        description: "This is the official setlist for YARG",
-
-                        iconUrl: "",
-                        bannerBackUrl: ""
+                    ],
+                    launchOptions: {
+                        "windows": {
+                            executablePath: "./YARG.exe",
+                            arguments: []
+                        }
                     }
-                },
-                releaseDate: new Date(),
-                websiteUrl: "https://yarg.in/",
-
-                organizer: "Hububble",
-                credits: []
-            },
-
-            content: [
-                {
-                    name: "YARG Official Setlist Songs",
-                    platforms: ["windows", "macos", "linux"],
-                    files: [
-                        {
-                            url: "https://github.com/YARC-Official/Official-Setlist-Public/releases/download/official-2024-06-12-0/official_0.7z",
-                            fileType: "encrypted"
-                        }
-                    ]
                 }
-            ]
+            },
         }
     ],
     getProfileByUUID: (uuid) => {
@@ -112,6 +85,7 @@ export const useProfileStore = create<ProfileStore>()((set, get) => ({
             set({
                 importantDirs: importantDirs
             });
+
             return get();
         } else {
             // If the download location is empty for whatever reason, just set it to the default one
@@ -127,7 +101,8 @@ export const useProfileStore = create<ProfileStore>()((set, get) => ({
                 importantDirs: importantDirs,
                 customDirs: customDirs
             });
-            return get(); // This function returns the profile store itself because this does not immediately update it for the rest of the scope.
+
+            return get();
         }
     }
 }));

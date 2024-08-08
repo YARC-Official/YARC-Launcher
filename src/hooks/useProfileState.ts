@@ -1,6 +1,7 @@
 import { downloadAndInstall, launch, openInstallFolder, uninstall } from "@app/profiles/actions";
 import { getPathForProfile, useProfileStore } from "@app/profiles/store";
-import { Profile } from "@app/profiles/types";
+import { Profile, Version } from "@app/profiles/types";
+import { getProfileVersion } from "@app/profiles/utils";
 import { useTask } from "@app/tasks";
 import { IBaseTask } from "@app/tasks/Processors/base";
 import { invoke } from "@tauri-apps/api";
@@ -14,18 +15,19 @@ export enum ProfileFolderState {
 }
 
 export interface ProfileState {
-    loading: boolean;
+    loading: boolean,
 
-    profile: Profile;
-    profilePath: string;
+    profile: Profile,
+    profilePath: string,
 
-    folderState: ProfileFolderState;
-    currentTask?: IBaseTask;
+    folderState: ProfileFolderState,
+    currentTask?: IBaseTask,
+    version: Version,
 
-    downloadAndInstall: () => Promise<void>;
-    uninstall: () => Promise<void>;
-    launch: () => Promise<void>;
-    openInstallFolder: () => Promise<void>;
+    downloadAndInstall: () => Promise<void>,
+    uninstall: () => Promise<void>,
+    launch: () => Promise<void>,
+    openInstallFolder: () => Promise<void>,
 }
 
 export const useProfileState = (profileUUID: string): ProfileState => {
@@ -36,6 +38,7 @@ export const useProfileState = (profileUUID: string): ProfileState => {
 
     const [folderState, setFolderState] = useState<ProfileFolderState>(0);
     const currentTask = useTask(profileUUID);
+    const [version, setVersion] = useState<Version>({} as Version);
 
     const profile = profiles.getProfileByUUID(profileUUID);
     if (profile === undefined) {
@@ -49,6 +52,7 @@ export const useProfileState = (profileUUID: string): ProfileState => {
         setLoading(true);
         setProfilePath("");
         setFolderState(0);
+        setVersion({} as Version);
 
         // If the important directories aren't loaded yet, wait for them to
         if (profiles.importantDirs === undefined) {
@@ -57,14 +61,17 @@ export const useProfileState = (profileUUID: string): ProfileState => {
 
         (async () => {
             const path = await getPathForProfile(profiles, profile);
+            const version = getProfileVersion(profile);
+
             const result = await invoke("profile_folder_state", {
                 path: path,
-                profileVersion: profile.version
+                wantedTag: version.tag
             }) as ProfileFolderState;
 
             setFolderState(result);
             setProfilePath(path);
             setLoading(false);
+            setVersion(version);
         })();
     }, [profiles.importantDirs, profileUUID]);
 
@@ -76,6 +83,7 @@ export const useProfileState = (profileUUID: string): ProfileState => {
 
         folderState,
         currentTask,
+        version,
 
         downloadAndInstall: async () => {
             if (loading) {

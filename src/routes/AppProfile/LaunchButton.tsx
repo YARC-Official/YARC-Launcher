@@ -2,6 +2,7 @@ import { ButtonColor } from "@app/components/Button";
 import { InstallingIcon, UpdateIcon } from "@app/assets/Icons";
 import Button from "@app/components/Button";
 import { ProfileFolderState, ProfileState } from "@app/hooks/useProfileState";
+import { localize } from "@app/utils/localized";
 
 interface Props {
     profileState: ProfileState
@@ -26,7 +27,7 @@ export function LaunchButton({ profileState }: Props) {
 
     let releaseName = "";
     if (profile.type === "application") {
-        releaseName = profile.metadata.locales["en-US"].releaseName;
+        releaseName = localize(profile.metadata, "releaseName", "en-US");
     }
 
     // Installing button

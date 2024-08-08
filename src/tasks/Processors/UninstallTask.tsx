@@ -4,6 +4,7 @@ import { invoke } from "@tauri-apps/api";
 import { showErrorDialog } from "@app/dialogs/dialogUtil";
 import { ReactNode } from "react";
 import QueueEntry from "@app/components/Queue/QueueEntry";
+import { localizeObject } from "@app/utils/localized";
 
 export class UninstallTask extends BaseTask implements IBaseTask {
     onFinish?: () => void;
@@ -25,19 +26,17 @@ export class UninstallTask extends BaseTask implements IBaseTask {
 
     getQueueEntry(bannerMode: boolean): ReactNode {
         if (this.profile.type === "application") {
-            const metadata = this.profile.metadata.locales["en-US"];
+            const metadata = localizeObject(this.profile.metadata, "en-US");
 
             return <QueueEntry
                 name={metadata.name}
                 releaseName={metadata.releaseName}
-                version={this.profile.version}
                 bannerMode={bannerMode} />;
         } else {
-            const metadata = this.profile.metadata.locales["en-US"];
+            const metadata = localizeObject(this.profile.metadata, "en-US");
 
             return <QueueEntry
                 name={metadata.name}
-                version={this.profile.version}
                 bannerMode={bannerMode} />;
         }
     }

@@ -2,8 +2,8 @@ import { useParams } from "react-router-dom";
 import { useProfileState } from "@app/hooks/useProfileState";
 import styles from "./AppProfile.module.css";
 import { VerifiedIcon } from "@app/assets/Icons";
-import Button from "@app/components/Button";
 import { LaunchButton } from "./LaunchButton";
+import { localizeMetadata } from "@app/profiles/utils";
 
 function AppProfile() {
     const { uuid } = useParams();
@@ -17,7 +17,7 @@ function AppProfile() {
         return <></>;
     }
 
-    const metadata = profile.metadata.locales["en-US"];
+    const metadata = localizeMetadata(profile, "en-US");
 
     return <main className={styles.main}>
         <div className={styles.bannerContainer}
@@ -27,7 +27,7 @@ function AppProfile() {
                 <img src={metadata.iconUrl} alt={metadata.name} />
                 <div>
                     <div className={styles.verifiedTag}>
-                        Official Build <VerifiedIcon />
+                        Official <VerifiedIcon />
                     </div>
                     {metadata.name}
                 </div>

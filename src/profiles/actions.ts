@@ -6,6 +6,7 @@ import { UninstallTask } from "@app/tasks/Processors/UninstallTask";
 import { getOS } from "@app/utils/os";
 import { showErrorDialog } from "@app/dialogs/dialogUtil";
 import { invoke } from "@tauri-apps/api";
+import { getProfileVersion } from "./utils";
 
 export const downloadAndInstall = async (profile: Profile, profiles: ProfileStore, profilePath: string,
     onFinish?: () => void): Promise<void> => {
@@ -14,7 +15,9 @@ export const downloadAndInstall = async (profile: Profile, profiles: ProfileStor
         return;
     }
 
-    const task = new DownloadAndInstallTask(profile, profilePath, profiles.importantDirs.tempFolder, onFinish);
+    const version = getProfileVersion(profile);
+    const tempFolder = profiles.importantDirs.tempFolder;
+    const task = new DownloadAndInstallTask(profile, version, profilePath, tempFolder, onFinish);
     addTask(task);
 };
 
@@ -35,8 +38,10 @@ export const launch = async (profile: Profile, profilePath: string): Promise<voi
         return;
     }
 
+    const version = getProfileVersion(profile);
+
     const os = await getOS();
-    const launchOptions = profile.launchOptions[os];
+    const launchOptions = version.launchOptions?.[os];
     if (launchOptions === undefined) {
         showErrorDialog(`Launch options not configured on profile for "${os}"!`);
         return;

@@ -5,11 +5,11 @@ interface Props {
     icon?: React.ReactNode;
     name?: string;
     releaseName?: string;
-    version?: string;
+    tag?: string;
     bannerMode: boolean;
 }
 
-const QueueEntry: React.FC<Props> = ({ icon, name, releaseName, version, bannerMode }: Props) => {
+const QueueEntry: React.FC<Props> = ({ icon, name, releaseName, tag, bannerMode }: Props) => {
     // Choose the right style
     let styles = stylesNormal;
     if (bannerMode) {
@@ -20,7 +20,7 @@ const QueueEntry: React.FC<Props> = ({ icon, name, releaseName, version, bannerM
         <div className={styles.main}>
             <div className={styles.icon}>{icon}</div>
             <div className={styles.info}>
-                <span className={styles.info_header}>{name} {version}</span>
+                <span className={styles.info_header}>{name} {tag}</span>
                 {releaseName}
             </div>
         </div>

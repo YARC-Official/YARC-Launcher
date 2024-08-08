@@ -31,10 +31,10 @@ pub struct CustomDirs {
     pub setlist_folder: String,
 }
 
+// WARNING: This type is also defined in TypeScript. Make sure to change it in both places!
 #[derive(Default, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ReleaseContent {
-    pub name: String,
     pub platforms: Vec<String>,
     pub files: Vec<ReleaseContentFile>,
 }
@@ -43,8 +43,8 @@ pub struct ReleaseContent {
 #[serde(rename_all = "camelCase")]
 pub struct ReleaseContentFile {
     pub url: String,
+    pub sig_url: Option<String>,
     pub file_type: String,
-    pub signature: Option<String>,
 }
 
 #[derive(Serialize_repr, Deserialize_repr, PartialEq, Debug)]

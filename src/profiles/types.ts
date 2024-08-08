@@ -1,42 +1,30 @@
+import { Localized } from "@app/utils/localized";
 import { OS } from "@app/utils/os";
 
-export type Profile = ApplicationProfile | SetlistProfile;
-
-interface ReleaseContent {
-    name: string,
+// WARNING: This type is also defined in Rust. Make sure to change it in both places!
+export interface ReleaseContent {
     platforms?: OS[],
     files: {
         url: string,
+        sigUrl?: string,
         fileType: "zip" | "encrypted",
-        signature?: string,
     }[];
 }
 
-interface ApplicationProfile {
-    type: "application",
+export type VersionList = [
+    {
+        uuid: string,
+        tag: string,
+        release: Date,
+    }
+];
+
+export interface Version {
     uuid: string,
-    version: string,
-
-    metadata: {
-        locales: {
-            [language: string]: {
-                name: string,
-                releaseName: string,
-
-                description: string,
-
-                iconUrl: string,
-                bannerBackUrl: string,
-                bannerFrontUrl?: string,
-            }
-        },
-
-        releaseDate: Date,
-        websiteUrl: string,
-    },
-
+    tag: string,
+    release: Date,
     content: ReleaseContent[],
-    launchOptions: {
+    launchOptions?: {
         [platform in OS]?: {
             executablePath: string,
             arguments: string[]
@@ -44,33 +32,73 @@ interface ApplicationProfile {
     }
 }
 
-interface SetlistProfile {
-    type: "setlist",
-    uuid: string,
-    version: string,
+export type VersionInfo = VersionInfoList | VersionInfoUrl | VersionInfoEmbedded;
 
-    metadata: {
-        locales: {
-            [language: string]: {
-                name: string,
+export interface VersionInfoList {
+    type: "list",
 
-                description: string,
+    listUrl: string,
+    releaseUrl: string,
+}
 
-                iconUrl: string,
-                bannerBackUrl: string,
-                bannerFrontUrl?: string,
-            }
+export interface VersionInfoUrl {
+    type: "url",
+
+    releaseUrl: string,
+}
+
+export interface VersionInfoEmbedded {
+    type: "embedded",
+
+    version: Version,
+}
+
+export interface Metadata {
+    name: string,
+    description: string,
+
+    iconUrl: string,
+    bannerBackUrl: string,
+    bannerFrontUrl?: string,
+
+    initialRelease: Date,
+
+    links: {
+        [id: string]: {
+            name: string,
+            iconUrl?: string,
+            url: string,
         }
+    },
+}
 
-        releaseDate: Date,
-        websiteUrl: string,
+export type ApplicationMetadata = Localized<Metadata & {
+    releaseName: string,
+}>;
 
-        organizer: string,
-        credits: {
+export type SetlistMetadata = Localized<Metadata & {
+    credits: [
+        {
             name: string,
             url: string,
-        }[]
-    },
+        }
+    ],
+}>;
 
-    content: ReleaseContent[],
+export type Profile = ApplicationProfile | SetlistProfile;
+
+export interface ApplicationProfile {
+    type: "application",
+
+    uuid: string,
+    metadata: ApplicationMetadata,
+    version: VersionInfo,
+}
+
+export interface SetlistProfile {
+    type: "setlist",
+
+    uuid: string,
+    metadata: SetlistMetadata,
+    version: VersionInfo,
 }
