@@ -1,9 +1,12 @@
 import { useParams } from "react-router-dom";
 import { useProfileState } from "@app/hooks/useProfileState";
 import styles from "./AppProfile.module.css";
-import { VerifiedIcon } from "@app/assets/Icons";
+import { InformationIcon, VerifiedIcon } from "@app/assets/Icons";
 import { LaunchButton } from "./LaunchButton";
 import { localizeMetadata, processAssetUrl } from "@app/profiles/utils";
+import Box from "@app/components/Box";
+import { ApplicationMetadata } from "@app/profiles/types";
+import Button, { ButtonColor } from "@app/components/Button";
 
 function AppProfile() {
     const { uuid } = useParams();
@@ -44,6 +47,29 @@ function AppProfile() {
                 <div className={styles.bannerOptionsMain}>
                     <LaunchButton profileState={profileState} />
                 </div>
+            </div>
+        </div>
+        <div className={styles.pageContainer}>
+            <div className={styles.content}>
+
+            </div>
+            <div className={styles.sidebar}>
+                <Box className={styles.sidebarBox}>
+                    <header>
+                        <InformationIcon />
+                        {profile.type === "application"
+                            ? `About ${metadata.name} (${(metadata as ApplicationMetadata).releaseName})`
+                            : `About ${metadata.name}`}
+                    </header>
+                    {metadata.description}
+                </Box>
+                {
+                    Object.values(metadata.links).map(i =>
+                        <Button color={ButtonColor.LIGHT}>
+                            {i.name}
+                        </Button>
+                    )
+                }
             </div>
         </div>
     </main>;

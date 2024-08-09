@@ -5,8 +5,8 @@ export enum ButtonColor {
     "GREEN",
     "BLUE",
     "YELLOW",
-    "GRAY",
-    "BLACK",
+    "LIGHT",
+    "DARK",
     "RED"
 }
 
@@ -40,11 +40,11 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
         case ButtonColor.YELLOW:
             classes = [styles.colorsYellow];
             break;
-        case ButtonColor.GRAY:
-            classes = [styles.colorsGray];
+        case ButtonColor.LIGHT:
+            classes = [styles.colorsLight];
             break;
-        case ButtonColor.BLACK:
-            classes = [styles.colorsBlack];
+        case ButtonColor.DARK:
+            classes = [styles.colorsDark];
             break;
         case ButtonColor.RED:
             classes = [styles.colorsRed];

@@ -27,13 +27,15 @@
     --buttonGreen: #17E289;
     --buttonBlue: #2ED9FF;
     --buttonYellow: #FCD548;
-    --buttonGray: #0F121D;
+    --buttonDark: #0F121D;
+    --buttonLight: #F4F4F4;
     --buttonRed: #F32B37;
 
     --buttonGreenText: #005832;
     --buttonBlueText: #03596B;
     --buttonYellowText: #4F2600;
-    --buttonGrayText: #E0E1E7;
+    --buttonDarkText: #E0E1E7;
+    --buttonLightText: #41475F;
     --buttonRedText: #FFF;
 
     --buttonLightBorder: rgba(255, 255, 255, 0.4);

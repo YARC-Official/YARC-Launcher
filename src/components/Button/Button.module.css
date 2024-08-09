@@ -50,10 +50,16 @@
     --border: var(--buttonLightBorder);
 }
 
-.colorsGray {
-    --background: var(--buttonGray);
-    --color: var(--buttonGrayText);
+.colorsDark {
+    --background: var(--buttonDark);
+    --color: var(--buttonDarkText);
     --border: var(--buttonDarkBorder);
+}
+
+.colorsLight {
+    --background: var(--buttonLight);
+    --color: var(--buttonLightText);
+    --border: var(--buttonLightBorder);
 }
 
 .colorsRed {
