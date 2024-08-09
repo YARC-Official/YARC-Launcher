@@ -64,9 +64,9 @@ function AppProfile() {
                     {metadata.description}
                 </Box>
                 {
-                    Object.values(metadata.links).map(i =>
-                        <Button color={ButtonColor.LIGHT}>
-                            {i.name}
+                    Object.entries(metadata.links).map(i =>
+                        <Button color={ButtonColor.LIGHT} key={i[0]}>
+                            {i[1].name}
                         </Button>
                     )
                 }
