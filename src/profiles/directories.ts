@@ -19,7 +19,7 @@ export interface DirectoriesStore {
     setDirs: (downloadLocation?: string) => Promise<void>;
 }
 
-export const useDirectories = create<DirectoriesStore>()((set, get) => ({
+export const useDirectories = create<DirectoriesStore>()((set) => ({
     setDirs: async (downloadLocation?: string) => {
         const importantDirs: ImportantDirs = await invoke("get_important_dirs");
 

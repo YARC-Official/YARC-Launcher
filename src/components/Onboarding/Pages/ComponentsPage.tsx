@@ -4,7 +4,7 @@ import styles from "./Pages.module.css";
 interface Props {
 }
 
-export const ComponentsPage: React.FC<Props> = (props: Props) => {
+export const ComponentsPage: React.FC<Props> = () => {
     return <>
         <WarningBox>
             You can download other applications and songs at any time after the initial onboarding process.

@@ -19,7 +19,7 @@ export const localize = <T, K extends keyof T>(obj: Localized<T>, key: K, locale
 
 export const localizeObject = <T>(obj: Localized<T>, locale: string): T => {
     const {
-        // @ts-ignore: Used to remove this field from the object
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         localeOverrides,
         ...omittedObj
     } = obj;
