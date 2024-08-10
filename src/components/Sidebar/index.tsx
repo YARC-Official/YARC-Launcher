@@ -1,5 +1,5 @@
 import styles from "./Sidebar.module.css";
-import { DiscordIcon, TwitterIcon, GithubIcon, HomeIcon, QueueIcon } from "@app/assets/Icons";
+import { DiscordIcon, TwitterIcon, GithubIcon, HomeIcon, QueueIcon, MarketplaceIcon } from "@app/assets/Icons";
 import SidebarMenuButton from "./SidebarMenuButton";
 import { NavLink } from "react-router-dom";
 import ProfilesList from "./Versions/List";
@@ -28,6 +28,11 @@ const Sidebar: React.FC = () => {
             <NavLink to="/queue">
                 <SidebarMenuButton icon={<QueueIcon />}>
                     Downloads {queue.size <= 0 ? "" : `(${queue.size})`}
+                </SidebarMenuButton>
+            </NavLink>
+            <NavLink to="/marketplace">
+                <SidebarMenuButton icon={<MarketplaceIcon />}>
+                    Marketplace
                 </SidebarMenuButton>
             </NavLink>
         </div>

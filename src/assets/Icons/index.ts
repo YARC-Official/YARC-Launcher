@@ -33,6 +33,7 @@ import BackIcon from "./Back.svg?react";
 import WarningIcon from "./Warning.svg?react";
 import DropdownIcon from "./Dropdown.svg?react";
 import VerifiedIcon from "./Verified.svg?react";
+import MarketplaceIcon from "./Marketplace.svg?react";
 
 export {
     AddIcon,
@@ -62,5 +63,6 @@ export {
     BackIcon,
     WarningIcon,
     DropdownIcon,
-    VerifiedIcon
+    VerifiedIcon,
+    MarketplaceIcon
 };

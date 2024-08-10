@@ -15,12 +15,12 @@
     --green: rgb(var(--green-rgb));
     --green-10: rgba(var(--green-rgb), .1);
 
-    --titleBarBackground: #000209;
+    --titleBarBackground: #05060B;
     --titleBarPrimary: #FFF;
     --titleBarAccent: #868AA8;
     --titleBarHeight: 30px;
 
-    --sideBarBackground: #05060B;
+    --sideBarBackground: #070810;
     --sideBarSeparatorColor: #394452;
     --sideBarSelection: rgba(255, 255, 255, 0.1);
 

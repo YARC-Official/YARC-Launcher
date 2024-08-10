@@ -48,9 +48,10 @@
 
 .button {
     display: flex;
-    gap: 10px;
 
-    background: rgba(255, 255, 255, 0);
+    background: transparent;
+    color: #B8BDD6;
+
     border-radius: 13px;
 
     transition: background 0.1s;
@@ -58,7 +59,8 @@
 
 [aria-current="page"] > .button,
 .button:hover {
-    background: rgba(255, 255, 255, 0.025);
+    background: #0D0F23;
+    color: #D4D9EE;
 }
 
 .button .icon {
@@ -71,7 +73,6 @@
 
 .button .icon > * {
     height: 20px;
-    color: var(--accent);
 }
 
 .button .text {

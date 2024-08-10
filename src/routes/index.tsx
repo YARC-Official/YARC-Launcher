@@ -6,6 +6,7 @@ import Settings from "@app/routes/Settings";
 import Queue from "@app/routes/Queue";
 import NewsPage from "./NewsPage";
 import AppProfile from "./AppProfile";
+import Marketplace from "./Marketplace";
 
 const Router = createBrowserRouter([
     {
@@ -23,6 +24,10 @@ const Router = createBrowserRouter([
             {
                 path: "/queue",
                 element: <Queue />
+            },
+            {
+                path: "/marketplace",
+                element: <Marketplace />
             },
             {
                 path: "/app-profile/:uuid",
