@@ -19,6 +19,7 @@ export const localize = <T, K extends keyof T>(obj: Localized<T>, key: K, locale
 
 export const localizeObject = <T>(obj: Localized<T>, locale: string): T => {
     const {
+        // @ts-ignore: Used to remove this field from the object
         localeOverrides,
         ...omittedObj
     } = obj;

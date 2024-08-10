@@ -8,7 +8,7 @@ import { closeDialog } from "..";
 export class ErrorDialog extends BaseDialog<Record<string, never>> {
     constructor(props: Record<string, unknown>) {
         super(props);
-        
+
         try {
             LogError(
                 JSON.stringify(serializeError(props.error))
@@ -36,7 +36,7 @@ export class ErrorDialog extends BaseDialog<Record<string, never>> {
 
     getButtons() {
         return <>
-            <Button color={ButtonColor.GRAY} onClick={() => closeDialog()}>Okay</Button>
+            <Button color={ButtonColor.LIGHT} onClick={() => closeDialog()}>Okay</Button>
         </>;
     }
 }

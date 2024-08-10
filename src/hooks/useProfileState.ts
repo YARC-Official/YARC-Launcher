@@ -1,7 +1,8 @@
 import { downloadAndInstall, launch, openInstallFolder, uninstall } from "@app/profiles/actions";
-import { getPathForProfile, useProfileStore } from "@app/profiles/store";
+import { useDirectories } from "@app/profiles/directories";
+import { useProfileStore } from "@app/profiles/store";
 import { Profile, Version } from "@app/profiles/types";
-import { getProfileVersion } from "@app/profiles/utils";
+import { getPathForProfile, getProfileVersion } from "@app/profiles/utils";
 import { useTask } from "@app/tasks";
 import { IBaseTask } from "@app/tasks/Processors/base";
 import { invoke } from "@tauri-apps/api";
@@ -31,6 +32,7 @@ export interface ProfileState {
 }
 
 export const useProfileState = (profileUUID: string): ProfileState => {
+    const directories = useDirectories();
     const profiles = useProfileStore();
 
     const [loading, setLoading] = useState<boolean>(true);
@@ -55,12 +57,12 @@ export const useProfileState = (profileUUID: string): ProfileState => {
         setVersion({} as Version);
 
         // If the important directories aren't loaded yet, wait for them to
-        if (profiles.importantDirs === undefined) {
+        if (directories.importantDirs === undefined) {
             return;
         }
 
         (async () => {
-            const path = await getPathForProfile(profiles, profile);
+            const path = await getPathForProfile(directories, profile);
             const version = getProfileVersion(profile);
 
             const result = await invoke("profile_folder_state", {
@@ -73,7 +75,7 @@ export const useProfileState = (profileUUID: string): ProfileState => {
             setLoading(false);
             setVersion(version);
         })();
-    }, [profiles.importantDirs, profileUUID]);
+    }, [directories, profileUUID]);
 
     return {
         loading,
@@ -90,7 +92,7 @@ export const useProfileState = (profileUUID: string): ProfileState => {
                 return;
             }
 
-            await downloadAndInstall(profile, profiles, profilePath, () => {
+            await downloadAndInstall(profile, profilePath, () => {
                 setFolderState(ProfileFolderState.UpToDate);
             });
         },
@@ -99,7 +101,7 @@ export const useProfileState = (profileUUID: string): ProfileState => {
                 return;
             }
 
-            await uninstall(profile, profiles, profilePath, () => {
+            await uninstall(profile, profilePath, () => {
                 setFolderState(ProfileFolderState.FirstDownload);
             });
         },

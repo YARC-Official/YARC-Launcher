@@ -1,5 +1,19 @@
 import { localizeObject } from "@app/utils/localized";
 import { Metadata, Profile, Version } from "./types";
+import { path } from "@tauri-apps/api";
+import { DirectoriesStore } from "./directories";
+
+export const getPathForProfile = async (store: DirectoriesStore, profile: Profile) => {
+    if (store.customDirs === undefined) {
+        throw Error("Custom directories are not initialized!");
+    }
+
+    if (profile.type === "setlist") {
+        return await path.join(store.customDirs.setlistFolder, profile.uuid);
+    } else {
+        return await path.join(store.customDirs.yargFolder, profile.uuid);
+    }
+};
 
 export const getProfileVersion = (profile: Profile): Version => {
     if (profile.version.type === "embedded") {

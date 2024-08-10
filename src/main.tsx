@@ -20,6 +20,7 @@ window.addEventListener("error", event => {
 
 const App: React.FC = () => {
     const [error, setError] = useState<unknown>(null);
+    const [showBody, setShowBody] = useState(false);
     const [onboarding, setOnboarding] = useState(false);
 
     // Show error screen
@@ -39,17 +40,20 @@ const App: React.FC = () => {
     // Show main screen
     return <React.StrictMode>
         <ErrorBoundary FallbackComponent={ErrorScreen} onError={onError}>
-            <LoadingScreen setError={setError} setOnboarding={setOnboarding} />
-
             <DialogProvider>
-                <TitleBar />
-                <QueryClientProvider client={queryClient}>
-                    {onboarding &&
-                        <Onboarding setOnboarding={setOnboarding} />
-                    }
+                <LoadingScreen setError={setError} setOnboarding={setOnboarding} setShowBody={setShowBody} />
 
-                    <RouterProvider router={Router} />
-                </QueryClientProvider>
+                <TitleBar />
+
+                {onboarding &&
+                    <Onboarding setOnboarding={setOnboarding} />
+                }
+
+                {showBody &&
+                    <QueryClientProvider client={queryClient}>
+                        <RouterProvider router={Router} />
+                    </QueryClientProvider>
+                }
             </DialogProvider>
         </ErrorBoundary>
     </React.StrictMode>;

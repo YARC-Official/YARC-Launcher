@@ -1,6 +1,5 @@
 import { useState } from "react";
 import styles from "./Onboarding.module.css";
-import { useProfileStore } from "@app/profiles/store";
 import { open } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api";
 import { settingsManager } from "@app/settings";
@@ -8,6 +7,7 @@ import OnboardingSidebar from "./Sidebar";
 import Button from "../Button";
 import InstallFolderPage from "./Pages/InstallFolderPage";
 import ComponentsPage from "./Pages/ComponentsPage";
+import { useDirectories } from "@app/profiles/directories";
 
 export enum OnboardingStep {
     // LANGUAGE = 0,
@@ -22,9 +22,9 @@ interface Props {
 const Onboarding: React.FC<Props> = (props: Props) => {
     const [step, setStep] = useState<OnboardingStep>(OnboardingStep.INSTALL_PATH);
 
-    const profileStore = useProfileStore();
+    const directories = useDirectories();
 
-    const defaultDownload = profileStore.importantDirs?.yarcFolder;
+    const defaultDownload = directories.importantDirs?.yarcFolder;
     if (defaultDownload === undefined) {
         throw new Error("The default installation path was not found!");
     }
@@ -51,7 +51,7 @@ const Onboarding: React.FC<Props> = (props: Props) => {
         settingsManager.setCache("onboardingCompleted", true);
         await settingsManager.syncCache();
 
-        await profileStore.setDirs(downloadLocation);
+        await directories.setDirs(downloadLocation);
         props.setOnboarding(false);
     }
 

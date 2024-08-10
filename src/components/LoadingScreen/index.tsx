@@ -3,13 +3,14 @@ import styles from "./LoadingScreen.module.css";
 import * as Progress from "@radix-ui/react-progress";
 import { error as logError } from "tauri-plugin-log-api";
 import { serializeError } from "serialize-error";
-import { getPathForProfile, useProfileStore } from "@app/profiles/store";
+import { useProfileStore } from "@app/profiles/store";
 import { settingsManager } from "@app/settings";
 import { invoke } from "@tauri-apps/api";
-import { getOS } from "@app/utils/os";
 import { showErrorDialog } from "@app/dialogs/dialogUtil";
 import { appWindow } from "@tauri-apps/api/window";
 import { launch } from "@app/profiles/actions";
+import { getPathForProfile } from "@app/profiles/utils";
+import { useDirectories } from "@app/profiles/directories";
 
 enum LoadingState {
     "LOADING",
@@ -21,11 +22,11 @@ enum LoadingState {
 interface Props {
     setError: React.Dispatch<unknown>;
     setOnboarding: React.Dispatch<boolean>;
+    setShowBody: React.Dispatch<boolean>;
 }
 
 const LoadingScreen: React.FC<Props> = (props: Props) => {
     const [loading, setLoading] = useState(LoadingState.LOADING);
-    let profileStore = useProfileStore();
 
     // Load
     useEffect(() => {
@@ -33,27 +34,39 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
             try {
                 await settingsManager.initialize();
 
-                if (!settingsManager.getCache("onboardingCompleted")) {
-                    profileStore = await profileStore.setDirs();
-                    props.setOnboarding(true);
-                } else {
-                    const downloadLocation = settingsManager.getCache("downloadLocation");
-                    profileStore = await profileStore.setDirs(downloadLocation);
+                const onboardingCompleted = settingsManager.getCache("onboardingCompleted");
+
+                let profileStore = useProfileStore.getState();
+                let directories = useDirectories.getState();
+
+                await profileStore.setAvailableProfiles();
+                profileStore = useProfileStore.getState();
+
+                let downloadLocation: string | undefined = undefined;
+                if (onboardingCompleted) {
+                    downloadLocation = settingsManager.getCache("downloadLocation");
                 }
 
-                // Check if a profile was requested to be launched by cmdline arguments
-                const launchOption: string | null = await invoke("get_launch_argument");
-                if (launchOption !== null) {
-                    setLoading(LoadingState.LAUNCHING);
+                await directories.setDirs(downloadLocation);
+                directories = useDirectories.getState();
 
-                    const profile = profileStore.getProfileByUUID(launchOption);
-                    if (profile) {
-                        const path = await getPathForProfile(profileStore, profile);
-                        await launch(profile, path);
+                if (!onboardingCompleted) {
+                    props.setOnboarding(true);
+                } else {
+                    // Check if a profile was requested to be launched by command line arguments
+                    const launchOption: string | null = await invoke("get_launch_argument");
+                    if (launchOption !== null) {
+                        setLoading(LoadingState.LAUNCHING);
 
-                        appWindow.close();
-                    } else {
-                        showErrorDialog("Invalid profile specified: " + launchOption);
+                        const profile = profileStore.getProfileByUUID(launchOption);
+                        if (profile) {
+                            const path = await getPathForProfile(directories, profile);
+                            await launch(profile, path);
+
+                            appWindow.close();
+                        } else {
+                            showErrorDialog("Invalid profile specified: " + launchOption);
+                        }
                     }
                 }
 
@@ -69,6 +82,8 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
 
                 return;
             }
+
+            props.setShowBody(true);
 
             // The loading screen takes 250ms to fade out
             setLoading(LoadingState.FADE_OUT);
@@ -89,7 +104,6 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
         <Progress.Root className={styles.progressRoot}>
             <Progress.Indicator className={styles.progressIndicator} />
         </Progress.Root>
-
 
         <div className={styles.factContainer}>
             {loading == LoadingState.LAUNCHING ?

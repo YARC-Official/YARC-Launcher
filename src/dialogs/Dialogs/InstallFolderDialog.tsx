@@ -75,7 +75,7 @@ export class InstallFolderDialog extends BaseDialog<State> {
 
     getButtons() {
         return <>
-            <Button color={ButtonColor.GRAY} onClick={() => closeDialog("cancel")}>Cancel</Button>
+            <Button color={ButtonColor.LIGHT} onClick={() => closeDialog("cancel")}>Cancel</Button>
             <Button color={ButtonColor.GREEN} onClick={() => {
                 if (!this.state.empty) {
                     return;

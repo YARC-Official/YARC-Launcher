@@ -20,7 +20,7 @@ export function LaunchButton({ profileState }: Props) {
 
     // Loading button
     if (loading) {
-        return <Button border={true} rounded={true} color={ButtonColor.GRAY}>
+        return <Button border={true} rounded={true} color={ButtonColor.LIGHT}>
             Loading...
         </Button>;
     }
@@ -77,7 +77,7 @@ export function LaunchButton({ profileState }: Props) {
         </Button>;
     }
 
-    return <Button border={true} rounded={true} color={ButtonColor.GRAY}>
+    return <Button border={true} rounded={true} color={ButtonColor.LIGHT}>
         Loading...
     </Button>;
 }

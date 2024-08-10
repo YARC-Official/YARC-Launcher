@@ -1,5 +1,4 @@
 import { DownloadAndInstallTask } from "@app/tasks/Processors/DownloadAndInstallTask";
-import { ProfileStore } from "./store";
 import { Profile } from "./types";
 import { addTask } from "@app/tasks";
 import { UninstallTask } from "@app/tasks/Processors/UninstallTask";
@@ -7,24 +6,23 @@ import { getOS } from "@app/utils/os";
 import { showErrorDialog } from "@app/dialogs/dialogUtil";
 import { invoke } from "@tauri-apps/api";
 import { getProfileVersion } from "./utils";
+import { useDirectories } from "./directories";
 
-export const downloadAndInstall = async (profile: Profile, profiles: ProfileStore, profilePath: string,
-    onFinish?: () => void): Promise<void> => {
-
-    if (profiles.importantDirs === undefined) {
+export const downloadAndInstall = async (profile: Profile, profilePath: string, onFinish?: () => void): Promise<void> => {
+    const directories = useDirectories.getState();
+    if (directories.importantDirs === undefined) {
         return;
     }
 
     const version = getProfileVersion(profile);
-    const tempFolder = profiles.importantDirs.tempFolder;
+    const tempFolder = directories.importantDirs.tempFolder;
     const task = new DownloadAndInstallTask(profile, version, profilePath, tempFolder, onFinish);
     addTask(task);
 };
 
-export const uninstall = async (profile: Profile, profiles: ProfileStore, profilePath: string,
-    onFinish?: () => void): Promise<void> => {
-
-    if (profiles.importantDirs === undefined) {
+export const uninstall = async (profile: Profile, profilePath: string, onFinish?: () => void): Promise<void> => {
+    const directories = useDirectories.getState();
+    if (directories.importantDirs === undefined) {
         return;
     }
 

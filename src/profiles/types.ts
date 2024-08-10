@@ -102,3 +102,10 @@ export interface SetlistProfile {
     metadata: SetlistMetadata,
     version: VersionInfo,
 }
+
+export type AvailableProfile = Localized<{
+    uuid: string,
+    url: string,
+    name: string,
+    iconUrl: string,
+}>;
