@@ -1,20 +1,20 @@
 import { create } from "zustand";
-import { AvailableProfile, Profile } from "./types";
+import { ActiveProfile, AvailableProfile } from "./types";
 
 export interface ProfileStore {
     availableProfiles: AvailableProfile[],
-    profiles: Profile[],
+    activeProfiles: ActiveProfile[],
 
-    getProfileByUUID: (uuid: string) => Profile | undefined,
+    getProfileByUUID: (uuid: string) => ActiveProfile | undefined,
     setAvailableProfiles: () => Promise<ProfileStore>,
 }
 
 export const useProfileStore = create<ProfileStore>()((set, get) => ({
     availableProfiles: [],
-    profiles: [],
+    activeProfiles: [],
 
     getProfileByUUID: (uuid) => {
-        return get().profiles.find(i => i.uuid === uuid);
+        return get().activeProfiles.find(i => i.uuid === uuid);
     },
     setAvailableProfiles: async () => {
         set({

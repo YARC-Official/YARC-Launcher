@@ -1,4 +1,4 @@
-import { Profile, Version } from "@app/profiles/types";
+import { ActiveProfile, Version } from "@app/profiles/types";
 import { BaseTask, IBaseTask } from "./base";
 import { invoke } from "@tauri-apps/api";
 import { showErrorDialog } from "@app/dialogs/dialogUtil";
@@ -12,7 +12,7 @@ export class DownloadAndInstallTask extends BaseTask implements IBaseTask {
     version: Version;
     tempPath: string;
 
-    constructor(profile: Profile, version: Version, profilePath: string, tempPath: string, onFinish?: () => void) {
+    constructor(profile: ActiveProfile, version: Version, profilePath: string, tempPath: string, onFinish?: () => void) {
         super(profile, profilePath);
 
         this.onFinish = onFinish;
@@ -25,7 +25,7 @@ export class DownloadAndInstallTask extends BaseTask implements IBaseTask {
         try {
             await invoke("download_and_install_profile", {
                 profilePath: this.profilePath,
-                uuid: this.profile.uuid,
+                uuid: this.activeProfile.uuid,
                 tag: this.version.tag,
                 tempPath: this.tempPath,
                 content: this.version.content
@@ -36,8 +36,9 @@ export class DownloadAndInstallTask extends BaseTask implements IBaseTask {
     }
 
     getQueueEntry(bannerMode: boolean): ReactNode {
-        if (this.profile.type === "application") {
-            const metadata = localizeObject(this.profile.metadata, "en-US");
+        const profile = this.activeProfile.profile;
+        if (profile.type === "application") {
+            const metadata = localizeObject(profile.metadata, "en-US");
 
             return <QueueEntry
                 name={metadata.name}
@@ -45,7 +46,7 @@ export class DownloadAndInstallTask extends BaseTask implements IBaseTask {
                 tag={this.version.tag}
                 bannerMode={bannerMode} />;
         } else {
-            const metadata = localizeObject(this.profile.metadata, "en-US");
+            const metadata = localizeObject(profile.metadata, "en-US");
 
             return <QueueEntry
                 name={metadata.name}

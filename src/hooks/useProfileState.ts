@@ -1,7 +1,7 @@
 import { downloadAndInstall, launch, openInstallFolder, uninstall } from "@app/profiles/actions";
 import { useDirectories } from "@app/profiles/directories";
 import { useProfileStore } from "@app/profiles/store";
-import { Profile, Version } from "@app/profiles/types";
+import { ActiveProfile, Version } from "@app/profiles/types";
 import { getPathForProfile, getProfileVersion } from "@app/profiles/utils";
 import { useTask } from "@app/tasks";
 import { IBaseTask } from "@app/tasks/Processors/base";
@@ -18,7 +18,7 @@ export enum ProfileFolderState {
 export interface ProfileState {
     loading: boolean,
 
-    profile: Profile,
+    activeProfile: ActiveProfile,
     profilePath: string,
 
     folderState: ProfileFolderState,
@@ -42,8 +42,8 @@ export const useProfileState = (profileUUID: string): ProfileState => {
     const currentTask = useTask(profileUUID);
     const [version, setVersion] = useState<Version>({} as Version);
 
-    const profile = profiles.getProfileByUUID(profileUUID);
-    if (profile === undefined) {
+    const activeProfile = profiles.getProfileByUUID(profileUUID);
+    if (activeProfile === undefined) {
         throw new Error("Undefined profile");
     }
 
@@ -62,8 +62,8 @@ export const useProfileState = (profileUUID: string): ProfileState => {
         }
 
         (async () => {
-            const path = await getPathForProfile(directories, profile);
-            const version = getProfileVersion(profile);
+            const path = await getPathForProfile(directories, activeProfile);
+            const version = getProfileVersion(activeProfile);
 
             const result = await invoke("profile_folder_state", {
                 path: path,
@@ -80,7 +80,7 @@ export const useProfileState = (profileUUID: string): ProfileState => {
     return {
         loading,
 
-        profile,
+        activeProfile,
         profilePath,
 
         folderState,
@@ -92,7 +92,7 @@ export const useProfileState = (profileUUID: string): ProfileState => {
                 return;
             }
 
-            await downloadAndInstall(profile, profilePath, () => {
+            await downloadAndInstall(activeProfile, profilePath, () => {
                 setFolderState(ProfileFolderState.UpToDate);
             });
         },
@@ -101,7 +101,7 @@ export const useProfileState = (profileUUID: string): ProfileState => {
                 return;
             }
 
-            await uninstall(profile, profilePath, () => {
+            await uninstall(activeProfile, profilePath, () => {
                 setFolderState(ProfileFolderState.FirstDownload);
             });
         },
@@ -110,14 +110,14 @@ export const useProfileState = (profileUUID: string): ProfileState => {
                 return;
             }
 
-            await launch(profile, profilePath);
+            await launch(activeProfile, profilePath);
         },
         openInstallFolder: async() => {
             if (loading) {
                 return;
             }
 
-            await openInstallFolder(profile, profilePath);
+            await openInstallFolder(activeProfile, profilePath);
         }
     };
 };

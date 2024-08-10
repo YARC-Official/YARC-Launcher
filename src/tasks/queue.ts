@@ -35,7 +35,7 @@ const next = () => {
 
 const findTask = (queue: TaskQueueStore, profileUUID: string) => {
     for (const task of queue) {
-        if (task.profile.uuid === profileUUID) {
+        if (task.activeProfile.uuid === profileUUID) {
             return task;
         }
     }

@@ -1,5 +1,5 @@
 import { DownloadAndInstallTask } from "@app/tasks/Processors/DownloadAndInstallTask";
-import { Profile } from "./types";
+import { ActiveProfile } from "./types";
 import { addTask } from "@app/tasks";
 import { UninstallTask } from "@app/tasks/Processors/UninstallTask";
 import { getOS } from "@app/utils/os";
@@ -8,7 +8,7 @@ import { invoke } from "@tauri-apps/api";
 import { getProfileVersion } from "./utils";
 import { useDirectories } from "./directories";
 
-export const downloadAndInstall = async (profile: Profile, profilePath: string, onFinish?: () => void): Promise<void> => {
+export const downloadAndInstall = async (profile: ActiveProfile, profilePath: string, onFinish?: () => void): Promise<void> => {
     const directories = useDirectories.getState();
     if (directories.importantDirs === undefined) {
         return;
@@ -20,7 +20,7 @@ export const downloadAndInstall = async (profile: Profile, profilePath: string, 
     addTask(task);
 };
 
-export const uninstall = async (profile: Profile, profilePath: string, onFinish?: () => void): Promise<void> => {
+export const uninstall = async (profile: ActiveProfile, profilePath: string, onFinish?: () => void): Promise<void> => {
     const directories = useDirectories.getState();
     if (directories.importantDirs === undefined) {
         return;
@@ -30,13 +30,13 @@ export const uninstall = async (profile: Profile, profilePath: string, onFinish?
     addTask(task);
 };
 
-export const launch = async (profile: Profile, profilePath: string): Promise<void> => {
-    if (profile.type !== "application") {
-        showErrorDialog(`Cannot launch profile of type "${profile.type}"!`);
+export const launch = async (activeProfile: ActiveProfile, profilePath: string): Promise<void> => {
+    if (activeProfile.profile.type !== "application") {
+        showErrorDialog(`Cannot launch profile of type "${activeProfile.profile.type}"!`);
         return;
     }
 
-    const version = getProfileVersion(profile);
+    const version = getProfileVersion(activeProfile);
 
     const os = await getOS();
     const launchOptions = version.launchOptions?.[os];
@@ -56,9 +56,9 @@ export const launch = async (profile: Profile, profilePath: string): Promise<voi
     }
 };
 
-export const openInstallFolder = async (profile: Profile, profilePath: string): Promise<void> => {
-    if (profile.type !== "application") {
-        showErrorDialog(`Cannot open install folder of type "${profile.type}"!`);
+export const openInstallFolder = async (activeProfile: ActiveProfile, profilePath: string): Promise<void> => {
+    if (activeProfile.profile.type !== "application") {
+        showErrorDialog(`Cannot open install folder of type "${activeProfile.profile.type}"!`);
         return;
     }
 

@@ -11,12 +11,14 @@ interface Props {
 export function LaunchButton({ profileState }: Props) {
     const {
         loading,
-        profile,
+        activeProfile,
         folderState,
         currentTask,
         downloadAndInstall,
         launch,
     } = profileState;
+
+    const profile = activeProfile.profile;
 
     // Loading button
     if (loading) {

@@ -1,11 +1,11 @@
-import { Profile } from "@app/profiles/types";
+import { ActiveProfile } from "@app/profiles/types";
 import { v4 as generateUUID } from "uuid";
 
 export interface IBaseTask {
     startedAt?: Date;
     taskUUID: string;
 
-    profile: Profile;
+    activeProfile: ActiveProfile;
     profilePath: string;
 
     onFinish?: () => void;
@@ -18,13 +18,13 @@ export class BaseTask {
     startedAt?: Date;
     taskUUID: string;
 
-    profile: Profile;
+    activeProfile: ActiveProfile;
     profilePath: string;
 
-    constructor(profile: Profile, profilePath: string) {
+    constructor(profile: ActiveProfile, profilePath: string) {
         this.taskUUID = generateUUID();
 
-        this.profile = profile;
+        this.activeProfile = profile;
         this.profilePath = profilePath;
     }
 }

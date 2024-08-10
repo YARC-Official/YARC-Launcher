@@ -109,3 +109,9 @@ export type AvailableProfile = Localized<{
     name: string,
     iconUrl: string,
 }>;
+
+export interface ActiveProfile {
+    uuid: string,
+    displayName?: string,
+    profile: Profile,
+}

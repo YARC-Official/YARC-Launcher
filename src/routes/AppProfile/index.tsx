@@ -15,10 +15,12 @@ function AppProfile() {
     }
 
     const profileState = useProfileState(uuid);
-    const profile = profileState.profile;
     if (profileState.loading) {
         return <></>;
     }
+
+    const activeProfile = profileState.activeProfile;
+    const profile = activeProfile.profile;
 
     const metadata = localizeMetadata(profile, "en-US");
 
@@ -32,7 +34,7 @@ function AppProfile() {
                     <div className={styles.verifiedTag}>
                         Official <VerifiedIcon />
                     </div>
-                    {metadata.name}
+                    {activeProfile.displayName !== undefined ? activeProfile.displayName : metadata.name}
                 </div>
             </div>
             <div className={styles.bannerOptions}>

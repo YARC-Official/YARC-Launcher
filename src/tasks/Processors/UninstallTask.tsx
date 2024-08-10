@@ -1,4 +1,4 @@
-import { Profile } from "@app/profiles/types";
+import { ActiveProfile } from "@app/profiles/types";
 import { BaseTask, IBaseTask } from "./base";
 import { invoke } from "@tauri-apps/api";
 import { showErrorDialog } from "@app/dialogs/dialogUtil";
@@ -9,7 +9,7 @@ import { localizeObject } from "@app/utils/localized";
 export class UninstallTask extends BaseTask implements IBaseTask {
     onFinish?: () => void;
 
-    constructor(profile: Profile, profilePath: string, onFinish?: () => void) {
+    constructor(profile: ActiveProfile, profilePath: string, onFinish?: () => void) {
         super(profile, profilePath);
         this.onFinish = onFinish;
     }
@@ -25,15 +25,16 @@ export class UninstallTask extends BaseTask implements IBaseTask {
     }
 
     getQueueEntry(bannerMode: boolean): ReactNode {
-        if (this.profile.type === "application") {
-            const metadata = localizeObject(this.profile.metadata, "en-US");
+        const profile = this.activeProfile.profile;
+        if (profile.type === "application") {
+            const metadata = localizeObject(profile.metadata, "en-US");
 
             return <QueueEntry
                 name={metadata.name}
                 releaseName={metadata.releaseName}
                 bannerMode={bannerMode} />;
         } else {
-            const metadata = localizeObject(this.profile.metadata, "en-US");
+            const metadata = localizeObject(profile.metadata, "en-US");
 
             return <QueueEntry
                 name={metadata.name}
