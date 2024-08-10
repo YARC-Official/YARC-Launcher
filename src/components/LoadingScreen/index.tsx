@@ -32,7 +32,10 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
     useEffect(() => {
         (async () => {
             try {
+                // Make sure to save the settings afterwards in case a new key has been added
+                // If "get" is called and the settings didn't save, it would cause an error.
                 await settingsManager.initialize();
+                await settingsManager.syncCache();
 
                 const onboardingCompleted = settingsManager.getCache("onboardingCompleted");
 
@@ -49,6 +52,9 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
 
                 await directories.setDirs(downloadLocation);
                 directories = useDirectories.getState();
+
+                await profileStore.activateProfilesFromSettings();
+                profileStore = useProfileStore.getState();
 
                 if (!onboardingCompleted) {
                     props.setOnboarding(true);
