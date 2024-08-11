@@ -7,6 +7,7 @@ import { localizeMetadata, processAssetUrl } from "@app/profiles/utils";
 import Box from "@app/components/Box";
 import { ApplicationMetadata } from "@app/profiles/types";
 import Button, { ButtonColor } from "@app/components/Button";
+import MoreDropdown from "./MoreDropdown";
 
 function AppProfile() {
     const { uuid } = useParams();
@@ -48,6 +49,7 @@ function AppProfile() {
                 </div>
                 <div className={styles.bannerOptionsMain}>
                     <LaunchButton profileState={profileState} />
+                    <MoreDropdown profileState={profileState} />
                 </div>
             </div>
         </div>

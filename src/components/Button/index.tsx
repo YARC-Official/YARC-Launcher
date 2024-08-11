@@ -1,5 +1,5 @@
 import styles from "./Button.module.css";
-import { CSSProperties } from "react";
+import { CSSProperties, forwardRef } from "react";
 
 export enum ButtonColor {
     "GREEN",
@@ -27,10 +27,26 @@ export type ButtonProps = React.PropsWithChildren<{
     height?: number,
 }>;
 
-const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(props, ref) {
+    const {
+        className,
+        style,
+
+        border,
+        rounded,
+        color,
+
+        width,
+        height,
+
+        children,
+
+        ...otherProps
+    } = props;
+
     // Get the button color class
     let classes;
-    switch (props.color) {
+    switch (color) {
         case ButtonColor.BLUE:
             classes = [styles.colorsBlue];
             break;
@@ -54,24 +70,29 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
             break;
     }
 
-    if (props.border) {
+    if (border) {
         classes.push(styles.border);
     }
 
-    if (props.rounded) {
+    if (rounded) {
         classes.push(styles.rounded);
     }
 
     // Get the styles
     const newStyles = {
-        width: props.width,
-        height: props.height,
-        ...props.style,
+        width,
+        height,
+        ...style,
     } as ButtonCSS;
 
-    return <button className={[styles.button, ...classes, props.className].join(" ")} style={newStyles} onClick={props.onClick}>
-        {props.children}
+    return <button
+        className={[styles.button, ...classes, className].join(" ")}
+        style={newStyles}
+        ref={ref}
+        {...otherProps}>
+
+        {children}
     </button>;
-};
+});
 
 export default Button;

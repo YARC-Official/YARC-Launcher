@@ -13,9 +13,9 @@ const store = createStore<DialogStore>(
     () => ({open: false})
 );
 
-export const createAndShowDialog = async (content: typeof Component, props?: Record<string, unknown>): Promise<string|undefined> => {    
+export const createAndShowDialog = async (content: typeof Component, props?: Record<string, unknown>): Promise<string|undefined> => {
     const current = store.getState();
-    if(current.open) return;
+    if (current.open) return;
 
     store.setState({
         content,

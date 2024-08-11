@@ -13,6 +13,7 @@ export interface ProfileStore {
 
     activateProfilesFromSettings: () => Promise<void>,
     activateProfile: (profile: AvailableProfile) => Promise<void>,
+    removeProfile: (uuid: string) => Promise<void>,
 }
 
 export const useProfileStore = create<ProfileStore>()((set, get) => ({
@@ -97,9 +98,15 @@ export const useProfileStore = create<ProfileStore>()((set, get) => ({
             activeProfiles: profiles
         });
 
-        // Add to the settings
-        const activeSetting = await settingsManager.get("activeProfiles");
-        activeSetting.push(activeProfile);
-        await settingsManager.set("activeProfiles", activeSetting);
+        await settingsManager.set("activeProfiles", profiles);
+    },
+    removeProfile: async (uuid: string) => {
+        let profiles = get().activeProfiles;
+        profiles = profiles.filter(i => i.uuid !== uuid);
+        set({
+            activeProfiles: profiles
+        });
+
+        await settingsManager.set("activeProfiles", profiles);
     }
 }));

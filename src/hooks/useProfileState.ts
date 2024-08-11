@@ -1,3 +1,5 @@
+import { createAndShowDialog } from "@app/dialogs";
+import { UninstallBeforeDeleteDialog } from "@app/dialogs/Dialogs/UninstallBeforeRemoveDialog";
 import { downloadAndInstall, launch, openInstallFolder, uninstall } from "@app/profiles/actions";
 import { useDirectories } from "@app/profiles/directories";
 import { useProfileStore } from "@app/profiles/store";
@@ -7,6 +9,7 @@ import { useTask } from "@app/tasks";
 import { IBaseTask } from "@app/tasks/Processors/base";
 import { invoke } from "@tauri-apps/api";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export enum ProfileFolderState {
     Error = 0,
@@ -29,11 +32,13 @@ export interface ProfileState {
     uninstall: () => Promise<void>,
     launch: () => Promise<void>,
     openInstallFolder: () => Promise<void>,
+    deleteProfile: () => Promise<void>,
 }
 
 export const useProfileState = (profileUUID: string): ProfileState => {
     const directories = useDirectories();
     const profiles = useProfileStore();
+    const navigate = useNavigate();
 
     const [loading, setLoading] = useState<boolean>(true);
     const [profilePath, setProfilePath] = useState<string>("");
@@ -112,12 +117,25 @@ export const useProfileState = (profileUUID: string): ProfileState => {
 
             await launch(activeProfile, profilePath);
         },
-        openInstallFolder: async() => {
+        openInstallFolder: async () => {
             if (loading) {
                 return;
             }
 
             await openInstallFolder(activeProfile, profilePath);
+        },
+        deleteProfile: async () => {
+            if (loading) {
+                return;
+            }
+
+            if (folderState !== ProfileFolderState.FirstDownload && folderState !== ProfileFolderState.UpdateRequired) {
+                createAndShowDialog(UninstallBeforeDeleteDialog);
+                return;
+            }
+
+            navigate("/");
+            await profiles.removeProfile(activeProfile.uuid);
         }
     };
 };
