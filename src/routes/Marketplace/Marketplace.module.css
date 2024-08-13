@@ -63,23 +63,30 @@
 }
 
 .section > .list {
-    width: 100%;
+    --item-width: 400px;
+
+    max-width: 100%;
     overflow-x: auto;
 
     padding: 12px;
 
-    display: flex;
-    gap: 12px;
-    flex-wrap: nowrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--item-width), auto));
+    grid-gap: 12px;
+    grid-auto-flow: column;
 }
 
 .section.expanded > .list {
-    flex-wrap: wrap;
+    width: 100%;
+    grid-auto-flow: row;
 }
 
 .profileView {
     display: flex;
-    min-width: 400px;
+
+    min-width: var(--item-width);
+    max-width: var(--item-width);
+
     padding: 12px;
     align-items: center;
     gap: 20px;
@@ -99,13 +106,13 @@
     transition: transform 0.1s, box-shadow 0.3s;
 }
 
+.expanded .profileView {
+    max-width: none;
+}
+
 .profileView:hover {
     box-shadow: 2px 2px 7px 0px rgba(0, 0, 0, 0.4);
     transform: scale(1.025);
-}
-
-.expanded .profileView {
-    flex: 1 0 0;
 }
 
 .profileView > .icon {

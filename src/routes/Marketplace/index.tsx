@@ -25,7 +25,7 @@ function Marketplace() {
         <div className={styles.content}>
             <MarketplaceSection name="All Applications">
                 {
-                    marketIndex.profiles.filter(i => i.type === "application").map(i =>
+                    marketIndex.profiles.map(i =>
                         <MarketplaceProfileView profile={i} key={i.uuid} />
                     )
                 }
