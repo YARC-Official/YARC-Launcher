@@ -14,6 +14,7 @@ export interface ProfileStore {
     activateProfilesFromSettings: () => Promise<void>,
     activateProfile: (profile: AvailableProfile) => Promise<void>,
     removeProfile: (uuid: string) => Promise<void>,
+    updateProfile: (activeProfile: ActiveProfile) => Promise<void>,
 }
 
 export const useProfileStore = create<ProfileStore>()((set, get) => ({
@@ -103,6 +104,18 @@ export const useProfileStore = create<ProfileStore>()((set, get) => ({
     removeProfile: async (uuid: string) => {
         let profiles = get().activeProfiles;
         profiles = profiles.filter(i => i.uuid !== uuid);
+        set({
+            activeProfiles: profiles
+        });
+
+        await settingsManager.set("activeProfiles", profiles);
+    },
+    updateProfile: async (activeProfile: ActiveProfile) => {
+        const profiles = get().activeProfiles;
+
+        const index = profiles.findIndex(i => i.uuid === activeProfile.uuid);
+        profiles[index] = activeProfile;
+
         set({
             activeProfiles: profiles
         });

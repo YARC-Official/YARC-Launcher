@@ -1,13 +1,15 @@
 import { useParams } from "react-router-dom";
 import { useProfileState } from "@app/hooks/useProfileState";
 import styles from "./AppProfile.module.css";
-import { InformationIcon, VerifiedIcon } from "@app/assets/Icons";
+import { InformationIcon, TimeIcon, VerifiedIcon } from "@app/assets/Icons";
 import { LaunchButton } from "./LaunchButton";
 import { localizeMetadata, processAssetUrl } from "@app/profiles/utils";
 import Box from "@app/components/Box";
 import { ApplicationMetadata } from "@app/profiles/types";
 import Button, { ButtonColor } from "@app/components/Button";
 import MoreDropdown from "./MoreDropdown";
+import intlFormatDistance from "date-fns/intlFormatDistance";
+import { distanceFromToday } from "@app/utils/timeFormat";
 
 function AppProfile() {
     const { uuid } = useParams();
@@ -40,12 +42,19 @@ function AppProfile() {
             </div>
             <div className={styles.bannerOptions}>
                 <div className={styles.bannerOptionsStats}>
-                    {/* <div>
-                        Last played 3 days ago
-                    </div>
-                    <div>
-                        400 hours played
-                    </div> */}
+                    {profile.type === "application" &&
+                        <div>
+                            <TimeIcon />
+                            <span>
+                                Last played
+                                &#32;<span className={styles.highlightedStat}>
+                                    {(activeProfile.lastPlayed === undefined || activeProfile.lastPlayed === null)
+                                        ? "never"
+                                        : distanceFromToday(activeProfile.lastPlayed)}
+                                </span>
+                            </span>
+                        </div>
+                    }
                 </div>
                 <div className={styles.bannerOptionsMain}>
                     <LaunchButton profileState={profileState} />

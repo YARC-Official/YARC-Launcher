@@ -1,7 +1,13 @@
+import { intlFormatDistance } from "date-fns";
+
 export const millisToDisplayLength = (length: number, long = false) => {
     const date = new Date(length);
     if (long) {
-        return `${date.getMinutes()} min ${date.getSeconds()} sec`;
+        if (date.getHours() !== 0) {
+            return `${date.getHours()} hr ${date.getMinutes()} min ${date.getSeconds()} sec`;
+        } else {
+            return `${date.getMinutes()} min ${date.getSeconds()} sec`;
+        }
     } else {
         return new Intl.DateTimeFormat("en-US", {
             minute: "numeric",
@@ -25,4 +31,8 @@ export const isConsideredNewRelease = (releaseDate: string, newestInSetlist: str
     }
 
     return true;
+};
+
+export const distanceFromToday = (initial: string) => {
+    return intlFormatDistance(new Date(initial), new Date());
 };

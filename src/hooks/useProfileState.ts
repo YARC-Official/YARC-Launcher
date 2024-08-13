@@ -115,6 +115,9 @@ export const useProfileState = (profileUUID: string): ProfileState => {
                 return;
             }
 
+            activeProfile.lastPlayed = new Date().toISOString();
+            await profiles.updateProfile(activeProfile);
+
             await launch(activeProfile, profilePath);
         },
         openInstallFolder: async () => {
@@ -129,7 +132,7 @@ export const useProfileState = (profileUUID: string): ProfileState => {
                 return;
             }
 
-            if (folderState !== ProfileFolderState.FirstDownload && folderState !== ProfileFolderState.UpdateRequired) {
+            if (folderState !== ProfileFolderState.FirstDownload) {
                 createAndShowDialog(UninstallBeforeDeleteDialog);
                 return;
             }

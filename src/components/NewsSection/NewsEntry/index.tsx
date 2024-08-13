@@ -9,6 +9,7 @@ import { intlFormatDistance } from "date-fns";
 import { newsBaseURL } from "@app/utils/consts";
 import { useNewsAuthorSettings } from "@app/hooks/useNewsAuthor";
 import { useQueries } from "@tanstack/react-query";
+import { distanceFromToday } from "@app/utils/timeFormat";
 
 interface Props {
     article: ArticleData;
@@ -31,7 +32,7 @@ const NewsEntry: React.FC<Props> = ({ article }: Props) => {
                             article.release ? (
                                 <div className={styles.releaseDate}>
                                     <TimeIcon height={15} />
-                                    {intlFormatDistance(new Date(article.release), new Date())}
+                                    {distanceFromToday(article.release)}
                                 </div>
                             ) : ""
                         }
