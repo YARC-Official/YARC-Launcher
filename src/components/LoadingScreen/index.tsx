@@ -42,9 +42,6 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
                 let profileStore = useProfileStore.getState();
                 let directories = useDirectories.getState();
 
-                await profileStore.setAvailableProfiles();
-                profileStore = useProfileStore.getState();
-
                 let downloadLocation: string | undefined = undefined;
                 if (onboardingCompleted) {
                     downloadLocation = settingsManager.getCache("downloadLocation");

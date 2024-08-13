@@ -1,43 +1,25 @@
 import { create } from "zustand";
-import { ActiveProfile, AvailableProfile, Profile } from "./types";
+import { ActiveProfile, Profile } from "./types";
 import { showErrorDialog } from "@app/dialogs/dialogUtil";
 import { v4 as createUUID } from "uuid";
 import { settingsManager } from "@app/settings";
 
 export interface ProfileStore {
-    availableProfiles: AvailableProfile[],
     activeProfiles: ActiveProfile[],
 
     getProfileByUUID: (uuid: string) => ActiveProfile | undefined,
-    setAvailableProfiles: () => Promise<ProfileStore>,
 
     activateProfilesFromSettings: () => Promise<void>,
-    activateProfile: (profile: AvailableProfile) => Promise<void>,
+    activateProfile: (profileUrl: string) => Promise<void>,
     removeProfile: (uuid: string) => Promise<void>,
     updateProfile: (activeProfile: ActiveProfile) => Promise<void>,
 }
 
 export const useProfileStore = create<ProfileStore>()((set, get) => ({
-    availableProfiles: [],
     activeProfiles: [],
 
     getProfileByUUID: (uuid) => {
         return get().activeProfiles.find(i => i.uuid === uuid);
-    },
-    setAvailableProfiles: async () => {
-        set({
-            availableProfiles: [
-                {
-                    "uuid": "2d78800c-1397-496a-83c1-50759607999a",
-                    "url": "https://gist.githubusercontent.com/EliteAsian123/1ecaef91dfcf194345b80e1112896411/raw/46242adc1d449f6f718548311f2bbdfff9d5c606/profile.json",
-                    "name": "YARG",
-                    "iconUrl": "@/icons/Stable.png",
-
-                    "localeOverrides": {}
-                }
-            ]
-        });
-        return get();
     },
 
     activateProfilesFromSettings: async () => {
@@ -69,10 +51,10 @@ export const useProfileStore = create<ProfileStore>()((set, get) => ({
             showErrorDialog("One or more active application/setlist profiles could not be fetched! Do they still exist?");
         }
     },
-    activateProfile: async (availableProfile: AvailableProfile) => {
+    activateProfile: async (profileUrl: string) => {
         let profile: Profile;
         try {
-            const response = await fetch(availableProfile.url);
+            const response = await fetch(profileUrl);
             if (!response.ok) {
                 throw new Error(`Failed to fetch profile! Response status: ${response.status}`);
             }
@@ -87,7 +69,7 @@ export const useProfileStore = create<ProfileStore>()((set, get) => ({
 
         const activeProfile: ActiveProfile = {
             uuid: createUUID(),
-            originalUrl: availableProfile.url,
+            originalUrl: profileUrl,
             displayName: undefined,
             profile: profile,
         };

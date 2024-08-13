@@ -103,13 +103,6 @@ export interface SetlistProfile {
     version: VersionInfo,
 }
 
-export type AvailableProfile = Localized<{
-    uuid: string,
-    url: string,
-    name: string,
-    iconUrl: string,
-}>;
-
 export interface ActiveProfile {
     uuid: string,
     originalUrl: string,
