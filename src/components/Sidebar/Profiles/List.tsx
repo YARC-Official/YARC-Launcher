@@ -2,7 +2,7 @@ import styles from "./List.module.css";
 import Separator from "./Separator";
 import { AddIcon } from "@app/assets/Icons";
 import { useProfileStore } from "@app/profiles/store";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { Localized, localize } from "@app/utils/localized";
 import { Metadata } from "@app/profiles/types";
 import Selector from "./Selector";
@@ -12,6 +12,7 @@ const ProfilesList: React.FC = () => {
 
     function activeProfileList(type: "application" | "setlist") {
         const output = [];
+
         for (const activeProfile of profileStore.activeProfiles) {
             const profile = activeProfile.profile;
             if (profile.type !== type) {
@@ -31,17 +32,22 @@ const ProfilesList: React.FC = () => {
                 </NavLink>
             );
         }
+
         return output;
     }
 
     return <div className={styles.list}>
         <Separator name="Applications">
-            <AddIcon className={styles.add} />
+            <Link to="/marketplace" className={styles.add}>
+                <AddIcon />
+            </Link>
         </Separator>
         {activeProfileList("application")}
 
-        <Separator name="Songs">
-            <AddIcon className={styles.add} />
+        <Separator name="Setlists">
+            <Link to="/marketplace" className={styles.add}>
+                <AddIcon />
+            </Link>
         </Separator>
         {activeProfileList("setlist")}
     </div>;
