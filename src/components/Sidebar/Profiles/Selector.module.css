@@ -1,0 +1,31 @@
+.selector {
+    --border-radius: 8px;
+    --padding: 5px;
+
+    display: flex;
+    gap: 10px;
+    align-items: center;
+
+    padding: var(--padding);
+    border-radius: calc(var(--border-radius) + var(--padding));
+
+    background: transparent;
+    color: #B8BDD6;
+
+    transition: background 0.1s;
+}
+
+[aria-current="page"] > .selector,
+.selector:hover {
+    background: #0D0F23;
+    color: #D4D9EE;
+}
+
+.icon {
+    height: 42px;
+}
+
+.text {
+    font-size: 16px;
+    font-weight: 600;
+}

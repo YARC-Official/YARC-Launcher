@@ -8,8 +8,8 @@ import Box from "@app/components/Box";
 import { ApplicationMetadata } from "@app/profiles/types";
 import Button, { ButtonColor } from "@app/components/Button";
 import MoreDropdown from "./MoreDropdown";
-import intlFormatDistance from "date-fns/intlFormatDistance";
 import { distanceFromToday } from "@app/utils/timeFormat";
+import ProfileIcon from "@app/components/ProfileIcon";
 
 function AppProfile() {
     const { uuid } = useParams();
@@ -32,7 +32,7 @@ function AppProfile() {
             style={{"--bannerBack": `url(${processAssetUrl(metadata.bannerBackUrl)})`} as React.CSSProperties}>
 
             <div className={styles.bannerApp}>
-                <img src={processAssetUrl(metadata.iconUrl)} alt={metadata.name} />
+                <ProfileIcon className={styles.bannerAppIcon} iconUrl={metadata.iconUrl} />
                 <div>
                     <div className={styles.verifiedTag}>
                         Official <VerifiedIcon />

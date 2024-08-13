@@ -1,10 +1,11 @@
-import styles from "./Versions.module.css";
-import VersionSeparator from "./Separator";
+import styles from "./List.module.css";
+import Separator from "./Separator";
 import { AddIcon } from "@app/assets/Icons";
 import { useProfileStore } from "@app/profiles/store";
 import { NavLink } from "react-router-dom";
 import { Localized, localize } from "@app/utils/localized";
 import { Metadata } from "@app/profiles/types";
+import Selector from "./Selector";
 
 const ProfilesList: React.FC = () => {
     const profileStore = useProfileStore();
@@ -22,9 +23,11 @@ const ProfilesList: React.FC = () => {
                 name = localize(profile.metadata as Localized<Metadata>, "name", "en-US");
             }
 
+            const iconUrl = localize(profile.metadata as Localized<Metadata>, "iconUrl", "en-US");
+
             output.push(
                 <NavLink to={`/app-profile/${activeProfile.uuid}`} key={activeProfile.uuid}>
-                    {name}
+                    <Selector name={name} iconUrl={iconUrl} />
                 </NavLink>
             );
         }
@@ -32,14 +35,14 @@ const ProfilesList: React.FC = () => {
     }
 
     return <div className={styles.list}>
-        <VersionSeparator name="Applications">
+        <Separator name="Applications">
             <AddIcon className={styles.add} />
-        </VersionSeparator>
+        </Separator>
         {activeProfileList("application")}
 
-        <VersionSeparator name="Songs">
+        <Separator name="Songs">
             <AddIcon className={styles.add} />
-        </VersionSeparator>
+        </Separator>
         {activeProfileList("setlist")}
     </div>;
 };

@@ -2,7 +2,7 @@ import styles from "./Sidebar.module.css";
 import { DiscordIcon, TwitterIcon, GithubIcon, HomeIcon, QueueIcon, MarketplaceIcon } from "@app/assets/Icons";
 import SidebarMenuButton from "./SidebarMenuButton";
 import { NavLink } from "react-router-dom";
-import ProfilesList from "./Versions/List";
+import ProfilesList from "./Profiles/List";
 import { useEffect, useState } from "react";
 import { getVersion } from "@tauri-apps/api/app";
 import QueueStore from "@app/tasks/queue";

@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import { Img } from "react-image";
 import UnknownUserIcon from "@app/assets/Icons/UnknownUser.svg";
 import { TimeIcon } from "@app/assets/Icons";
-import { intlFormatDistance } from "date-fns";
 import { newsBaseURL } from "@app/utils/consts";
 import { useNewsAuthorSettings } from "@app/hooks/useNewsAuthor";
 import { useQueries } from "@tanstack/react-query";

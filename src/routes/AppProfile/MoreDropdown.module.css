@@ -31,7 +31,7 @@
 }
 
 .item[data-highlighted] {
-    background: var(--sideBarSelection);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .arrow {

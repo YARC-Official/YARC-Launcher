@@ -1,0 +1,19 @@
+.icon {
+    aspect-ratio: 1;
+
+    --icon-border-radius: 17%;
+    border-radius: var(--icon-border-radius);
+
+    box-shadow: 2px 2px 6px 0px rgba(0, 0, 0, 0.4);
+}
+
+.icon > img {
+    max-width: 100%;
+    max-height: 100%;
+
+    border-radius: var(--icon-border-radius);
+
+    --outline-width: 1px;
+    outline: var(--outline-width) solid rgba(255, 255, 255, 0.1);
+    outline-offset: calc(var(--outline-width) * -1);
+}

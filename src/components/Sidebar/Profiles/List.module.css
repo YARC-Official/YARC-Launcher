@@ -15,7 +15,7 @@
     font-size: 14px;
     font-weight: 700;
     text-transform: uppercase;
-    color: var(--sideBarSeparatorColor);
+    color: #434663;
 }
 
 .separator .right {
@@ -26,7 +26,7 @@
 
 .add {
     height: 15px;
-    color: var(--sideBarSeparatorColor);
+    color: #434663;
     opacity: 0.25;
     margin-left: auto;
 }

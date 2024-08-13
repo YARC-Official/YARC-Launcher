@@ -24,10 +24,9 @@
     align-self: stretch;
 }
 
-.bannerApp > img {
+.bannerAppIcon {
     width: 100px;
     height: 100px;
-    border-radius: 16px;
 }
 
 .bannerApp > div {
