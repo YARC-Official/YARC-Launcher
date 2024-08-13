@@ -7,8 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 function Marketplace() {
     const marketIndexQuery = useQuery({
         queryKey: ["MarketIndex"],
-        queryFn: async (): Promise<MarketplaceIndex> =>
-            await fetch("https://releases.yarg.in/profiles/marketIndex.json")
+        queryFn: async (): Promise<MarketplaceIndex> => await fetch("https://releases.yarg.in/profiles/marketIndex.json")
             .then(res => res.json())
     });
 
