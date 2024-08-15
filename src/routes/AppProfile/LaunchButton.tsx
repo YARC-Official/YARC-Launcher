@@ -22,7 +22,7 @@ export function LaunchButton({ profileState }: Props) {
 
     // Loading button
     if (loading) {
-        return <Button border={true} rounded={true} color={ButtonColor.LIGHT}>
+        return <Button color={ButtonColor.LIGHT} rounded border>
             Loading...
         </Button>;
     }
@@ -34,7 +34,7 @@ export function LaunchButton({ profileState }: Props) {
 
     // Installing button
     if (currentTask !== undefined) {
-        return <Button border={true} rounded={true} color={ButtonColor.YELLOW}>
+        return <Button color={ButtonColor.YELLOW} rounded border>
             <InstallingIcon />
             Installing...
         </Button>;
@@ -42,7 +42,7 @@ export function LaunchButton({ profileState }: Props) {
 
     // Update/install button
     if (folderState === ProfileFolderState.UpdateRequired || folderState === ProfileFolderState.FirstDownload) {
-        return <Button border={true} rounded={true} color={ButtonColor.GREEN} onClick={async () => await downloadAndInstall()}>
+        return <Button color={ButtonColor.GREEN} rounded border onClick={async () => await downloadAndInstall()}>
             {folderState === ProfileFolderState.UpdateRequired &&
                 <>
                     <UpdateIcon /> Update {releaseName}
@@ -58,7 +58,7 @@ export function LaunchButton({ profileState }: Props) {
 
     // Launch/up-to-date button
     if (folderState === ProfileFolderState.UpToDate) {
-        return <Button border={true} rounded={true} color={ButtonColor.BLUE} onClick={async () => await launch()}>
+        return <Button color={ButtonColor.BLUE} rounded border onClick={async () => await launch()}>
             {profile.type === "application" &&
                 <>
                     Launch {releaseName}
@@ -74,12 +74,12 @@ export function LaunchButton({ profileState }: Props) {
 
     // Errored button
     if (folderState === ProfileFolderState.Error) {
-        return <Button border={true} rounded={true} color={ButtonColor.RED}>
+        return <Button color={ButtonColor.RED} rounded border>
             Error!
         </Button>;
     }
 
-    return <Button border={true} rounded={true} color={ButtonColor.LIGHT}>
+    return <Button color={ButtonColor.LIGHT} rounded border>
         Loading...
     </Button>;
 }

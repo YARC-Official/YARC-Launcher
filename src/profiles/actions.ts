@@ -3,9 +3,9 @@ import { ActiveProfile } from "./types";
 import { addTask } from "@app/tasks";
 import { UninstallTask } from "@app/tasks/Processors/UninstallTask";
 import { getOS } from "@app/utils/os";
-import { showErrorDialog } from "@app/dialogs/dialogUtil";
 import { invoke } from "@tauri-apps/api";
 import { useDirectories } from "./directories";
+import { showErrorDialog } from "@app/dialogs";
 
 export const downloadAndInstall = async (profile: ActiveProfile, profilePath: string, onFinish?: () => void): Promise<void> => {
     const directories = useDirectories.getState();

@@ -1,6 +1,7 @@
 import { Component } from "react";
 import { useStore } from "zustand";
 import { createStore } from "zustand/vanilla";
+import { ErrorDialog } from "./Dialogs/ErrorDialog";
 
 type DialogStore = {
     open: boolean,
@@ -49,3 +50,7 @@ export const setDialogOpen = (open: boolean) => {
         open
     });
 };
+
+export async function showErrorDialog(error: string) {
+    await createAndShowDialog(ErrorDialog, { error });
+}

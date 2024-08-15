@@ -1,7 +1,7 @@
 import { useStore } from "zustand";
 import { IBaseTask } from "./Processors/base";
 import QueueStore from "./queue";
-import { showErrorDialog } from "@app/dialogs/dialogUtil";
+import { showErrorDialog } from "@app/dialogs";
 
 const addTask = (task: IBaseTask) => {
     QueueStore.add(task);

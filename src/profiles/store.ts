@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { ActiveProfile, Profile, Version, VersionList } from "./types";
-import { showErrorDialog } from "@app/dialogs/dialogUtil";
 import { v4 as createUUID } from "uuid";
 import { settingsManager } from "@app/settings";
+import { showErrorDialog } from "@app/dialogs";
 
 export interface ProfileStore {
     activeProfiles: ActiveProfile[],

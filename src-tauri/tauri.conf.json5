@@ -31,6 +31,10 @@
         // Used to determine what OS the user is on
         "all": true
       },
+      "shell": {
+        // Used to open URLs using the default program
+        "open": true
+      },
       "path": {
         // Required for tauri-settings
         "all": true

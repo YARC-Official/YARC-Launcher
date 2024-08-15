@@ -24,7 +24,7 @@ const MarketplaceSection: React.FC<Props> = ({ name, children }: Props) => {
                 {name}
             </div>
             {(expanded || listOverflowing) &&
-                <Button color={ButtonColor.LIGHT} rounded={true} onClick={() => setExpanded(!expanded)}>
+                <Button color={ButtonColor.LIGHT} rounded onClick={() => setExpanded(!expanded)}>
                     {!expanded &&
                         "More"
                     }

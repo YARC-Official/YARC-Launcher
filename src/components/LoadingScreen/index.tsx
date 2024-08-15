@@ -6,11 +6,11 @@ import { serializeError } from "serialize-error";
 import { useProfileStore } from "@app/profiles/store";
 import { settingsManager } from "@app/settings";
 import { invoke } from "@tauri-apps/api";
-import { showErrorDialog } from "@app/dialogs/dialogUtil";
 import { appWindow } from "@tauri-apps/api/window";
 import { launch } from "@app/profiles/actions";
 import { getPathForProfile } from "@app/profiles/utils";
 import { useDirectories } from "@app/profiles/directories";
+import { showErrorDialog } from "@app/dialogs";
 
 enum LoadingState {
     "LOADING",

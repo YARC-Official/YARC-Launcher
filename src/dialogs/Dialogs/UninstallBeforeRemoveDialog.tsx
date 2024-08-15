@@ -23,7 +23,7 @@ export class UninstallBeforeDeleteDialog extends BaseDialog<Record<string, never
 
     getButtons() {
         return <>
-            <Button color={ButtonColor.GREEN} onClick={() => closeDialog()}>
+            <Button color={ButtonColor.GREEN} rounded onClick={() => closeDialog()}>
                 I Understand
             </Button>
         </>;

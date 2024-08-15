@@ -1,10 +1,10 @@
 import { ActiveProfile } from "@app/profiles/types";
 import { BaseTask, IBaseTask } from "./base";
 import { invoke } from "@tauri-apps/api";
-import { showErrorDialog } from "@app/dialogs/dialogUtil";
 import { ReactNode } from "react";
 import QueueEntry from "@app/components/Queue/QueueEntry";
 import { localizeObject } from "@app/utils/localized";
+import { showErrorDialog } from "@app/dialogs";
 
 export class UninstallTask extends BaseTask implements IBaseTask {
     onFinish?: () => void;

@@ -11,6 +11,7 @@ import MoreDropdown from "./MoreDropdown";
 import { distanceFromToday } from "@app/utils/timeFormat";
 import ProfileIcon from "@app/components/ProfileIcon";
 import NewsSection from "@app/components/NewsSection";
+import { askOpenUrl } from "@app/utils/safeUrl";
 
 function AppProfile() {
     const { uuid } = useParams();
@@ -79,7 +80,9 @@ function AppProfile() {
                 </Box>
                 {
                     Object.entries(metadata.links).map(i =>
-                        <Button color={ButtonColor.LIGHT} key={i[0]}>
+                        <Button color={ButtonColor.LIGHT} key={i[0]}
+                            onClick={async () => await askOpenUrl(i[1].url)}>
+
                             {i[1].name}
                         </Button>
                     )

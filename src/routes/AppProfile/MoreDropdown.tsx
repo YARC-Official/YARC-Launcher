@@ -28,7 +28,7 @@ const MoreDropdown: React.FC<Props> = (props: Props) => {
 
     return <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild>
-            <Button border={true} rounded={true} color={ButtonColor.DARK} style={{padding: "15px"}}>
+            <Button color={ButtonColor.DARK} rounded border style={{padding: "15px"}}>
                 <MoreIcon />
             </Button>
         </DropdownMenu.Trigger>
