@@ -65,7 +65,6 @@ export interface Metadata {
     links: {
         [id: string]: {
             name: string,
-            iconUrl?: string,
             url: string,
         }
     },

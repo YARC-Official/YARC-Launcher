@@ -158,4 +158,16 @@
     text-transform: none;
     width: 100%;
     justify-content: left;
+
+    padding: 3px;
+    padding-left: 15px;
+}
+
+.sidebar > button > .icon {
+    width: 24px;
+    height: 40px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

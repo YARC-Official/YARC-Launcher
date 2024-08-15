@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useProfileState } from "@app/hooks/useProfileState";
 import styles from "./AppProfile.module.css";
-import { InformationIcon, TimeIcon, VerifiedIcon } from "@app/assets/Icons";
+import { GithubIcon, InformationIcon, LinkIcon, TimeIcon, VerifiedIcon } from "@app/assets/Icons";
 import { LaunchButton } from "./LaunchButton";
 import { localizeMetadata, processAssetUrl } from "@app/profiles/utils";
 import Box from "@app/components/Box";
@@ -79,13 +79,21 @@ function AppProfile() {
                     {metadata.description}
                 </Box>
                 {
-                    Object.entries(metadata.links).map(i =>
-                        <Button color={ButtonColor.LIGHT} key={i[0]}
+                    Object.entries(metadata.links).map(i => {
+                        let icon = <LinkIcon width={12} height={12} />;
+                        if (i[1].url.startsWith("https://github.com")) {
+                            icon = <GithubIcon width={24} height={24} />;
+                        }
+
+                        return <Button color={ButtonColor.LIGHT} key={i[0]}
                             onClick={async () => await askOpenUrl(i[1].url)}>
 
+                            <div className={styles.icon}>
+                                {icon}
+                            </div>
                             {i[1].name}
-                        </Button>
-                    )
+                        </Button>;
+                    })
                 }
             </div>
         </div>
