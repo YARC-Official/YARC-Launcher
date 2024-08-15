@@ -7,11 +7,39 @@
 
 .banner {
     display: flex;
-    height: 350px;
-    padding: 0px 100px;
+    height: 290px;
     align-items: center;
-    gap: 30px;
+    justify-content: center;
+    gap: 5px;
     align-self: stretch;
+    flex-direction: column;
+
+    background: linear-gradient(68deg, var(--accent) -29.28%, transparent 110.95%),
+        var(--banner) lightgray 50% / cover no-repeat;
+}
+
+.banner > .preHeader {
+    color: rgba(15, 17, 24, 0.75);
+    font-family: "Archivo Black", var(--backupFonts);
+    font-size: 20px;
+    font-weight: 400;
+    text-transform: uppercase;
+}
+
+.banner > .header {
+    color: #0F1118;
+    font-family: "Big Shoulders Text", var(--backupFonts);
+    line-height: 90%;
+    font-size: 120px;
+    font-weight: 400;
+    text-transform: uppercase;
+}
+
+.banner > .buttons {
+    padding-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
 .search {

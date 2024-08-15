@@ -66,7 +66,7 @@ function AppProfile() {
         </div>
         <div className={styles.pageContainer}>
             <div className={styles.content}>
-                <NewsSection categoryFilter={metadata.newsCategory} startingEntries={3}/>
+                <NewsSection categoryFilter={metadata.newsCategory} startingEntries={4}/>
             </div>
             <div className={styles.sidebar}>
                 <Box className={styles.sidebarBox}>

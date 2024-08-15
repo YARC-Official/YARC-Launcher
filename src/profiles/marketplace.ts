@@ -1,12 +1,15 @@
 import { Localized } from "@app/utils/localized";
 
 export interface MarketplaceIndex {
-    // banner: {
-    //     backgroundUrl: string,
-    //     subHeaderText: string,
-    //     headerText: string,
-    //     profileUUID: string
-    // },
+    banner: Localized<{
+        backgroundUrl: string,
+        backgroundAccent?: string,
+        preHeaderText?: string,
+        headerText: string,
+
+        viewProfileUUID: string,
+        previewUrl?: string,
+    }>,
     lastUpdated: Date,
     profiles: MarketplaceProfile[]
 }
