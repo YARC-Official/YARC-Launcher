@@ -106,7 +106,7 @@ export const useProfileState = (profileUUID: string): ProfileState => {
             });
         },
         launch: async () => {
-            if (loading) {
+            if (loading || activeProfile.profile.type === "setlist") {
                 return;
             }
 

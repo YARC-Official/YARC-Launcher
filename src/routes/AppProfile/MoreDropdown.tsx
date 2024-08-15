@@ -14,6 +14,7 @@ type ItemProps = React.PropsWithChildren<{
 
 const MoreDropdown: React.FC<Props> = (props: Props) => {
     const {
+        activeProfile,
         openInstallFolder,
         uninstall,
         deleteProfile
@@ -38,9 +39,12 @@ const MoreDropdown: React.FC<Props> = (props: Props) => {
                 sideOffset={5}
                 align="end">
 
-                <Item onClick={async () => await openInstallFolder()}>
-                    Open Install Folder
-                </Item>
+                {activeProfile.profile.type === "application" &&
+                    <Item onClick={async () => await openInstallFolder()}>
+                        Open Install Folder
+                    </Item>
+                }
+
                 <Item onClick={async () => await uninstall()}>
                     Uninstall
                 </Item>
