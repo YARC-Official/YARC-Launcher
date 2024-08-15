@@ -3,11 +3,10 @@ import { UninstallBeforeDeleteDialog } from "@app/dialogs/Dialogs/UninstallBefor
 import { downloadAndInstall, launch, openInstallFolder, uninstall } from "@app/profiles/actions";
 import { useDirectories } from "@app/profiles/directories";
 import { useProfileStore } from "@app/profiles/store";
-import { ActiveProfile, Version, VersionList } from "@app/profiles/types";
+import { ActiveProfile } from "@app/profiles/types";
 import { getPathForProfile } from "@app/profiles/utils";
 import { useTask } from "@app/tasks";
 import { IBaseTask } from "@app/tasks/Processors/base";
-import { useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";

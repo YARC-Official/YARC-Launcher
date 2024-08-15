@@ -60,6 +60,7 @@ export interface Metadata {
     bannerFrontUrl?: string,
 
     initialRelease: string,
+    newsCategory?: string,
 
     links: {
         [id: string]: {

@@ -10,6 +10,7 @@ import Button, { ButtonColor } from "@app/components/Button";
 import MoreDropdown from "./MoreDropdown";
 import { distanceFromToday } from "@app/utils/timeFormat";
 import ProfileIcon from "@app/components/ProfileIcon";
+import NewsSection from "@app/components/NewsSection";
 
 function AppProfile() {
     const { uuid } = useParams();
@@ -64,7 +65,7 @@ function AppProfile() {
         </div>
         <div className={styles.pageContainer}>
             <div className={styles.content}>
-
+                <NewsSection categoryFilter={metadata.newsCategory} startingEntries={3}/>
             </div>
             <div className={styles.sidebar}>
                 <Box className={styles.sidebarBox}>
