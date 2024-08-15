@@ -18,6 +18,24 @@
         var(--banner) lightgray 50% / cover no-repeat;
 }
 
+.banner > .newTag {
+    display: flex;
+    padding: 5px 12px;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+
+    border-radius: 50px;
+    background: #FCD548;
+    border: 2px solid #ffe071;
+    margin-bottom: 10px;
+
+    color: #4F2600;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
 .banner > .preHeader {
     color: rgba(15, 17, 24, 0.75);
     font-family: "Archivo Black", var(--backupFonts);
@@ -29,6 +47,7 @@
 .banner > .header {
     color: #0F1118;
     font-family: "Big Shoulders Text", var(--backupFonts);
+    text-shadow: 4px 4px var(--accent);
     line-height: 90%;
     font-size: 120px;
     font-weight: 400;
@@ -36,7 +55,7 @@
 }
 
 .banner > .buttons {
-    padding-top: 10px;
+    margin-top: 12px;
     display: flex;
     align-items: center;
     gap: 15px;

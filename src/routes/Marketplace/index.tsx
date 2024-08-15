@@ -6,7 +6,6 @@ import { useQuery } from "@tanstack/react-query";
 import { processAssetUrl } from "@app/profiles/utils";
 import { localizeObject } from "@app/utils/localized";
 import Button, { ButtonColor } from "@app/components/Button";
-import { LinkIcon } from "@app/assets/Icons";
 import { askOpenUrl } from "@app/utils/safeUrl";
 
 function Marketplace() {
@@ -32,15 +31,20 @@ function Marketplace() {
                 "--accent": banner.backgroundAccent === undefined ? "transparent" : banner.backgroundAccent
             } as React.CSSProperties}>
 
-            <div className={styles.preHeader}>
-                {banner.preHeaderText}
+            <div className={styles.newTag}>
+                New!
             </div>
+            {banner.preHeaderText !== undefined &&
+                <div className={styles.preHeader}>
+                    {banner.preHeaderText}
+                </div>
+            }
             <div className={styles.header}>
                 {banner.headerText}
             </div>
             <div className={styles.buttons}>
                 <Button color={ButtonColor.GREEN} rounded border>
-                    View
+                    Get
                 </Button>
 
                 {banner.previewUrl !== undefined &&
