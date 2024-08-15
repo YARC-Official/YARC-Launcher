@@ -11,18 +11,17 @@ export interface ReleaseContent {
     }[];
 }
 
-export type VersionList = [
-    {
-        uuid: string,
-        tag: string,
-        release: Date,
-    }
-];
+export type VersionList = {
+    uuid: string,
+    url: string,
+    tag: string,
+    release: string,
+}[];
 
 export interface Version {
     uuid: string,
     tag: string,
-    release: Date,
+    release: string,
     content: ReleaseContent[],
     launchOptions?: {
         [platform in OS]?: {
@@ -38,7 +37,6 @@ export interface VersionInfoList {
     type: "list",
 
     listUrl: string,
-    releaseUrl: string,
 }
 
 export interface VersionInfoUrl {
@@ -61,7 +59,7 @@ export interface Metadata {
     bannerBackUrl: string,
     bannerFrontUrl?: string,
 
-    initialRelease: Date,
+    initialRelease: string,
 
     links: {
         [id: string]: {
@@ -77,12 +75,10 @@ export type ApplicationMetadata = Localized<Metadata & {
 }>;
 
 export type SetlistMetadata = Localized<Metadata & {
-    credits: [
-        {
-            name: string,
-            url: string,
-        }
-    ],
+    credits: {
+        name: string,
+        url: string,
+    }[],
 }>;
 
 export type Profile = ApplicationProfile | SetlistProfile;
@@ -109,6 +105,8 @@ export interface ActiveProfile {
 
     displayName?: string,
     lastPlayed?: string,
+    selectedVersion?: string,
 
     profile: Profile,
+    version: Version,
 }

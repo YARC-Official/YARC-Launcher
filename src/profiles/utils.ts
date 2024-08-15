@@ -15,15 +15,6 @@ export const getPathForProfile = async (store: DirectoriesStore, activeProfile: 
     }
 };
 
-export const getProfileVersion = (activeProfile: ActiveProfile): Version => {
-    const profile = activeProfile.profile;
-    if (profile.version.type === "embedded") {
-        return profile.version.version;
-    }
-
-    throw new Error("Not implemented");
-};
-
 export const localizeMetadata = (profile: Profile, locale: string): Metadata => {
     let out: Metadata;
 

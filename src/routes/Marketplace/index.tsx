@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 function Marketplace() {
     const marketIndexQuery = useQuery({
         queryKey: ["MarketIndex"],
-        queryFn: async (): Promise<MarketplaceIndex> => await fetch("https://releases.yarg.in/profiles/marketIndex.json")
+        queryFn: async (): Promise<MarketplaceIndex> => await fetch("https://releases.yarg.in/profiles/")
             .then(res => res.json())
     });
 
@@ -25,7 +25,7 @@ function Marketplace() {
         <div className={styles.content}>
             <MarketplaceSection name="All Applications">
                 {
-                    marketIndex.profiles.map(i =>
+                    marketIndex.profiles.filter(i => i.type === "application").map(i =>
                         <MarketplaceProfileView profile={i} key={i.uuid} />
                     )
                 }

@@ -1,4 +1,4 @@
-import { ActiveProfile, Version } from "@app/profiles/types";
+import { ActiveProfile } from "@app/profiles/types";
 import { BaseTask, IBaseTask } from "./base";
 import { invoke } from "@tauri-apps/api";
 import { showErrorDialog } from "@app/dialogs/dialogUtil";
@@ -9,15 +9,13 @@ import { localizeObject } from "@app/utils/localized";
 export class DownloadAndInstallTask extends BaseTask implements IBaseTask {
     onFinish?: () => void;
 
-    version: Version;
     tempPath: string;
 
-    constructor(profile: ActiveProfile, version: Version, profilePath: string, tempPath: string, onFinish?: () => void) {
+    constructor(profile: ActiveProfile, profilePath: string, tempPath: string, onFinish?: () => void) {
         super(profile, profilePath);
 
         this.onFinish = onFinish;
 
-        this.version = version;
         this.tempPath = tempPath;
     }
 
@@ -26,9 +24,9 @@ export class DownloadAndInstallTask extends BaseTask implements IBaseTask {
             await invoke("download_and_install_profile", {
                 profilePath: this.profilePath,
                 uuid: this.activeProfile.uuid,
-                tag: this.version.tag,
+                tag: this.activeProfile.version.tag,
                 tempPath: this.tempPath,
-                content: this.version.content
+                content: this.activeProfile.version.content
             });
         } catch (e) {
             showErrorDialog(e as string);
@@ -43,14 +41,14 @@ export class DownloadAndInstallTask extends BaseTask implements IBaseTask {
             return <QueueEntry
                 name={metadata.name}
                 releaseName={metadata.releaseName}
-                tag={this.version.tag}
+                tag={this.activeProfile.version.tag}
                 bannerMode={bannerMode} />;
         } else {
             const metadata = localizeObject(profile.metadata, "en-US");
 
             return <QueueEntry
                 name={metadata.name}
-                tag={this.version.tag}
+                tag={this.activeProfile.version.tag}
                 bannerMode={bannerMode} />;
         }
     }

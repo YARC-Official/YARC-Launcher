@@ -3,10 +3,11 @@ import { UninstallBeforeDeleteDialog } from "@app/dialogs/Dialogs/UninstallBefor
 import { downloadAndInstall, launch, openInstallFolder, uninstall } from "@app/profiles/actions";
 import { useDirectories } from "@app/profiles/directories";
 import { useProfileStore } from "@app/profiles/store";
-import { ActiveProfile, Version } from "@app/profiles/types";
-import { getPathForProfile, getProfileVersion } from "@app/profiles/utils";
+import { ActiveProfile, Version, VersionList } from "@app/profiles/types";
+import { getPathForProfile } from "@app/profiles/utils";
 import { useTask } from "@app/tasks";
 import { IBaseTask } from "@app/tasks/Processors/base";
+import { useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -26,7 +27,6 @@ export interface ProfileState {
 
     folderState: ProfileFolderState,
     currentTask?: IBaseTask,
-    version: Version,
 
     downloadAndInstall: () => Promise<void>,
     uninstall: () => Promise<void>,
@@ -45,7 +45,6 @@ export const useProfileState = (profileUUID: string): ProfileState => {
 
     const [folderState, setFolderState] = useState<ProfileFolderState>(0);
     const currentTask = useTask(profileUUID);
-    const [version, setVersion] = useState<Version>({} as Version);
 
     const activeProfile = profiles.getProfileByUUID(profileUUID);
     if (activeProfile === undefined) {
@@ -55,11 +54,10 @@ export const useProfileState = (profileUUID: string): ProfileState => {
     // Initialize
     useEffect(() => {
         // Set everything to default values
-        // TODO: this is hacky
+        // This is hacky, but there's not much else we can do lol
         setLoading(true);
         setProfilePath("");
         setFolderState(0);
-        setVersion({} as Version);
 
         // If the important directories aren't loaded yet, wait for them to
         if (directories.importantDirs === undefined) {
@@ -68,19 +66,17 @@ export const useProfileState = (profileUUID: string): ProfileState => {
 
         (async () => {
             const path = await getPathForProfile(directories, activeProfile);
-            const version = getProfileVersion(activeProfile);
 
             const result = await invoke("profile_folder_state", {
                 path: path,
-                wantedTag: version.tag
+                wantedTag: activeProfile.version.tag
             }) as ProfileFolderState;
 
             setFolderState(result);
             setProfilePath(path);
             setLoading(false);
-            setVersion(version);
         })();
-    }, [directories, profileUUID]);
+    }, [directories, profileUUID, activeProfile.version]);
 
     return {
         loading,
@@ -90,7 +86,6 @@ export const useProfileState = (profileUUID: string): ProfileState => {
 
         folderState,
         currentTask,
-        version,
 
         downloadAndInstall: async () => {
             if (loading) {
