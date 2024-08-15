@@ -20,7 +20,12 @@ const QueueEntry: React.FC<Props> = ({ icon, name, releaseName, tag, bannerMode 
         <div className={styles.main}>
             <div className={styles.icon}>{icon}</div>
             <div className={styles.info}>
-                <span className={styles.info_header}>{name} {tag}</span>
+                <span className={styles.infoHeader}>
+                    {name}
+                    <span className={styles.tag}>
+                        &#32;({tag})
+                    </span>
+                </span>
                 {releaseName}
             </div>
         </div>

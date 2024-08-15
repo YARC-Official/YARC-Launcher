@@ -5,6 +5,7 @@ import { ReactNode } from "react";
 import QueueEntry from "@app/components/Queue/QueueEntry";
 import { localizeObject } from "@app/utils/localized";
 import { showErrorDialog } from "@app/dialogs";
+import ProfileIcon from "@app/components/ProfileIcon";
 
 export class UninstallTask extends BaseTask implements IBaseTask {
     onFinish?: () => void;
@@ -32,12 +33,14 @@ export class UninstallTask extends BaseTask implements IBaseTask {
             return <QueueEntry
                 name={metadata.name}
                 releaseName={metadata.releaseName}
+                icon={<ProfileIcon iconUrl={metadata.iconUrl} />}
                 bannerMode={bannerMode} />;
         } else {
             const metadata = localizeObject(profile.metadata, "en-US");
 
             return <QueueEntry
                 name={metadata.name}
+                icon={<ProfileIcon iconUrl={metadata.iconUrl} />}
                 bannerMode={bannerMode} />;
         }
     }

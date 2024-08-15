@@ -22,16 +22,6 @@
     gap: 15px;
 }
 
-.icon {
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    border-radius: 8px;
-    background: #000410;
-}
-
 .icon > * {
     width: 32px;
     height: 32px;
@@ -50,7 +40,7 @@
     line-height: normal;
 }
 
-.info_header {
+.infoHeader {
     color: #000;
     font-size: 14px;
     font-style: normal;
