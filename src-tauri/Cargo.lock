@@ -5485,6 +5485,7 @@ dependencies = [
  "clap",
  "directories",
  "futures-util",
+ "lazy_static",
  "log",
  "minisign",
  "opener",

@@ -42,7 +42,7 @@ const ProgressDownloading: React.FC<ProgressDownloadingProps> = ({ payload, full
 };
 
 const ProgressInstalling: React.FC = () => {
-    return (<span>Installing</span>);
+    return (<span>Installing&ensp;&ndash;&ensp;This could take a while...</span>);
 };
 
 const ProgressVerifying: React.FC = () => {

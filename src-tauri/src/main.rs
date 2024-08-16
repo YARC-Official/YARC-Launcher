@@ -108,9 +108,14 @@ fn profile_folder_state(path: String, wanted_tag: String) -> ProfileFolderState 
 // when i was getting disk space in rust i used "free_space" from the fs2 crate because it takes a path and works out what drive that would be
 
 #[tauri::command(async)]
-async fn download_and_install_profile(handle: AppHandle, profile_path: String, uuid: String, tag: String,
-    temp_path: String, content: Vec<ReleaseContent>) -> Result<(), String> {
-
+async fn download_and_install_profile(
+    handle: AppHandle,
+    profile_path: String,
+    uuid: String,
+    tag: String,
+    temp_path: String,
+    content: Vec<ReleaseContent>
+) -> Result<(), String> {
     let mut temp_file = PathBuf::from(&temp_path);
     temp_file.push(format!("{}.temp", uuid));
     let _ = fs::remove_file(&temp_file);
@@ -127,11 +132,29 @@ async fn download_and_install_profile(handle: AppHandle, profile_path: String, u
             continue;
         }
 
-        for file in c.files {
+        let file_count = c.files.len() as u64;
+        for (index, file) in c.files.iter().enumerate() {
             // Download
-            download(&handle, &file.url, &temp_file).await?;
+
+            download(
+                &handle,
+                &file.url,
+                &temp_file,
+                file_count,
+                index as u64
+            ).await?;
 
             // Extract/install
+
+            let _ = handle.emit_all(
+                "progress_info",
+                ProgressPayload {
+                    state: "installing".to_string(),
+                    current: (index + 1) as u64,
+                    total: file_count,
+                },
+            );
+
             if file.file_type == "zip" {
                 extract(&temp_file, &install_path)?;
             } else if file.file_type == "encrypted" {

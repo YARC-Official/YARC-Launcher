@@ -1,12 +1,30 @@
 use crate::ProgressPayload;
 
 use futures_util::StreamExt;
-use reqwest;
+use lazy_static::lazy_static;
+use reqwest::{self, Client};
+use reqwest::header::{HeaderMap, HeaderValue, USER_AGENT};
 use sevenz_rust::Password;
+use std::io::{BufWriter, Write};
 use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant};
-use std::{fs::File, io::Write};
+use std::fs::File;
 use tauri::{AppHandle, Manager};
+
+lazy_static! {
+    pub static ref REQWEST_CLIENT: reqwest::Client = {
+        let mut headers = HeaderMap::new();
+
+        // Add user-agent
+        headers.insert(USER_AGENT, HeaderValue::from_str("YARC-Launcher (contact@yarg.in)").unwrap());
+
+        Client::builder()
+            .tcp_keepalive(Some(Duration::from_secs(10)))
+            .default_headers(headers)
+            .build()
+            .expect("Failed to create Reqwest client.")
+    };
+}
 
 const LETTERS: &str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const EMIT_BUFFER_RATE: f64 = 1.0 / 15.0;
@@ -34,21 +52,25 @@ pub async fn download(
     app: &AppHandle,
     url: &str,
     output_path: &Path,
+    file_count: u64,
+    file_index: u64
 ) -> Result<(), String> {
     // Send the initial request
-    let download = reqwest::get(url)
+    let download = REQWEST_CLIENT
+        .get(url)
+        .send()
         .await
         .map_err(|e| format!("Failed to initialize download from `{}`.\n{:?}", &url, e))?;
     let total_size = download.content_length().unwrap();
 
     // Create the file to download into
-    let mut file = File::create(output_path).map_err(|e| {
+    let mut file = BufWriter::new(File::create(output_path).map_err(|e| {
         format!(
             "Failed to create file `{}`.\n{:?}",
             &output_path.display(),
             e
         )
-    })?;
+    })?);
     let mut current_downloaded: u64 = 0;
     let mut stream = download.bytes_stream();
 
@@ -56,7 +78,8 @@ pub async fn download(
 
     // Download into the file
     while let Some(item) = stream.next().await {
-        let chunk = item.map_err(|e| format!("Error while downloading file.\n{:?}", e))?;
+        let chunk = item
+            .map_err(|e| format!("Error while downloading file.\n{:?}", e))?;
         file.write_all(&chunk)
             .map_err(|e| format!("Error while writing to file.\n{:?}", e))?;
 
@@ -72,8 +95,8 @@ pub async fn download(
                 "progress_info",
                 ProgressPayload {
                     state: "downloading".to_string(),
-                    current: current_downloaded,
-                    total: total_size,
+                    current: current_downloaded + (total_size * file_index),
+                    total: total_size * file_count,
                 },
             );
 
