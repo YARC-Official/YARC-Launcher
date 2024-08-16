@@ -15,7 +15,7 @@ const PayloadProgress: React.FC<Props> = ({ payload, defaultText = "Loading", fu
         case "downloading":
             return <ProgressDownloading payload={payload} fullMode={fullMode} />;
         case "installing":
-            return <ProgressInstalling />;
+            return <ProgressInstalling payload={payload} fullMode={fullMode} />;
         case "verifying":
             return <ProgressVerifying />;
         default:
@@ -27,12 +27,12 @@ const ProgressWaiting: React.FC = () => {
     return (<span>Queued</span>);
 };
 
-interface ProgressDownloadingProps {
+interface ProgressProps {
     payload: TaskPayload;
     fullMode?: boolean;
 }
 
-const ProgressDownloading: React.FC<ProgressDownloadingProps> = ({ payload, fullMode }: ProgressDownloadingProps) => {
+const ProgressDownloading: React.FC<ProgressProps> = ({ payload, fullMode }: ProgressProps) => {
     return <span>
         {fullMode &&
             "Downloading "
@@ -41,8 +41,13 @@ const ProgressDownloading: React.FC<ProgressDownloadingProps> = ({ payload, full
     </span>;
 };
 
-const ProgressInstalling: React.FC = () => {
-    return (<span>Installing&ensp;&ndash;&ensp;This could take a while...</span>);
+const ProgressInstalling: React.FC<ProgressProps> = ({ fullMode }: ProgressProps) => {
+    return <span>
+        Installing
+        {fullMode &&
+            <>&ensp;&ndash;&ensp;This could take a while...</>
+        }
+    </span>;
 };
 
 const ProgressVerifying: React.FC = () => {

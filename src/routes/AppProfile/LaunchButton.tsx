@@ -3,6 +3,8 @@ import { InstallingIcon, UpdateIcon } from "@app/assets/Icons";
 import Button from "@app/components/Button";
 import { ProfileFolderState, ProfileState } from "@app/hooks/useProfileState";
 import { localize } from "@app/utils/localized";
+import { usePayload } from "@app/tasks/payload";
+import PayloadProgress from "@app/components/PayloadProgress";
 
 interface Props {
     profileState: ProfileState
@@ -17,6 +19,8 @@ export function LaunchButton({ profileState }: Props) {
         downloadAndInstall,
         launch,
     } = profileState;
+
+    const payload = usePayload(currentTask?.taskUUID);
 
     const profile = activeProfile.profile;
 
@@ -34,10 +38,17 @@ export function LaunchButton({ profileState }: Props) {
 
     // Installing button
     if (currentTask !== undefined) {
-        return <Button color={ButtonColor.YELLOW} rounded border>
-            <InstallingIcon />
-            Installing...
-        </Button>;
+        if (payload !== undefined) {
+            return <Button color={ButtonColor.YELLOW} rounded border>
+                <InstallingIcon />
+                <PayloadProgress payload={payload} />
+            </Button>;
+        } else {
+            return <Button color={ButtonColor.YELLOW} rounded border>
+                <InstallingIcon />
+                In Queue
+            </Button>;
+        }
     }
 
     // Update/install button
