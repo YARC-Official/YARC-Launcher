@@ -26,7 +26,9 @@ export interface Version {
     launchOptions?: {
         [platform in OS]?: {
             executablePath: string,
-            arguments: string[]
+            arguments: string[],
+            offlineArgument?: string,
+            languageArgument?: string
         }
     }
 }

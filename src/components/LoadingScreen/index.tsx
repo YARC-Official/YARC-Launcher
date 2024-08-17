@@ -10,7 +10,10 @@ import { appWindow } from "@tauri-apps/api/window";
 import { launch } from "@app/profiles/actions";
 import { getPathForProfile } from "@app/profiles/utils";
 import { useDirectories } from "@app/profiles/directories";
-import { showErrorDialog } from "@app/dialogs";
+import { createAndShowDialog, showErrorDialog } from "@app/dialogs";
+import { useOfflineStatus } from "@app/hooks/useOfflineStatus";
+import isOnline from "is-online";
+import { OfflineDialog } from "@app/dialogs/Dialogs/OfflineDialog";
 
 enum LoadingState {
     "LOADING",
@@ -32,6 +35,12 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
     useEffect(() => {
         (async () => {
             try {
+                const offline = !await isOnline();
+                if (offline) {
+                    const offlineStatus = useOfflineStatus.getState();
+                    offlineStatus.setOffline(true);
+                }
+
                 // Make sure to save the settings afterwards in case a new key has been added
                 // If "get" is called and the settings didn't save, it would cause an error.
                 await settingsManager.initialize();
@@ -50,7 +59,7 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
                 await directories.setDirs(downloadLocation);
                 directories = useDirectories.getState();
 
-                await profileStore.activateProfilesFromSettings();
+                await profileStore.activateProfilesFromSettings(offline);
                 profileStore = useProfileStore.getState();
 
                 if (!onboardingCompleted) {
@@ -75,6 +84,10 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
 
                 // Add a tiny bit of delay so the loading screen doesn't just instantly disappear
                 await new Promise(r => setTimeout(r, 250));
+
+                if (offline) {
+                    createAndShowDialog(OfflineDialog);
+                }
             } catch (e) {
                 console.error(e);
                 logError(JSON.stringify(serializeError(e)));

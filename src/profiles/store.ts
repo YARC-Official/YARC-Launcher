@@ -3,13 +3,14 @@ import { ActiveProfile, Profile, Version, VersionList } from "./types";
 import { v4 as createUUID } from "uuid";
 import { settingsManager } from "@app/settings";
 import { showErrorDialog } from "@app/dialogs";
+import { off } from "process";
 
 export interface ProfileStore {
     activeProfiles: ActiveProfile[],
 
     getProfileByUUID: (uuid: string) => ActiveProfile | undefined,
 
-    activateProfilesFromSettings: () => Promise<void>,
+    activateProfilesFromSettings: (offline: boolean) => Promise<void>,
     activateProfile: (profileUrl: string) => Promise<void>,
     removeProfile: (uuid: string) => Promise<void>,
     updateProfile: (activeProfile: ActiveProfile) => Promise<void>,
@@ -22,32 +23,34 @@ export const useProfileStore = create<ProfileStore>()((set, get) => ({
         return get().activeProfiles.find(i => i.uuid === uuid);
     },
 
-    activateProfilesFromSettings: async () => {
+    activateProfilesFromSettings: async (offline: boolean) => {
         const activeProfiles = settingsManager.getCache("activeProfiles");
-
-        // Attempt to update the profiles
         let errored = false;
-        for (const profile of activeProfiles) {
-            const newProfile = await tryFetchProfile(profile.originalUrl);
 
-            if (newProfile === undefined) {
-                errored = true;
-                continue;
+        if (!offline) {
+            // Attempt to update the profiles
+            for (const profile of activeProfiles) {
+                const newProfile = await tryFetchProfile(profile.originalUrl);
+
+                if (newProfile === undefined) {
+                    errored = true;
+                    continue;
+                }
+
+                profile.profile = newProfile;
             }
 
-            profile.profile = newProfile;
-        }
+            // Attempt to update versions
+            for (const profile of activeProfiles) {
+                const newVersion = await tryFetchVersion(profile.profile, profile.selectedVersion);
 
-        // Attempt to update versions
-        for (const profile of activeProfiles) {
-            const newVersion = await tryFetchVersion(profile.profile, profile.selectedVersion);
+                if (newVersion === undefined) {
+                    errored = true;
+                    continue;
+                }
 
-            if (newVersion === undefined) {
-                errored = true;
-                continue;
+                profile.version = newVersion;
             }
-
-            profile.version = newVersion;
         }
 
         set({
