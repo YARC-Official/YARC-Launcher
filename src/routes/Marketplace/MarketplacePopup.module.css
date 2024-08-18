@@ -17,7 +17,11 @@
     /* Masking prevents artifacts, unlike overflow: hidden */
     mask: linear-gradient(#000 0 0);
 
-    inset: 32px;
+    top: 96px;
+    bottom: 96px;
+    left: 32px;
+    right: 32px;
+
     border-radius: 16px;
 
     background-color: #FFF;
@@ -114,4 +118,8 @@
     display: flex;
     align-items: center;
     gap: 15px;
+}
+
+.description {
+    padding: 16px;
 }

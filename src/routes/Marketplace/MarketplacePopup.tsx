@@ -84,6 +84,10 @@ const MarketplacePopup: React.FC<Props> = ({ marketplaceProfile, setSelectedProf
                     </div>
                 </div>
             </div>
+
+            <div className={styles.description}>
+                {metadata.description}
+            </div>
         </div>
     </div>;
 };
