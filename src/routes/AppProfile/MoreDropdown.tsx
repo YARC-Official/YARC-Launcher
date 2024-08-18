@@ -4,13 +4,19 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import styles from "./MoreDropdown.module.css";
 import { ProfileState } from "@app/hooks/useProfileState";
 
-interface Props {
-    profileState: ProfileState
-}
-
 type ItemProps = React.PropsWithChildren<{
     onClick?: React.MouseEventHandler<HTMLDivElement>
 }>;
+
+const Item: React.FC<ItemProps> = (props: ItemProps) => {
+    return <DropdownMenu.Item className={styles.item} onClick={props.onClick}>
+        {props.children}
+    </DropdownMenu.Item>;
+};
+
+interface Props {
+    profileState: ProfileState
+}
 
 const MoreDropdown: React.FC<Props> = (props: Props) => {
     const {
@@ -19,12 +25,6 @@ const MoreDropdown: React.FC<Props> = (props: Props) => {
         uninstall,
         deleteProfile
     } = props.profileState;
-
-    const Item: React.FC<ItemProps> = (props: ItemProps) => {
-        return <DropdownMenu.Item className={styles.item} onClick={props.onClick}>
-            {props.children}
-        </DropdownMenu.Item>;
-    };
 
     return <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild>

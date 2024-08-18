@@ -1,13 +1,10 @@
-import { CheckmarkIcon } from "@app/assets/Icons";
 import styles from "./Onboarding.module.css";
 
-interface Props {
-    text: string,
-    activeStep: boolean,
-    completedStep: boolean
-}
+type Props = React.PropsWithChildren<{
+    activeStep: boolean
+}>;
 
-const StepIndicator: React.FC<Props> = ({ text, activeStep, completedStep }: Props) => {
+const StepIndicator: React.FC<Props> = ({ children, activeStep }: Props) => {
     const classes = [styles.navigationButton];
     if (activeStep) {
         classes.push(styles.activeStep);
@@ -15,12 +12,7 @@ const StepIndicator: React.FC<Props> = ({ text, activeStep, completedStep }: Pro
 
     return <div className={classes.join(" ")}>
         <div>
-            <div>
-                {text}
-            </div>
-            {completedStep &&
-                <CheckmarkIcon color="#17E289" />
-            }
+            {children}
         </div>
     </div>;
 };

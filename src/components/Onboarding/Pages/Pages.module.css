@@ -19,8 +19,12 @@
     align-items: flex-start;
     align-self: stretch;
 
-    border-radius: 8px;
-    background: #030307;
+    border-radius: 12px;
+    background: var(--buttonDark);
+    color: var(--buttonDarkText);
+    border: 2px solid var(--buttonDarkBorder);
+
+    font-size: 17px;
 }
 
 .selectedFolder {
@@ -30,7 +34,6 @@
     align-items: center;
     gap: 15px;
     flex: 1 0 0;
-    justify-content: space-between;
 }
 
 .browseButtonContainer {
@@ -81,6 +84,37 @@
     flex: 1 0 0;
 
     border-radius: 15px;
-    border: 2px solid #0D0F23;
-    background: linear-gradient(0deg, rgba(13, 15, 35, 0.50) 0%, rgba(13, 15, 35, 0.50) 100%), #030307;
+    border: 2px solid var(--buttonDarkBorder);
+    background: var(--buttonDark);
+}
+
+.componentOption > .left {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    flex: 1 0 0;
+}
+
+.componentOption > .left > .icon {
+    flex: 0 0 75px;
+    height: 75px;
+}
+
+.componentOption > .left > div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    flex: 1 0 0;
+
+    color: #66698D;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.componentOption > .left > div > header {
+    color: #FFF;
+    font-family: Inter;
+    font-size: 20px;
+    font-weight: 700;
 }

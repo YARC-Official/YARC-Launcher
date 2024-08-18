@@ -15,6 +15,10 @@ function Marketplace() {
             .then(res => res.json())
     });
 
+    if (marketIndexQuery.isLoading) {
+        return <>Loading...</>;
+    }
+
     const marketIndex = marketIndexQuery.data;
     if (marketIndexQuery.isError || marketIndex === undefined) {
         return <>

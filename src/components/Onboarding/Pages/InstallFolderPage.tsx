@@ -1,6 +1,7 @@
 import styles from "./Pages.module.css";
-import Button from "@app/components/Button";
+import Button, { ButtonColor } from "@app/components/Button";
 import WarningBox from "./WarningBox";
+import { DriveIcon } from "@app/assets/Icons";
 
 interface Props {
     downloadLocation: string;
@@ -17,10 +18,11 @@ export const InstallFolderPage: React.FC<Props> = (props: Props) => {
         </WarningBox>
         <div className={styles.folderSelection}>
             <div className={styles.selectedFolder}>
+                <DriveIcon />
                 <p>{props.downloadLocation}</p>
             </div>
             <div className={styles.browseButtonContainer}>
-                <Button onClick={async () => await props.askForFolder()}>
+                <Button color={ButtonColor.BLUE} border onClick={async () => await props.askForFolder()}>
                     Browse
                 </Button>
             </div>

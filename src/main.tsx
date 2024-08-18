@@ -45,15 +45,15 @@ const App: React.FC = () => {
 
                 <TitleBar />
 
-                {onboarding &&
-                    <Onboarding setOnboarding={setOnboarding} />
-                }
+                <QueryClientProvider client={queryClient}>
+                    {onboarding &&
+                        <Onboarding setOnboarding={setOnboarding} />
+                    }
 
-                {showBody &&
-                    <QueryClientProvider client={queryClient}>
+                    {showBody &&
                         <RouterProvider router={Router} />
-                    </QueryClientProvider>
-                }
+                    }
+                </QueryClientProvider>
             </DialogProvider>
         </ErrorBoundary>
     </React.StrictMode>;

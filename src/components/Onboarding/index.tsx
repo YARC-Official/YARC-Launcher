@@ -4,7 +4,7 @@ import { open } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api";
 import { settingsManager } from "@app/settings";
 import OnboardingSidebar from "./Sidebar";
-import Button from "../Button";
+import Button, { ButtonColor } from "../Button";
 import InstallFolderPage from "./Pages/InstallFolderPage";
 import ComponentsPage from "./Pages/ComponentsPage";
 import { useDirectories } from "@app/profiles/directories";
@@ -73,14 +73,14 @@ const Onboarding: React.FC<Props> = (props: Props) => {
                     </div>
                     <div className={styles.stepNavigation}>
                         <div className={styles.stepNavigationButtons}>
-                            <Button onClick={() => {
+                            <Button color={ButtonColor.DARK} border onClick={() => {
                                 if (step > OnboardingStep.INSTALL_PATH) {
                                     setStep(step - 1);
                                 }
                             }}>
                                 Back
                             </Button>
-                            <Button onClick={() => {
+                            <Button color={ButtonColor.GREEN} border onClick={() => {
                                 switch (step) {
                                     case OnboardingStep.INSTALL_PATH:
                                         if (downloadEmpty) {
