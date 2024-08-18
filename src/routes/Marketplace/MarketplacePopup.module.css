@@ -102,7 +102,7 @@
     display: flex;
     padding: 15px;
     padding-left: 25px;
-    justify-content: end;
+    justify-content: flex-end;
     align-items: center;
     align-self: stretch;
 

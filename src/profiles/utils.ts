@@ -1,5 +1,5 @@
 import { localizeObject } from "@app/utils/localized";
-import { ActiveProfile, Metadata, Profile, Version } from "./types";
+import { ActiveProfile, Metadata, Profile } from "./types";
 import { path } from "@tauri-apps/api";
 import { DirectoriesStore } from "./directories";
 
