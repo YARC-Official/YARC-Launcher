@@ -6,9 +6,11 @@ import ProfilesList from "./Profiles/List";
 import { useEffect, useState } from "react";
 import { getVersion } from "@tauri-apps/api/app";
 import QueueStore from "@app/tasks/queue";
+import { useOfflineStatus } from "@app/hooks/useOfflineStatus";
 
 const Sidebar: React.FC = () => {
     const [launcherVersion, setLauncherVersion] = useState("");
+    const offlineStatus = useOfflineStatus();
     const queue = QueueStore.useQueue();
 
     useEffect(() => {
@@ -30,11 +32,13 @@ const Sidebar: React.FC = () => {
                     Downloads {queue.size <= 0 ? "" : `(${queue.size})`}
                 </SidebarMenuButton>
             </NavLink>
-            <NavLink to="/marketplace">
-                <SidebarMenuButton icon={<MarketplaceIcon />}>
-                    Marketplace
-                </SidebarMenuButton>
-            </NavLink>
+            {!offlineStatus.isOffline &&
+                <NavLink to="/marketplace">
+                    <SidebarMenuButton icon={<MarketplaceIcon />}>
+                        Marketplace
+                    </SidebarMenuButton>
+                </NavLink>
+            }
         </div>
 
         <ProfilesList />

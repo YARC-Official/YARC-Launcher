@@ -12,18 +12,13 @@
     --primary-40: rgba(var(--primary-rgb), 0.4);
     --primary-75: rgba(var(--primary-rgb), 0.75);
 
-    --white-background: #FFF;
-
-    --green-rgb: 70, 231, 79;
-    --green: rgb(var(--green-rgb));
-    --green-10: rgba(var(--green-rgb), .1);
-
     --titleBarBackground: #05060B;
     --titleBarPrimary: #FFF;
     --titleBarAccent: #868AA8;
     --titleBarHeight: 30px;
 
     --sideBarBackground: #070810;
+    --sideBarWidth: 300px;
 
     --buttonGreen: #17E289;
     --buttonBlue: #2ED9FF;

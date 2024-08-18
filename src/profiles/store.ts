@@ -3,15 +3,15 @@ import { ActiveProfile, Profile, Version, VersionList } from "./types";
 import { v4 as createUUID } from "uuid";
 import { settingsManager } from "@app/settings";
 import { showErrorDialog } from "@app/dialogs";
-import { off } from "process";
 
 export interface ProfileStore {
     activeProfiles: ActiveProfile[],
 
     getProfileByUUID: (uuid: string) => ActiveProfile | undefined,
+    anyOfProfileUUID: (uuid: string) => boolean,
 
     activateProfilesFromSettings: (offline: boolean) => Promise<void>,
-    activateProfile: (profileUrl: string) => Promise<void>,
+    activateProfile: (profileUrl: string) => Promise<string>,
     removeProfile: (uuid: string) => Promise<void>,
     updateProfile: (activeProfile: ActiveProfile) => Promise<void>,
 }
@@ -21,6 +21,9 @@ export const useProfileStore = create<ProfileStore>()((set, get) => ({
 
     getProfileByUUID: (uuid) => {
         return get().activeProfiles.find(i => i.uuid === uuid);
+    },
+    anyOfProfileUUID: (uuid) => {
+        return get().activeProfiles.some(i => i.profile.uuid === uuid);
     },
 
     activateProfilesFromSettings: async (offline: boolean) => {
@@ -74,8 +77,9 @@ export const useProfileStore = create<ProfileStore>()((set, get) => ({
             return;
         }
 
+        const newUUID = createUUID();
         const activeProfile: ActiveProfile = {
-            uuid: createUUID(),
+            uuid: newUUID,
             originalUrl: profileUrl,
             displayName: undefined,
             profile: profile,
@@ -90,6 +94,8 @@ export const useProfileStore = create<ProfileStore>()((set, get) => ({
         });
 
         await settingsManager.set("activeProfiles", profiles);
+
+        return newUUID;
     },
     removeProfile: async (uuid: string) => {
         let profiles = get().activeProfiles;

@@ -55,7 +55,7 @@ export const ComponentsPage: React.FC<Props> = () => {
                 <div className={styles.componentOptionContainer}>
                     {
                         onboardingIndex.filter(i => i.type === "application").map(i =>
-                            <ComponentOption option={i} />
+                            <ComponentOption option={i} key={i.uuid} />
                         )
                     }
                 </div>
@@ -65,7 +65,7 @@ export const ComponentsPage: React.FC<Props> = () => {
                 <div className={styles.componentOptionContainer}>
                     {
                         onboardingIndex.filter(i => i.type === "setlist").map(i =>
-                            <ComponentOption option={i} />
+                            <ComponentOption option={i} key={i.uuid} />
                         )
                     }
                 </div>

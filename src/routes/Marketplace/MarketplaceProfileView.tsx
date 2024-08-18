@@ -3,15 +3,13 @@ import styles from "./Marketplace.module.css";
 import ProfileIcon from "@app/components/ProfileIcon";
 import { localizeObject } from "@app/utils/localized";
 import { processAssetUrl } from "@app/profiles/utils";
-import { useProfileStore } from "@app/profiles/store";
 
 interface Props {
     profile: MarketplaceProfile,
+    setSelectedProfile: React.Dispatch<React.SetStateAction<MarketplaceProfile | undefined>>,
 }
 
-const MarketplaceProfileView: React.FC<Props> = ({ profile }: Props) => {
-    const profiles = useProfileStore();
-
+const MarketplaceProfileView: React.FC<Props> = ({ profile, setSelectedProfile }: Props) => {
     const localized = localizeObject(profile, "en-US");
     let bannerUrl = localized.bannerUrl;
     if (bannerUrl === undefined) {
@@ -21,9 +19,7 @@ const MarketplaceProfileView: React.FC<Props> = ({ profile }: Props) => {
     return <button
         className={styles.profileView}
         style={{"--background": `url(${processAssetUrl(bannerUrl)})`} as React.CSSProperties}
-        onClick={async () => {
-            await profiles.activateProfile(profile.url);
-        }}>
+        onClick={() => setSelectedProfile(profile)}>
 
         <ProfileIcon iconUrl={localized.iconUrl} className={styles.icon} />
         <div className={styles.info}>

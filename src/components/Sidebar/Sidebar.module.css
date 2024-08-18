@@ -1,5 +1,5 @@
 .sidebar {
-    width: 300px;
+    width: var(--sideBarWidth);
     padding: 15px;
 
     background: var(--sideBarBackground);
