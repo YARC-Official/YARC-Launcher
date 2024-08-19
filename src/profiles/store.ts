@@ -11,7 +11,7 @@ export interface ProfileStore {
     anyOfProfileUUID: (uuid: string) => boolean,
 
     activateProfilesFromSettings: (offline: boolean) => Promise<void>,
-    activateProfile: (profileUrl: string) => Promise<string>,
+    activateProfile: (profileUrl: string) => Promise<string | undefined>,
     removeProfile: (uuid: string) => Promise<void>,
     updateProfile: (activeProfile: ActiveProfile) => Promise<void>,
 }

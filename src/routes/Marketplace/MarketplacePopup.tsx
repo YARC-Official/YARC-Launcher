@@ -43,7 +43,10 @@ const MarketplacePopup: React.FC<Props> = ({ marketplaceProfile, setSelectedProf
     const addToLibrary = async () => {
         const uuid = await profiles.activateProfile(marketplaceProfile.url);
         setSelectedProfile(undefined);
-        navigate(`/app-profile/${uuid}`);
+
+        if (uuid !== undefined) {
+            navigate(`/app-profile/${uuid}`);
+        }
     };
 
     return <div className={styles.popup}>
