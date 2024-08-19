@@ -9,6 +9,9 @@
     flex-direction: column;
     flex-shrink: 0;
     gap: 50px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .footer {
