@@ -9,5 +9,7 @@ export type OnboardingOption =  Localized<{
 
     name: string,
     subText: string,
-    iconUrl: string
+    iconUrl: string,
+
+    selectedByDefault: boolean,
 }>;

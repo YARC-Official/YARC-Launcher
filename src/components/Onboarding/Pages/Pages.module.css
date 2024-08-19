@@ -82,10 +82,14 @@
     justify-content: space-between;
     align-items: center;
     flex: 1 0 0;
+    gap: 20px;
 
     border-radius: 15px;
     border: 2px solid var(--buttonDarkBorder);
     background: var(--buttonDark);
+
+    cursor: pointer;
+    user-select: none;
 }
 
 .componentOption > .left {
@@ -117,4 +121,27 @@
     font-family: Inter;
     font-size: 20px;
     font-weight: 700;
+}
+
+.unselectedIndicator {
+    width: 38px;
+    height: 38px;
+    border-radius: 93px;
+
+    border: 2px solid var(--buttonDarkBorder);
+    background: var(--buttonDark);
+}
+
+.selectedIndicator {
+    width: 38px;
+    height: 38px;
+    border-radius: 93px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: 2px solid var(--buttonLightBorder);
+    background: #17E289;
+    color: #006E3E;
 }
