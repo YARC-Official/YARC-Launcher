@@ -75,7 +75,7 @@ export const useProfileState = (profileUUID: string): ProfileState => {
             setProfilePath(path);
             setLoading(false);
         })();
-    }, [directories, profileUUID, activeProfile.version]);
+    }, [directories, profileUUID, activeProfile.version, currentTask]);
 
     return {
         loading,
@@ -91,18 +91,14 @@ export const useProfileState = (profileUUID: string): ProfileState => {
                 return;
             }
 
-            await downloadAndInstall(activeProfile, profilePath, () => {
-                setFolderState(ProfileFolderState.UpToDate);
-            });
+            await downloadAndInstall(activeProfile, profilePath);
         },
         uninstall: async () => {
             if (loading) {
                 return;
             }
 
-            await uninstall(activeProfile, profilePath, () => {
-                setFolderState(ProfileFolderState.FirstDownload);
-            });
+            await uninstall(activeProfile, profilePath);
         },
         launch: async () => {
             if (loading || activeProfile.profile.type === "setlist") {
