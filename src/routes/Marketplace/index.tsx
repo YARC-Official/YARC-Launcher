@@ -10,6 +10,7 @@ import { MarketplaceProfile } from "@app/profiles/marketplace";
 import { askOpenUrl } from "@app/utils/safeUrl";
 import MarketplacePopup from "./MarketplacePopup";
 import { useState } from "react";
+import { showErrorDialog } from "@app/dialogs";
 
 function Marketplace() {
     const [selectedProfile, setSelectedProfile] = useState<MarketplaceProfile | undefined>(undefined);
@@ -54,7 +55,16 @@ function Marketplace() {
                 {banner.headerText}
             </div>
             <div className={styles.buttons}>
-                <Button color={ButtonColor.GREEN} rounded border>
+                <Button color={ButtonColor.GREEN} rounded border onClick={() => {
+                    const profile = marketIndex.profiles.find(i => i.uuid === banner.viewProfileUUID);
+
+                    if (profile === undefined) {
+                        showErrorDialog("The banner does not have a valid marketplace profile attached to it!");
+                        return;
+                    }
+
+                    setSelectedProfile(profile);
+                }}>
                     Get
                 </Button>
 
