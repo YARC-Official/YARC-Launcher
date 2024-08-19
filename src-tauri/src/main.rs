@@ -182,6 +182,10 @@ fn uninstall_profile(profile_path: String) -> Result<(), String> {
     tag_file.push("tag.txt");
     fs::remove_file(tag_file).map_err(|e| format!("Failed to remove tag file.\n{:?}", e))?;
 
+    // Remove the directories if they are empty
+    let _ = fs::remove_dir(&install_path);
+    let _ = fs::remove_dir(&profile_path);
+
     Ok(())
 }
 
