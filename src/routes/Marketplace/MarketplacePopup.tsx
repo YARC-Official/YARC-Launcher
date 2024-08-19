@@ -8,6 +8,7 @@ import { Profile } from "@app/profiles/types";
 import ProfileIcon from "@app/components/ProfileIcon";
 import Button, { ButtonColor } from "@app/components/Button";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 interface Props {
     marketplaceProfile?: MarketplaceProfile,
@@ -23,6 +24,7 @@ const MarketplacePopup: React.FC<Props> = ({ marketplaceProfile, setSelectedProf
             .then(res => res.json())
     });
 
+    const [loading, setLoading] = useState<boolean>(false);
     const navigate = useNavigate();
 
     if (marketplaceProfile === undefined || profileQuery.isLoading) {
@@ -41,6 +43,11 @@ const MarketplacePopup: React.FC<Props> = ({ marketplaceProfile, setSelectedProf
     const metadata = localizeMetadata(profile, "en-US");
 
     const addToLibrary = async () => {
+        if (loading) {
+            return;
+        }
+
+        setLoading(true);
         const uuid = await profiles.activateProfile(marketplaceProfile.url);
         setSelectedProfile(undefined);
 
@@ -48,6 +55,25 @@ const MarketplacePopup: React.FC<Props> = ({ marketplaceProfile, setSelectedProf
             navigate(`/app-profile/${uuid}`);
         }
     };
+
+    let button;
+    if (loading) {
+        button = <Button color={ButtonColor.DARK} border rounded>
+            Loading...
+        </Button>;
+    } else if (!anyOfProfile) {
+        button = <Button color={ButtonColor.GREEN} border rounded onClick={addToLibrary}>
+            <AddIcon width={16} height={16} /> Add to Library
+        </Button>;
+    } else if (anyOfProfile && profile.type === "application") {
+        button = <Button color={ButtonColor.BLUE} border rounded onClick={addToLibrary}>
+            <AddIcon width={16} height={16} /> Add Another Instance
+        </Button>;
+    } else if (anyOfProfile && profile.type === "setlist") {
+        button = <Button color={ButtonColor.DARK} border rounded>
+            Already Added
+        </Button>;
+    }
 
     return <div className={styles.popup}>
         <div className={styles.body}>
@@ -69,21 +95,7 @@ const MarketplacePopup: React.FC<Props> = ({ marketplaceProfile, setSelectedProf
                 </div>
                 <div className={styles.bannerOptions}>
                     <div className={styles.bannerOptionsMain}>
-                        {!anyOfProfile &&
-                            <Button color={ButtonColor.GREEN} border rounded onClick={addToLibrary}>
-                                <AddIcon width={16} height={16} /> Add to Library
-                            </Button>
-                        }
-                        {(anyOfProfile && profile.type === "application") &&
-                            <Button color={ButtonColor.BLUE} border rounded onClick={addToLibrary}>
-                                <AddIcon width={16} height={16} /> Add Another Instance
-                            </Button>
-                        }
-                        {(anyOfProfile && profile.type === "setlist") &&
-                            <Button color={ButtonColor.DARK} border rounded>
-                                Already Added
-                            </Button>
-                        }
+                        {button}
                     </div>
                 </div>
             </div>
