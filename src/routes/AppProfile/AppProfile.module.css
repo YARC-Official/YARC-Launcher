@@ -27,6 +27,8 @@
 .bannerAppIcon {
     width: 100px;
     height: 100px;
+    min-width: 100px;
+    min-height: 100px;
 }
 
 .bannerApp > div {
@@ -40,6 +42,8 @@
     font-size: 30px;
     font-weight: 700;
     text-transform: uppercase;
+
+    overflow: hidden;
 }
 
 .verifiedTag {

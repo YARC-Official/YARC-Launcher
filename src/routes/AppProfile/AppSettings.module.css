@@ -1,0 +1,50 @@
+.popup {
+    position: absolute;
+
+    top: var(--titleBarHeight);
+    bottom: 0;
+    left: var(--sideBarWidth);
+    right: 0;
+
+    background: rgba(0, 0, 0, 0.6);
+
+    z-index: 998;
+}
+
+.body {
+    position: absolute;
+
+    inset: 32px;
+    border-radius: 16px;
+
+    background-color: #FFF;
+
+    padding: 25px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex: 1 0 0;
+    align-self: stretch;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 50px;
+    align-self: stretch;
+}
+
+.navigation {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 15px;
+    align-self: stretch;
+}
+
+.navigation > button {
+    flex: 1 0 0;
+}

@@ -41,11 +41,16 @@ export const launch = async (activeProfile: ActiveProfile, profilePath: string):
         return;
     }
 
+    let additionalArguments: string[] = [];
+    if (activeProfile.launchArguments.trim().length > 0) {
+        additionalArguments = activeProfile.launchArguments.trim().split(" ");
+    }
+
     try {
         await invoke("launch_profile", {
             profilePath: profilePath,
             execPath: launchOptions.executablePath,
-            arguments: launchOptions.arguments
+            arguments: [...launchOptions.arguments, ...additionalArguments]
         });
     } catch (e) {
         showErrorDialog(e as string);

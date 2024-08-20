@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useProfileState } from "@app/hooks/useProfileState";
 import styles from "./AppProfile.module.css";
-import { GithubIcon, InformationIcon, LinkIcon, TimeIcon, VerifiedIcon } from "@app/assets/Icons";
+import { GithubIcon, InformationIcon, LinkIcon, SettingsIcon, TimeIcon, VerifiedIcon } from "@app/assets/Icons";
 import { LaunchButton } from "./LaunchButton";
 import { localizeMetadata, processAssetUrl } from "@app/profiles/utils";
 import Box from "@app/components/Box";
@@ -12,12 +12,16 @@ import { distanceFromToday } from "@app/utils/timeFormat";
 import ProfileIcon from "@app/components/ProfileIcon";
 import NewsSection from "@app/components/NewsSection";
 import { askOpenUrl } from "@app/utils/safeUrl";
+import AppSettings from "./AppSettings";
+import { useState } from "react";
 
 function AppProfile() {
     const { uuid } = useParams();
     if (!uuid) {
         return <></>;
     }
+
+    const [settingsOpen, setSettingsOption] = useState<boolean>(false);
 
     const profileState = useProfileState(uuid);
     if (profileState.loading) {
@@ -30,6 +34,10 @@ function AppProfile() {
     const metadata = localizeMetadata(profile, "en-US");
 
     return <main className={styles.main}>
+        {settingsOpen &&
+            <AppSettings activeProfile={activeProfile} setSettingsOpen={setSettingsOption} />
+        }
+
         <div className={styles.bannerContainer}
             style={{"--bannerBack": `url(${processAssetUrl(metadata.bannerBackUrl)})`} as React.CSSProperties}>
 
@@ -59,6 +67,14 @@ function AppProfile() {
                     }
                 </div>
                 <div className={styles.bannerOptionsMain}>
+                    {profile.type === "application" &&
+                        <Button color={ButtonColor.DARK} rounded border
+                            style={{padding: "15px"}} onClick={() => setSettingsOption(true)}>
+
+                            <SettingsIcon width={24} height={24} />
+                        </Button>
+                    }
+
                     <LaunchButton profileState={profileState} />
                     <MoreDropdown profileState={profileState} />
                 </div>

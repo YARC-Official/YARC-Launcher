@@ -106,8 +106,10 @@ export interface ActiveProfile {
     originalUrl: string,
 
     displayName?: string,
-    lastPlayed?: string,
     selectedVersion?: string,
+    launchArguments: string,
+
+    lastPlayed?: string,
 
     profile: Profile,
     version: Version,

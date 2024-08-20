@@ -28,4 +28,7 @@
 .text {
     font-size: 16px;
     font-weight: 600;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

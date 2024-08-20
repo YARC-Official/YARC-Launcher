@@ -81,7 +81,13 @@ export const useProfileStore = create<ProfileStore>()((set, get) => ({
         const activeProfile: ActiveProfile = {
             uuid: newUUID,
             originalUrl: profileUrl,
+
             displayName: undefined,
+            selectedVersion: undefined,
+            launchArguments: "",
+
+            lastPlayed: undefined,
+
             profile: profile,
             version: version,
         };
