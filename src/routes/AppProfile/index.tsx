@@ -13,7 +13,7 @@ import ProfileIcon from "@app/components/ProfileIcon";
 import NewsSection from "@app/components/NewsSection";
 import { askOpenUrl } from "@app/utils/safeUrl";
 import AppSettings from "./AppSettings";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function AppProfile() {
     const { uuid } = useParams();
@@ -22,6 +22,11 @@ function AppProfile() {
     }
 
     const [settingsOpen, setSettingsOption] = useState<boolean>(false);
+
+    // Close settings on tab change
+    useEffect(() => {
+        setSettingsOption(false);
+    }, [uuid]);
 
     const profileState = useProfileState(uuid);
     if (profileState.loading) {

@@ -126,7 +126,7 @@ export const useProfileStore = create<ProfileStore>()((set, get) => ({
     }
 }));
 
-async function tryFetchProfile(profileUrl: string): Promise<Profile | undefined> {
+export async function tryFetchProfile(profileUrl: string): Promise<Profile | undefined> {
     try {
         const response = await fetch(profileUrl);
         if (!response.ok) {
@@ -142,7 +142,7 @@ async function tryFetchProfile(profileUrl: string): Promise<Profile | undefined>
     }
 }
 
-async function tryFetchVersion(profile: Profile, overrideVersion?: string): Promise<Version | undefined> {
+export async function tryFetchVersion(profile: Profile, overrideVersion?: string): Promise<Version | undefined> {
     if (profile.version.type === "embedded") {
         return profile.version.version;
     }
