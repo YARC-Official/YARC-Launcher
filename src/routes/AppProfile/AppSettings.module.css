@@ -33,8 +33,26 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 50px;
+    gap: 15px;
     align-self: stretch;
+}
+
+.setting {
+    display: flex;
+    flex-direction: row;
+    align-self: stretch;
+    gap: 15px;
+}
+
+.setting > p {
+    width: 175px;
+
+    color: #41475F;
+}
+
+.setting > input {
+    align-self: center;
+    flex: 1 0 0;
 }
 
 .navigation {

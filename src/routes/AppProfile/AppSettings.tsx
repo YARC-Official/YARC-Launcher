@@ -5,6 +5,7 @@ import { ActiveProfile } from "@app/profiles/types";
 import { localize } from "@app/utils/localized";
 import { localizeMetadata } from "@app/profiles/utils";
 import { useProfileStore } from "@app/profiles/store";
+import InputBox from "@app/components/InputBox";
 
 interface Props {
     activeProfile: ActiveProfile,
@@ -23,8 +24,14 @@ const AppSettings: React.FC<Props> = ({ activeProfile, setSettingsOpen }: Props)
     return <div className={styles.popup}>
         <div className={styles.body}>
             <div className={styles.content}>
-                <input type="text" value={displayName} onChange={e => setDisplayName(e.target.value)} />
-                <input type="text" value={launchArguments} onChange={e => setLaunchArguments(e.target.value)} />
+                <div className={styles.setting}>
+                    <p>Display Name</p>
+                    <InputBox state={displayName} setState={setDisplayName} placeholder="Display name..." />
+                </div>
+                <div className={styles.setting}>
+                    <p>Additional Launch Arguments</p>
+                    <InputBox state={launchArguments} setState={setLaunchArguments} placeholder="Launch arguments..." />
+                </div>
             </div>
             <div className={styles.navigation}>
                 <Button color={ButtonColor.LIGHT} rounded
@@ -51,4 +58,3 @@ const AppSettings: React.FC<Props> = ({ activeProfile, setSettingsOpen }: Props)
 };
 
 export default AppSettings;
-
