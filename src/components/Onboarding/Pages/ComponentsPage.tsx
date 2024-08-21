@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { OnboardingIndex, OnboardingOption } from "./onboardingIndex";
 import ProfileIcon from "@app/components/ProfileIcon";
 import { localizeObject } from "@app/utils/localized";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CheckmarkIcon } from "@app/assets/Icons";
 
 interface ComponentProps {
@@ -15,6 +15,11 @@ interface ComponentProps {
 const ComponentOption: React.FC<ComponentProps> = ({ option, setOption }: ComponentProps) => {
     const [selected, setSelected] = useState<boolean>(option.selectedByDefault);
     const localized = localizeObject(option, "en-US");
+
+    // Ensure options that are "selected by default" are actually selected
+    useEffect(() => {
+        setOption(option.url, option.selectedByDefault);
+    }, [option.selectedByDefault]);
 
     return <div className={styles.componentOption} onClick={() => {
         setSelected(!selected);
@@ -63,8 +68,10 @@ export const ComponentsPage: React.FC<Props> = ({ profileUrls, setProfileUrls }:
 
     const setOption = (url: string, enabled: boolean) => {
         if (enabled) {
-            profileUrls.push(url);
-            setProfileUrls(profileUrls);
+            if (!profileUrls.includes(url)) {
+                profileUrls.push(url);
+                setProfileUrls(profileUrls);
+            }
         } else {
             profileUrls = profileUrls.filter(i => i !== url);
             setProfileUrls(profileUrls);
