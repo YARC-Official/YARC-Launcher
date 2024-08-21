@@ -76,7 +76,15 @@ export type ApplicationMetadata = Localized<Metadata & {
     releaseName: string,
 }>;
 
+export interface SetlistSong {
+    title: string,
+    artist: string,
+    length: number,
+    releaseDate: string,
+}
+
 export type SetlistMetadata = Localized<Metadata & {
+    songs: SetlistSong[],
     credits: {
         name: string,
         url: string,

@@ -14,6 +14,7 @@ import NewsSection from "@app/components/NewsSection";
 import { askOpenUrl } from "@app/utils/safeUrl";
 import AppSettings from "./AppSettings";
 import { useEffect, useState } from "react";
+import Setlist from "../../components/Setlist";
 
 function AppProfile() {
     const { uuid } = useParams();
@@ -87,6 +88,10 @@ function AppProfile() {
         </div>
         <div className={styles.pageContainer}>
             <div className={styles.content}>
+                {profile.type === "setlist" &&
+                    <Setlist profile={profile} />
+                }
+
                 <NewsSection categoryFilter={metadata.newsCategory} startingEntries={4}/>
             </div>
             <div className={styles.sidebar}>
