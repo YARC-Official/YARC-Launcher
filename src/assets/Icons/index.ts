@@ -35,6 +35,8 @@ import DropdownIcon from "./Dropdown.svg?react";
 import VerifiedIcon from "./Verified.svg?react";
 import MarketplaceIcon from "./Marketplace.svg?react";
 import MoreIcon from "./More.svg?react";
+import SidebarInQueueIcon from "./SidebarInQueue.svg?react";
+import SidebarUpdateIcon from "./SidebarUpdate.svg?react";
 
 export {
     AddIcon,
@@ -67,4 +69,6 @@ export {
     VerifiedIcon,
     MarketplaceIcon,
     MoreIcon,
+    SidebarInQueueIcon,
+    SidebarUpdateIcon,
 };

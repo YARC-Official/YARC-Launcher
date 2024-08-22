@@ -28,7 +28,7 @@ const ProfilesList: React.FC = () => {
 
             output.push(
                 <NavLink to={`/app-profile/${activeProfile.uuid}`} key={activeProfile.uuid}>
-                    <Selector name={name} iconUrl={iconUrl} />
+                    <Selector name={name} uuid={activeProfile.uuid} iconUrl={iconUrl} />
                 </NavLink>
             );
         }
