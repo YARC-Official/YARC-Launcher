@@ -17,8 +17,8 @@
     /* Masking prevents artifacts, unlike overflow: hidden */
     mask: linear-gradient(#000 0 0);
 
-    top: 96px;
-    bottom: 96px;
+    top: 64px;
+    bottom: 64px;
     left: 32px;
     right: 32px;
 
@@ -31,6 +31,16 @@
     align-items: flex-start;
     flex: 1 0 0;
     align-self: stretch;
+}
+
+.content {
+    display: flex;
+    padding: 16px;
+    align-items: flex-start;
+    gap: 10px;
+    flex-direction: column;
+
+    overflow: auto;
 }
 
 .close {
@@ -118,8 +128,4 @@
     display: flex;
     align-items: center;
     gap: 15px;
-}
-
-.description {
-    padding: 16px;
 }

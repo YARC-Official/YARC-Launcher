@@ -95,7 +95,7 @@ function AppProfile() {
                 <NewsSection categoryFilter={metadata.newsCategory} startingEntries={4}/>
             </div>
             <div className={styles.sidebar}>
-                <Box className={styles.sidebarBox}>
+                <Box>
                     <header>
                         <InformationIcon />
                         {profile.type === "application"

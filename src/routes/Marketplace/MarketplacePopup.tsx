@@ -1,14 +1,16 @@
 import { MarketplaceProfile } from "@app/profiles/marketplace";
 import { useProfileStore } from "@app/profiles/store";
 import styles from "./MarketplacePopup.module.css";
-import { AddIcon, CloseIcon, VerifiedIcon } from "@app/assets/Icons";
+import { AddIcon, CloseIcon, InformationIcon, VerifiedIcon } from "@app/assets/Icons";
 import { localizeMetadata, processAssetUrl } from "@app/profiles/utils";
 import { useQuery } from "@tanstack/react-query";
-import { Profile } from "@app/profiles/types";
+import { ApplicationMetadata, Profile } from "@app/profiles/types";
 import ProfileIcon from "@app/components/ProfileIcon";
 import Button, { ButtonColor } from "@app/components/Button";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import Setlist from "@app/components/Setlist";
+import Box from "@app/components/Box";
 
 interface Props {
     marketplaceProfile?: MarketplaceProfile,
@@ -100,8 +102,21 @@ const MarketplacePopup: React.FC<Props> = ({ marketplaceProfile, setSelectedProf
                 </div>
             </div>
 
-            <div className={styles.description}>
-                {metadata.description}
+            <div className={styles.content}>
+                <Box>
+                    <header>
+                        <InformationIcon />
+                        {profile.type === "application"
+                            ? `About ${metadata.name} (${(metadata as ApplicationMetadata).releaseName})`
+                            : `About ${metadata.name}`}
+                    </header>
+
+                    {metadata.description}
+                </Box>
+
+                {profile.type === "setlist" &&
+                    <Setlist profile={profile} />
+                }
             </div>
         </div>
     </div>;

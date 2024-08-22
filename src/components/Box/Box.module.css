@@ -1,5 +1,28 @@
 .box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    align-self: stretch;
+
+    color: #666975;
+    font-size: 14px;
+    font-weight: 400;
+
     padding: 18px;
     border-radius: 12px;
     border: 1px solid #E3E4E7;
+}
+
+.box > header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    align-self: stretch;
+
+    color: #41475F;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
 }
