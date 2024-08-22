@@ -1,25 +1,27 @@
 import styles from "./Marketplace.module.css";
-import { MarketplaceIndex } from "@app/profiles/marketplace";
 import MarketplaceSection from "./MarketplaceSection";
 import MarketplaceProfileView from "./MarketplaceProfileView";
-import { useQuery } from "@tanstack/react-query";
 import { processAssetUrl } from "@app/profiles/utils";
 import { localizeObject } from "@app/utils/localized";
 import Button, { ButtonColor } from "@app/components/Button";
 import { MarketplaceProfile } from "@app/profiles/marketplace";
 import { askOpenUrl } from "@app/utils/safeUrl";
 import MarketplacePopup from "./MarketplacePopup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { showErrorDialog } from "@app/dialogs";
+import useMarketIndex from "@app/hooks/useMarketIndex";
+import { settingsManager } from "@app/settings";
 
 function Marketplace() {
     const [selectedProfile, setSelectedProfile] = useState<MarketplaceProfile | undefined>(undefined);
+    const marketIndexQuery = useMarketIndex();
 
-    const marketIndexQuery = useQuery({
-        queryKey: ["MarketIndex"],
-        queryFn: async (): Promise<MarketplaceIndex> => await fetch("https://releases.yarg.in/profiles/")
-            .then(res => res.json())
-    });
+    // Used for the "Updated!" tag
+    useEffect(() => {
+        (async () => {
+            await settingsManager.set("lastMarketplaceObserve", new Date().toISOString());
+        })();
+    }, []);
 
     if (marketIndexQuery.isLoading) {
         return <>Loading...</>;

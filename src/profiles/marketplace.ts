@@ -10,7 +10,7 @@ export interface MarketplaceIndex {
         viewProfileUUID: string,
         previewUrl?: string,
     }>,
-    lastUpdated: Date,
+    lastUpdated: string,
     profiles: MarketplaceProfile[]
 }
 
@@ -19,7 +19,7 @@ export type MarketplaceProfile = Localized<{
     type: "application" | "setlist",
     category: string,
     url: string,
-    release: Date,
+    release: string,
 
     name: string,
     subText?: string,

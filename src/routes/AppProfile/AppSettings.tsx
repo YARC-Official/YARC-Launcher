@@ -58,6 +58,7 @@ const VersionListComp: React.FC<VersionListProps> = ({ activeProfile, selectedVe
                 onClick={() => setSelectedVersion(undefined)}>
 
                 <header>Latest Release</header>
+                <div>Recommended</div>
             </div>
             {
                 versionList.map(i =>

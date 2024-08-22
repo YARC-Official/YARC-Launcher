@@ -3,21 +3,24 @@ import { DiscordIcon, TwitterIcon, GithubIcon, HomeIcon, QueueIcon, MarketplaceI
 import SidebarMenuButton from "./SidebarMenuButton";
 import { NavLink } from "react-router-dom";
 import ProfilesList from "./Profiles/List";
-import { useEffect, useState } from "react";
-import { getVersion } from "@tauri-apps/api/app";
 import QueueStore from "@app/tasks/queue";
 import { useOfflineStatus } from "@app/hooks/useOfflineStatus";
+import useMarketIndex from "@app/hooks/useMarketIndex";
+import { settingsManager } from "@app/settings";
 
 const Sidebar: React.FC = () => {
-    const [launcherVersion, setLauncherVersion] = useState("");
     const offlineStatus = useOfflineStatus();
     const queue = QueueStore.useQueue();
 
-    useEffect(() => {
-        (async () => {
-            setLauncherVersion(await getVersion());
-        })();
-    }, []);
+    const marketIndex = useMarketIndex(!offlineStatus.isOffline);
+    let isNewMarketplace = false;
+
+    if (!marketIndex.isLoading && !marketIndex.isError && marketIndex.data !== undefined) {
+        try {
+            isNewMarketplace = Date.parse(marketIndex.data.lastUpdated)
+                > Date.parse(settingsManager.getCache("lastMarketplaceObserve"));
+        } catch { }
+    }
 
     return <div className={styles.sidebar}>
         <div className={styles.menus}>
@@ -36,6 +39,11 @@ const Sidebar: React.FC = () => {
                 <NavLink to="/marketplace">
                     <SidebarMenuButton icon={<MarketplaceIcon />}>
                         Marketplace
+                        {isNewMarketplace &&
+                            <div className={styles.updatedTag}>
+                                Updated!
+                            </div>
+                        }
                     </SidebarMenuButton>
                 </NavLink>
             }
@@ -44,7 +52,6 @@ const Sidebar: React.FC = () => {
         <ProfilesList />
 
         <div className={styles.footer}>
-            <div className={styles.credits}>v{launcherVersion}</div>
             <div className={styles.socials}>
                 <a href="https://discord.gg/sqpu4R552r" target="_blank" className={styles.link} rel="noreferrer"><DiscordIcon /></a>
                 <a href="https://twitter.com/EliteAsian123" target="_blank" className={styles.link} rel="noreferrer"><TwitterIcon /></a>
