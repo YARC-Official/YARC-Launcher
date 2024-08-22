@@ -12,10 +12,7 @@
     --primary-40: rgba(var(--primary-rgb), 0.4);
     --primary-75: rgba(var(--primary-rgb), 0.75);
 
-    --titleBarBackground: #05060B;
-    --titleBarPrimary: #FFF;
-    --titleBarAccent: #868AA8;
-    --titleBarHeight: 30px;
+    --titleBarHeight: 35px;
 
     --sideBarBackground: #070810;
     --sideBarWidth: 300px;

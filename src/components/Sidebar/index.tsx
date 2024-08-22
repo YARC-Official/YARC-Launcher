@@ -19,7 +19,9 @@ const Sidebar: React.FC = () => {
         try {
             isNewMarketplace = Date.parse(marketIndex.data.lastUpdated)
                 > Date.parse(settingsManager.getCache("lastMarketplaceObserve"));
-        } catch { }
+        } catch {
+            // Ignore error in this case
+        }
     }
 
     return <div className={styles.sidebar}>
