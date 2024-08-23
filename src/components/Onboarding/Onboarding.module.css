@@ -1,7 +1,7 @@
 .mainContainer {
     position: fixed;
     inset: 0;
-    top: 30px;
+    top: var(--titleBarHeight);
 
     background: var(--sideBarBackground);
     color: white;
