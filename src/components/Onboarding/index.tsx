@@ -44,7 +44,7 @@ const Onboarding: React.FC<Props> = (props: Props) => {
         return <main className={styles.mainContainer}>
             <div className={styles.offline}>
                 <span>
-                    You're offline! Please connect to the internet and restart the launcher to
+                    You&apos;re offline! Please connect to the internet and restart the launcher to
                     finish the launcher onboarding process.
                 </span>
             </div>
