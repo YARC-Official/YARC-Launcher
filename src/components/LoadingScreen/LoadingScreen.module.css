@@ -67,7 +67,7 @@
     background: var(--accent);
 
     animation-name: progressAnimation;
-    animation-duration: 1s;
+    animation-duration: 3s;
 }
 
 @keyframes progressAnimation {
