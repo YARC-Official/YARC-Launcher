@@ -11,6 +11,7 @@ import { useDirectories } from "@app/profiles/directories";
 import { useProfileStore } from "@app/profiles/store";
 import { downloadAndInstall } from "@app/profiles/actions";
 import { getPathForProfile } from "@app/profiles/utils";
+import { useOfflineStatus } from "@app/hooks/useOfflineStatus";
 
 export enum OnboardingStep {
     // LANGUAGE = 0,
@@ -27,6 +28,7 @@ const Onboarding: React.FC<Props> = (props: Props) => {
     const [step, setStep] = useState<OnboardingStep>(OnboardingStep.INSTALL_PATH);
 
     let directories = useDirectories();
+    const offlineStatus = useOfflineStatus();
 
     const defaultDownload = directories.importantDirs?.yarcFolder;
     if (defaultDownload === undefined) {
@@ -37,6 +39,17 @@ const Onboarding: React.FC<Props> = (props: Props) => {
     const [downloadEmpty, setDownloadEmpty] = useState<boolean>(true);
 
     const [profileUrls, setProfileUrls] = useState<string[]>([]);
+
+    if (offlineStatus.isOffline) {
+        return <main className={styles.mainContainer}>
+            <div className={styles.offline}>
+                <span>
+                    You're offline! Please connect to the internet and restart the launcher to
+                    finish the launcher onboarding process.
+                </span>
+            </div>
+        </main>;
+    }
 
     async function askForFolder() {
         const select = await open({

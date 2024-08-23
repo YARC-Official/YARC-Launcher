@@ -51,7 +51,7 @@ const Sidebar: React.FC = () => {
             }
         </div>
 
-        <ProfilesList />
+        <ProfilesList isOffline={offlineStatus.isOffline} />
 
         <div className={styles.footer}>
             <div className={styles.socials}>

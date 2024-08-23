@@ -7,7 +7,11 @@ import { Localized, localize } from "@app/utils/localized";
 import { Metadata } from "@app/profiles/types";
 import Selector from "./Selector";
 
-const ProfilesList: React.FC = () => {
+interface Props {
+    isOffline: boolean;
+}
+
+const ProfilesList: React.FC<Props> = ({ isOffline }: Props) => {
     const profileStore = useProfileStore();
 
     function activeProfileList(type: "application" | "setlist") {
@@ -38,16 +42,20 @@ const ProfilesList: React.FC = () => {
 
     return <div className={styles.list}>
         <Separator name="Applications">
-            <Link to="/marketplace" className={styles.add}>
-                <AddIcon />
-            </Link>
+            {!isOffline &&
+                <Link to="/marketplace" className={styles.add}>
+                    <AddIcon />
+                </Link>
+            }
         </Separator>
         {activeProfileList("application")}
 
         <Separator name="Setlists">
-            <Link to="/marketplace" className={styles.add}>
-                <AddIcon />
-            </Link>
+            {!isOffline &&
+                <Link to="/marketplace" className={styles.add}>
+                    <AddIcon />
+                </Link>
+            }
         </Separator>
         {activeProfileList("setlist")}
     </div>;

@@ -160,3 +160,11 @@
     gap: 25px;
     align-self: stretch;
 }
+
+.offline {
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
