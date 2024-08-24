@@ -220,6 +220,26 @@ fn get_launch_argument() -> Option<String> {
     return launch_arg.to_owned();
 }
 
+ #[tauri::command(async)]
+fn clean_up_old_install(yarg_folder: String, setlist_folder: String) -> Result<(), String> {
+    let mut stable_old = PathBuf::from(&yarg_folder);
+    stable_old.push("stable");
+    clear_folder(&stable_old)?;
+    let _ = fs::remove_dir(&stable_old);
+
+    let mut nightly_old = PathBuf::from(&yarg_folder);
+    nightly_old.push("nightly");
+    clear_folder(&nightly_old)?;
+    let _ = fs::remove_dir(&nightly_old);
+
+    let mut setlist_old = PathBuf::from(&setlist_folder);
+    setlist_old.push("official");
+    clear_folder(&setlist_old)?;
+    let _ = fs::remove_dir(&setlist_old);
+
+    Ok(())
+}
+
 fn main() {
     let args = CommandLineArgs::parse();
 
@@ -242,7 +262,9 @@ fn main() {
             launch_profile,
             open_folder_profile,
 
-            get_launch_argument
+            get_launch_argument,
+
+            clean_up_old_install
         ])
         .setup(|app| {
             // Show the window's shadow

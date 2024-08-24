@@ -42,7 +42,7 @@ const Onboarding: React.FC<Props> = (props: Props) => {
 
     if (offlineStatus.isOffline) {
         return <main className={styles.mainContainer}>
-            <div className={styles.offline}>
+            <div className={styles.center}>
                 <span>
                     You&apos;re offline! Please connect to the internet and restart the launcher to
                     finish the launcher onboarding process.
@@ -75,6 +75,16 @@ const Onboarding: React.FC<Props> = (props: Props) => {
         await directories.setDirs(downloadLocation);
         directories = useDirectories.getState();
 
+        // If the user has old stuff installed, remove those
+        try {
+            await invoke("clean_up_old_install", {
+                yargFolder: directories.customDirs?.yargFolder,
+                setlistFolder: directories.customDirs?.setlistFolder
+            });
+        } catch {
+            // Ignore
+        }
+
         for (const url of profileUrls) {
             const uuid = await useProfileStore.getState().activateProfile(url);
             if (uuid === undefined) {
@@ -94,8 +104,8 @@ const Onboarding: React.FC<Props> = (props: Props) => {
     }
 
     return <main className={styles.mainContainer}>
-        <div className={styles.container}>
-            {!loading && <>
+        {!loading &&
+            <div className={styles.container}>
                 <OnboardingSidebar onboardingStep={step} />
                 <div className={styles.content}>
                     <div className={styles.contentContainer}>
@@ -136,8 +146,15 @@ const Onboarding: React.FC<Props> = (props: Props) => {
                         </div>
                     </div>
                 </div>
-            </>}
-        </div>
+            </div>
+        }
+        {loading &&
+            <div className={styles.center}>
+                <span>
+                    Loading, please wait...
+                </span>
+            </div>
+        }
     </main>;
 };
 
