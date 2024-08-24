@@ -6,6 +6,8 @@ import { getOS } from "@app/utils/os";
 import { invoke } from "@tauri-apps/api";
 import { useDirectories } from "./directories";
 import { showErrorDialog } from "@app/dialogs";
+import { useOfflineStatus } from "@app/hooks/useOfflineStatus";
+import { settingsManager } from "@app/settings";
 
 export const downloadAndInstall = async (profile: ActiveProfile, profilePath: string, onFinish?: () => void): Promise<void> => {
     const directories = useDirectories.getState();
@@ -41,16 +43,27 @@ export const launch = async (activeProfile: ActiveProfile, profilePath: string):
         return;
     }
 
-    let additionalArguments: string[] = [];
+    let customArguments: string[] = [];
     if (activeProfile.launchArguments.trim().length > 0) {
-        additionalArguments = activeProfile.launchArguments.trim().split(" ");
+        customArguments = activeProfile.launchArguments.trim().split(" ");
+    }
+
+    let otherArguments: string[] = [];
+
+    if (launchOptions.offlineArgument !== undefined && useOfflineStatus.getState().isOffline) {
+        otherArguments.push(launchOptions.offlineArgument);
+    }
+
+    if (launchOptions.downloadLocationArgument !== undefined) {
+        otherArguments.push(launchOptions.downloadLocationArgument);
+        otherArguments.push(settingsManager.getCache("downloadLocation"));
     }
 
     try {
         await invoke("launch_profile", {
             profilePath: profilePath,
             execPath: launchOptions.executablePath,
-            arguments: [...launchOptions.arguments, ...additionalArguments]
+            arguments: [...launchOptions.arguments, ...customArguments]
         });
     } catch (e) {
         showErrorDialog(e as string);

@@ -8,6 +8,7 @@ export interface ImportantDirs {
 }
 
 export interface CustomDirs {
+    installFolder: string,
     yargFolder: string,
     setlistFolder: string,
 }

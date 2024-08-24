@@ -28,7 +28,8 @@ export interface Version {
             executablePath: string,
             arguments: string[],
             offlineArgument?: string,
-            languageArgument?: string
+            languageArgument?: string,
+            downloadLocationArgument?: string,
         }
     }
 }
