@@ -48,7 +48,7 @@ export const launch = async (activeProfile: ActiveProfile, profilePath: string):
         customArguments = activeProfile.launchArguments.trim().split(" ");
     }
 
-    let otherArguments: string[] = [];
+    const otherArguments: string[] = [];
 
     if (launchOptions.offlineArgument !== undefined && useOfflineStatus.getState().isOffline) {
         otherArguments.push(launchOptions.offlineArgument);
@@ -63,7 +63,7 @@ export const launch = async (activeProfile: ActiveProfile, profilePath: string):
         await invoke("launch_profile", {
             profilePath: profilePath,
             execPath: launchOptions.executablePath,
-            arguments: [...launchOptions.arguments, ...customArguments]
+            arguments: [...launchOptions.arguments, ...otherArguments, ...customArguments]
         });
     } catch (e) {
         showErrorDialog(e as string);
