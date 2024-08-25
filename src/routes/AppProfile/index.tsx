@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useProfileState } from "@app/hooks/useProfileState";
 import styles from "./AppProfile.module.css";
-import { GithubIcon, InformationIcon, LinkIcon, SettingsIcon, SongIcon, TimeIcon, VerifiedIcon } from "@app/assets/Icons";
+import { ChartersIcon, GithubIcon, InformationIcon, LinkIcon, SettingsIcon, SongIcon, TimeIcon, VerifiedIcon } from "@app/assets/Icons";
 import { LaunchButton } from "./LaunchButton";
 import { localizeMetadata, processAssetUrl } from "@app/profiles/utils";
 import Box from "@app/components/Box";
@@ -128,6 +128,22 @@ function AppProfile() {
                     </header>
                     {metadata.description}
                 </Box>
+                {profile.type === "setlist" &&
+                    <Box>
+                        <header>
+                            <ChartersIcon />
+                            Credits
+                        </header>
+                        {(metadata as SetlistMetadata).credits.map(i =>
+                            <div key={i.name}
+                                onClick={async () => await askOpenUrl(i.url)}
+                                className={styles.creditLink}>
+
+                                {i.name} <LinkIcon />
+                            </div>
+                        )}
+                    </Box>
+                }
                 {
                     Object.entries(metadata.links).map(i => {
                         let icon = <LinkIcon width={12} height={12} />;

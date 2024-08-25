@@ -150,3 +150,13 @@
     justify-content: center;
     align-items: center;
 }
+
+.creditLink {
+    margin-top: 2px;
+    align-self: flex-start;
+    cursor: pointer;
+}
+
+.creditLink > svg {
+    width: 8px;
+}
