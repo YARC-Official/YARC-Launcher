@@ -25,14 +25,11 @@ jobs:
 
     runs-on: ${{ matrix.platform }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: nschloe/action-cached-lfs-checkout@v1.2.1
       - name: setup node
         uses: actions/setup-node@v3
         with:
-          lfs: 'true'
           node-version: 16
-      - name: Checkout LFS objects
-        run: git lfs checkout
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
