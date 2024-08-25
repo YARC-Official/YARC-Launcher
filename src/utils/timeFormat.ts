@@ -1,19 +1,11 @@
 import { intlFormatDistance } from "date-fns";
+import prettyMilliseconds from "pretty-ms";
 
 export const millisToDisplayLength = (length: number, long = false) => {
-    const date = new Date(length);
-    if (long) {
-        if (date.getHours() !== 0) {
-            return `${date.getHours()} hr ${date.getMinutes()} min ${date.getSeconds()} sec`;
-        } else {
-            return `${date.getMinutes()} min ${date.getSeconds()} sec`;
-        }
-    } else {
-        return new Intl.DateTimeFormat("en-US", {
-            minute: "numeric",
-            second: "numeric"
-        }).format(date);
-    }
+    return prettyMilliseconds(length, {
+        colonNotation: !long,
+        secondsDecimalDigits: 0,
+    });
 };
 
 export const isConsideredNewRelease = (releaseDate: string, newestInSetlist: string) => {

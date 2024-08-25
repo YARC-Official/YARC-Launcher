@@ -1,14 +1,14 @@
 import { useParams } from "react-router-dom";
 import { useProfileState } from "@app/hooks/useProfileState";
 import styles from "./AppProfile.module.css";
-import { GithubIcon, InformationIcon, LinkIcon, SettingsIcon, TimeIcon, VerifiedIcon } from "@app/assets/Icons";
+import { GithubIcon, InformationIcon, LinkIcon, SettingsIcon, SongIcon, TimeIcon, VerifiedIcon } from "@app/assets/Icons";
 import { LaunchButton } from "./LaunchButton";
 import { localizeMetadata, processAssetUrl } from "@app/profiles/utils";
 import Box from "@app/components/Box";
-import { ApplicationMetadata } from "@app/profiles/types";
+import { ApplicationMetadata, SetlistMetadata } from "@app/profiles/types";
 import Button, { ButtonColor } from "@app/components/Button";
 import MoreDropdown from "./MoreDropdown";
-import { distanceFromToday } from "@app/utils/timeFormat";
+import { distanceFromToday, millisToDisplayLength } from "@app/utils/timeFormat";
 import ProfileIcon from "@app/components/ProfileIcon";
 import NewsSection from "@app/components/NewsSection";
 import { askOpenUrl } from "@app/utils/safeUrl";
@@ -70,6 +70,30 @@ function AppProfile() {
                                 </span>
                             </span>
                         </div>
+                    }
+                    {profile.type === "setlist" &&
+                        <>
+                            <div>
+                                <SongIcon />
+                                <span>
+                                    <span className={styles.highlightedStat}>
+                                        {(metadata as SetlistMetadata).songs.length}
+                                    </span>
+                                    &#32; songs
+                                </span>
+                            </div>
+                            <div>
+                                <TimeIcon />
+                                <span>
+                                    <span className={styles.highlightedStat}>
+                                        {millisToDisplayLength(
+                                            (metadata as SetlistMetadata).songs.reduce((a, i) => a + i.length, 0),
+                                            true)}
+                                    </span>
+                                    &#32; long
+                                </span>
+                            </div>
+                        </>
                     }
                 </div>
                 <div className={styles.bannerOptionsMain}>

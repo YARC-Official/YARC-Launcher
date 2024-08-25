@@ -20,24 +20,6 @@
     align-items: center;
 }
 
-.footer > .credits {
-    color: var(--primary-25);
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.footer > .socials {
-    display: flex;
-    gap: 15px;
-    margin-left: auto;
-}
-
-.socials > .link {
-    height: 20px;
-    color: var(--primary);
-    cursor: pointer;
-}
-
 .menus {
     display: flex;
     flex-direction: column;
