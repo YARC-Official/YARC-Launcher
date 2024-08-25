@@ -29,7 +29,10 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v3
         with:
+          lfs: 'true'
           node-version: 16
+      - name: Checkout LFS objects
+        run: git lfs checkout
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
