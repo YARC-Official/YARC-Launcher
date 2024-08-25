@@ -28,3 +28,11 @@ export const isConsideredNewRelease = (releaseDate: string, newestInSetlist: str
 export const distanceFromToday = (initial: string) => {
     return intlFormatDistance(new Date(initial), new Date());
 };
+
+export const localizeDate = (date: string) => {
+    return new Date(date).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+    });
+};

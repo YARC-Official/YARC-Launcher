@@ -8,7 +8,7 @@ import Box from "@app/components/Box";
 import { ApplicationMetadata, SetlistMetadata } from "@app/profiles/types";
 import Button, { ButtonColor } from "@app/components/Button";
 import MoreDropdown from "./MoreDropdown";
-import { distanceFromToday, millisToDisplayLength } from "@app/utils/timeFormat";
+import { distanceFromToday, localizeDate, millisToDisplayLength } from "@app/utils/timeFormat";
 import ProfileIcon from "@app/components/ProfileIcon";
 import NewsSection from "@app/components/NewsSection";
 import { askOpenUrl } from "@app/utils/safeUrl";
@@ -127,6 +127,25 @@ function AppProfile() {
                             : `About ${metadata.name}`}
                     </header>
                     {metadata.description}
+                </Box>
+                <Box>
+                    <header>
+                        <TimeIcon width={14} height={14} />
+                        Release Dates
+                    </header>
+                    <div>
+                        First released: {localizeDate(metadata.initialRelease)}
+                    </div>
+                    {activeProfile.profile.version.type === "list" &&
+                        <div>
+                            {activeProfile.version.tag} released: {localizeDate(activeProfile.version.release)}
+                        </div>
+                    }
+                    {activeProfile.profile.version.type !== "list" &&
+                        <div>
+                            Last updated: {localizeDate(activeProfile.version.release)}
+                        </div>
+                    }
                 </Box>
                 {profile.type === "setlist" &&
                     <Box>
