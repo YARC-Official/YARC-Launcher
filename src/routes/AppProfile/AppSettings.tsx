@@ -1,7 +1,7 @@
 import Button, { ButtonColor } from "@app/components/Button";
 import styles from "./AppSettings.module.css";
 import { useEffect, useState } from "react";
-import { ActiveProfile, VersionInfoList, VersionList } from "@app/profiles/types";
+import { ActiveProfile, GraphicsApi, VersionInfoList, VersionList } from "@app/profiles/types";
 import { localizeMetadata } from "@app/profiles/utils";
 import { tryFetchVersion, useProfileStore } from "@app/profiles/store";
 import InputBox from "@app/components/InputBox";
@@ -111,7 +111,7 @@ const AppSettings: React.FC<Props> = ({ activeProfile, setSettingsOpen }: Props)
     const [displayName, setDisplayName] = useState<string>(initalDisplayName);
     const [launchArguments, setLaunchArguments] = useState<string>(activeProfile.launchArguments);
     const [obsVkcapture, setObsVkcapture] = useState<boolean>(activeProfile.useObsVkcapture);
-
+    const [graphicsApi, setGraphicsApi] = useState<GraphicsApi>(activeProfile.graphicsApi);
     const [selectedVerison, setSelectedVersion] = useState<string | undefined>(activeProfile.selectedVersion);
 
     return <div className={styles.popup}>
@@ -153,6 +153,30 @@ const AppSettings: React.FC<Props> = ({ activeProfile, setSettingsOpen }: Props)
                             }
                         </div>
                     }
+                    <div className={styles.setting}>
+                        <p>Graphics API</p>
+                        <select defaultValue={graphicsApi} onChange={(e) => setGraphicsApi(e.target.value as GraphicsApi)}>
+                            <option value={GraphicsApi.Default}>Default</option>
+                            { (os === "windows" &&
+                                <>
+                                    <option value={GraphicsApi.D3D11}>DirectX 11</option>
+                                    <option value={GraphicsApi.D3D12}>DirectX 12</option>
+                                    <option value={GraphicsApi.OPEN_GL}>OpenGL</option>
+                                    <option value={GraphicsApi.VULKAN}>Vulkan</option>
+                                </>)
+                                || (os === "macos" &&
+                                <>
+                                    <option value={GraphicsApi.METAL}>Metal</option>
+                                    <option value={GraphicsApi.VULKAN}>Vulkan</option>
+                                </>)
+                                || (os === "linux" &&
+                                <>
+                                    <option value={GraphicsApi.OPEN_GL}>OpenGL</option>
+                                    <option value={GraphicsApi.VULKAN}>Vulkan</option>
+                                </>)
+                            }
+                        </select>
+                    </div>
                 </Tabs.Content>
                 <Tabs.Content className={styles.versionList} value="version">
                     <VersionListComp
@@ -176,6 +200,9 @@ const AppSettings: React.FC<Props> = ({ activeProfile, setSettingsOpen }: Props)
                         // Update other fields
                         activeProfile.launchArguments = launchArguments;
                         activeProfile.useObsVkcapture = obsVkcapture;
+
+                        // Update graphics api
+                        activeProfile.graphicsApi = graphicsApi;
 
                         // Update profile version
                         if (selectedVerison !== activeProfile.selectedVersion) {
