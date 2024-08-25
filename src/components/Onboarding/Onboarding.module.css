@@ -1,0 +1,170 @@
+.mainContainer {
+    position: fixed;
+    inset: 0;
+    top: var(--titleBarHeight);
+
+    background: var(--sideBarBackground);
+    color: white;
+
+    z-index: 9999;
+}
+
+.container {
+    display: flex;
+    align-items: flex-start;
+    align-self: stretch;
+
+    height: 100%;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    align-self: stretch;
+
+    background: #070810;
+}
+
+.sidebarTop {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    align-self: stretch;
+}
+
+.sidebarBottom {
+    display: flex;
+    padding: 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    align-self: stretch;
+}
+
+.sidebarTop > header {
+    display: flex;
+    padding: 12px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+
+    color: #9194B1;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    text-transform: uppercase;
+}
+
+.navigation {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    align-self: stretch;
+}
+
+.navigationButton {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    align-self: stretch;
+
+    color: #B8BDD6;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+
+    opacity: 0.9;
+}
+
+.navigationButton > div {
+    display: flex;
+    height: 48px;
+    width: 48px;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 6px;
+}
+
+.navigationButton.activeStep {
+    opacity: 1;
+}
+
+.navigationButton.activeStep > div {
+    background: #0D0F23;
+}
+
+.content {
+    display: flex;
+    padding: 50px;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 100px;
+    flex: 1 0 0;
+    align-self: stretch;
+
+    background: linear-gradient(182deg, rgba(5, 6, 11, 0.60) 1.91%, #05060c 47.87%),
+        url(/src/assets/OnboardingBackground.png) lightgray 50% / cover no-repeat;
+}
+
+.contentContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex: 1 0 0;
+    align-self: stretch;
+}
+
+.stepContent {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 50px;
+    align-self: stretch;
+}
+
+.stepNavigation {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 25px;
+    align-self: stretch;
+}
+
+.stepNavigationButtons {
+    display: flex;
+    height: 60px;
+    align-items: flex-start;
+    gap: 25px;
+    align-self: stretch;
+}
+
+.stepNavigationButtons > button {
+    flex: 1 0 0;
+}
+
+.stepContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 25px;
+    align-self: stretch;
+}
+
+.center {
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -1,6 +1,7 @@
 import { Component } from "react";
 import { useStore } from "zustand";
 import { createStore } from "zustand/vanilla";
+import { ErrorDialog } from "./Dialogs/ErrorDialog";
 
 type DialogStore = {
     open: boolean,
@@ -13,9 +14,9 @@ const store = createStore<DialogStore>(
     () => ({open: false})
 );
 
-export const createAndShowDialog = async (content: typeof Component, props?: Record<string, unknown>): Promise<string|undefined> => {    
+export const createAndShowDialog = async (content: typeof Component, props?: Record<string, unknown>): Promise<string|undefined> => {
     const current = store.getState();
-    if(current.open) return;
+    if (current.open) return;
 
     store.setState({
         content,
@@ -49,3 +50,8 @@ export const setDialogOpen = (open: boolean) => {
         open
     });
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function showErrorDialog(error: any) {
+    await createAndShowDialog(ErrorDialog, { error });
+}

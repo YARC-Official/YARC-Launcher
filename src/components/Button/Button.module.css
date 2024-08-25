@@ -1,17 +1,8 @@
 .button {
-    --borderRadius: 8px;
-    background: none;
+    --borderRadius: 12px;
 
+    padding: 15px;
     position: relative;
-    isolation: isolate;
-
-    /* Masking works WAY better than below */
-    /*overflow: none;*/
-    mask: linear-gradient(#000 0 0);
-
-    border: none;
-    border-radius: var(--borderRadius);
-    padding: 0;
 
     font-size: 14px;
     font-weight: 700;
@@ -19,58 +10,60 @@
 
     cursor: pointer;
     user-select: none;
-}
 
-.bottom,
-.top {
-    padding: 15px;
+    background: var(--background);
+    color: var(--color);
+    border-radius: var(--borderRadius);
+
+    border: 2px solid transparent;
 
     display: flex;
     gap: 10px;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    height: 100%;
 }
 
-.bottom {
-    position: relative;
-    background: var(--sideBar_background);
-    color: var(--primary);
-    z-index: 1;
-    border-radius: calc(var(--borderRadius) + 2px);
+.border {
+    border: 2px solid var(--border);
 }
 
-.top {
-    position: absolute;
-    background: var(--background);
-    color: var(--color);
-    z-index: 2;
-    transition: clip-path .3s ease;
-    clip-path: inset(0 calc(100% - var(--progress)) 0 0);
+.rounded {
+    --borderRadius: 50px;
+    padding: 15px 35px;
 }
 
-.colors_green {
-    --background: var(--button_green);
-    --color: var(--buttonText_green);
+.colorsGreen {
+    --background: var(--buttonGreen);
+    --color: var(--buttonGreenText);
+    --border: var(--buttonLightBorder);
 }
 
-.colors_blue {
-    --background: var(--button_blue);
-    --color: var(--buttonText_blue);
+.colorsBlue {
+    --background: var(--buttonBlue);
+    --color: var(--buttonBlueText);
+    --border: var(--buttonLightBorder);
 }
 
-.colors_yellow {
-    --background: var(--button_yellow);
-    --color: var(--buttonText_yellow);
+.colorsYellow {
+    --background: var(--buttonYellow);
+    --color: var(--buttonYellowText);
+    --border: var(--buttonLightBorder);
 }
 
-.colors_gray {
-    --background: var(--button_gray);
-    --color: var(--buttonText_gray);
+.colorsDark {
+    --background: var(--buttonDark);
+    --color: var(--buttonDarkText);
+    --border: var(--buttonDarkBorder);
 }
 
-.colors_red {
-    --background: var(--button_red);
-    --color: var(--buttonText_red);
+.colorsLight {
+    --background: var(--buttonLight);
+    --color: var(--buttonLightText);
+    --border: var(--buttonLightBorder);
+}
+
+.colorsRed {
+    --background: var(--buttonRed);
+    --color: var(--buttonRedText);
+    --border: var(--buttonLightBorder);
 }

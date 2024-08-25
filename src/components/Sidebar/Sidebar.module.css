@@ -1,14 +1,17 @@
 .sidebar {
-    width: 300px;
+    width: var(--sideBarWidth);
     padding: 15px;
 
-    background: var(--sideBar_background);
+    background: var(--sideBarBackground);
     color: var(--primary);
 
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
     gap: 50px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .footer {
@@ -48,9 +51,10 @@
 
 .button {
     display: flex;
-    gap: 10px;
 
-    background: rgba(255, 255, 255, 0);
+    background: transparent;
+    color: #B8BDD6;
+
     border-radius: 13px;
 
     transition: background 0.1s;
@@ -58,7 +62,8 @@
 
 [aria-current="page"] > .button,
 .button:hover {
-    background: rgba(255, 255, 255, 0.025);
+    background: #0D0F23;
+    color: #D4D9EE;
 }
 
 .button .icon {
@@ -71,7 +76,6 @@
 
 .button .icon > * {
     height: 20px;
-    color: var(--accent);
 }
 
 .button .text {
@@ -80,4 +84,22 @@
     align-items: center;
     font-size: 16px;
     font-weight: 600;
+    gap: 12px;
+}
+
+.updatedTag {
+    display: flex;
+    padding: 3px 6px;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+
+    border-radius: 50px;
+    background: #FCD548;
+    border: 2px solid #ffe071;
+
+    color: #4F2600;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
 }

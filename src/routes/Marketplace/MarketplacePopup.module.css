@@ -1,0 +1,131 @@
+.popup {
+    position: absolute;
+
+    top: var(--titleBarHeight);
+    bottom: 0;
+    left: var(--sideBarWidth);
+    right: 0;
+
+    background: rgba(0, 0, 0, 0.6);
+
+    z-index: 998;
+}
+
+.body {
+    position: absolute;
+
+    /* Masking prevents artifacts, unlike overflow: hidden */
+    mask: linear-gradient(#000 0 0);
+
+    top: 64px;
+    bottom: 64px;
+    left: 32px;
+    right: 32px;
+
+    border-radius: 16px;
+
+    background-color: #FFF;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1 0 0;
+    align-self: stretch;
+}
+
+.content {
+    display: flex;
+    padding: 16px;
+    align-items: flex-start;
+    gap: 10px;
+    flex-direction: column;
+
+    overflow: auto;
+}
+
+.close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+
+    width: 16px;
+    height: 16px;
+
+    cursor: pointer;
+}
+
+.close > * {
+    color: #FFF;
+    filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 1));
+}
+
+.bannerContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    align-self: stretch;
+
+    background: linear-gradient(241deg, rgba(0, 0, 0, 0.00) 14.98%, #000 107.9%),
+        var(--bannerBack) lightgray 50% / cover no-repeat;
+}
+
+.bannerApp {
+    display: flex;
+    padding: 30px;
+    align-items: center;
+    gap: 25px;
+    align-self: stretch;
+}
+
+.bannerAppIcon {
+    width: 100px;
+    height: 100px;
+}
+
+.bannerApp > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 10px;
+
+    color: #FFF;
+    font-size: 30px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.verifiedTag {
+    display: flex;
+    height: 31px;
+    padding: 12px 5px 12px 10px;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+
+    border-radius: 38px;
+    border: 1px solid rgba(255, 255, 255, 0.30);
+    background: rgba(0, 0, 0, 0.50);
+
+    color: #BDBDBD;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.bannerOptions {
+    display: flex;
+    padding: 15px;
+    padding-left: 25px;
+    justify-content: flex-end;
+    align-items: center;
+    align-self: stretch;
+
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(5px);
+}
+
+.bannerOptionsMain {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}

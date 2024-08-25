@@ -1,6 +1,6 @@
 import Button, { ButtonColor } from "@app/components/Button";
 import { BaseDialog } from "./BaseDialog";
-import styles from "./ErrorDialog.module.css";
+import styles from "./BaseDialog.module.css";
 import { error as LogError } from "tauri-plugin-log-api";
 import { serializeError } from "serialize-error";
 import { closeDialog } from "..";
@@ -8,7 +8,7 @@ import { closeDialog } from "..";
 export class ErrorDialog extends BaseDialog<Record<string, never>> {
     constructor(props: Record<string, unknown>) {
         super(props);
-        
+
         try {
             LogError(
                 JSON.stringify(serializeError(props.error))
@@ -19,13 +19,22 @@ export class ErrorDialog extends BaseDialog<Record<string, never>> {
     }
 
     getInnerContents() {
+        let message: string;
+        if (this.props.error instanceof Error) {
+            message = JSON.stringify(serializeError(this.props.error));
+        } else if (typeof this.props.error === "string") {
+            message = this.props.error;
+        } else {
+            message = JSON.stringify(this.props.error);
+        }
+
         return <>
             <p>
-                A fatal error has occured. If you don&apos;t know what happened, please report this to our Discord
+                A fatal error has occured. If this continues to happen, please report this to our Discord
                 or GitHub immediately. Make sure to send the below text:
             </p>
-            <div className={styles.stacktrace}>
-                { this.props.error instanceof Error && "message" in this.props.error ? this.props.error.message as string : JSON.stringify(serializeError(this.props.error)) }
+            <div className={styles.box}>
+                {message}
             </div>
         </>;
     }
@@ -36,7 +45,7 @@ export class ErrorDialog extends BaseDialog<Record<string, never>> {
 
     getButtons() {
         return <>
-            <Button color={ButtonColor.GRAY} onClick={() => closeDialog()}>Okay</Button>
+            <Button color={ButtonColor.LIGHT} rounded onClick={() => closeDialog()}>Okay</Button>
         </>;
     }
 }

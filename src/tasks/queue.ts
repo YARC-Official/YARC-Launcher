@@ -1,5 +1,5 @@
 import { createStore } from "zustand/vanilla";
-import { IBaseTask, TaskTag } from "./Processors/base";
+import { IBaseTask } from "./Processors/base";
 import { useStore } from "zustand";
 
 type TaskQueueStore = Set<IBaseTask>;
@@ -26,16 +26,18 @@ const remove = (task: IBaseTask) => {
 
 const next = () => {
     const current = firstTask();
-    if(current?.startedAt) {
+    if (current?.startedAt) {
         remove(current);
     }
 
     return firstTask();
 };
 
-const findTask = (queue: TaskQueueStore, tag: TaskTag, profile: string) => {        
-    for(const task of queue) {
-        if(task.taskTag === tag && task.profile === profile) return task;
+const findTask = (queue: TaskQueueStore, profileUUID: string) => {
+    for (const task of queue) {
+        if (task.activeProfile.uuid === profileUUID) {
+            return task;
+        }
     }
 
     return undefined;

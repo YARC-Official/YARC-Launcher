@@ -1,12 +1,12 @@
 import styles from "./Button.module.css";
-import { CSSProperties } from "react";
+import { CSSProperties, forwardRef } from "react";
 
 export enum ButtonColor {
     "GREEN",
     "BLUE",
     "YELLOW",
-    "GRAY",
-    "BLACK",
+    "LIGHT",
+    "DARK",
     "RED"
 }
 
@@ -19,52 +19,80 @@ export type ButtonProps = React.PropsWithChildren<{
     style?: React.CSSProperties,
     onClick?: React.MouseEventHandler<HTMLButtonElement>,
 
+    border?: boolean,
+    rounded?: boolean,
     color?: ButtonColor,
-    progress?: number,
+
     width?: number,
     height?: number,
 }>;
 
-const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(props, ref) {
+    const {
+        className,
+        style,
+
+        border,
+        rounded,
+        color,
+
+        width,
+        height,
+
+        children,
+
+        ...otherProps
+    } = props;
+
     // Get the button color class
-    let colorClass;
-    switch (props.color) {
+    let classes;
+    switch (color) {
         case ButtonColor.BLUE:
-            colorClass = styles.colors_blue;
+            classes = [styles.colorsBlue];
             break;
         case ButtonColor.GREEN:
-            colorClass = styles.colors_green;
+            classes = [styles.colorsGreen];
             break;
         case ButtonColor.YELLOW:
-            colorClass = styles.colors_yellow;
+            classes = [styles.colorsYellow];
             break;
-        case ButtonColor.GRAY:
-            colorClass = styles.colors_gray;
+        case ButtonColor.LIGHT:
+            classes = [styles.colorsLight];
             break;
-        case ButtonColor.BLACK:
-            colorClass = styles.colors_black;
+        case ButtonColor.DARK:
+            classes = [styles.colorsDark];
             break;
         case ButtonColor.RED:
-            colorClass = styles.colors_red;
+            classes = [styles.colorsRed];
             break;
         default:
-            colorClass = styles.colors_blue;
+            classes = [styles.colorsBlue];
             break;
+    }
+
+    if (border) {
+        classes.push(styles.border);
+    }
+
+    if (rounded) {
+        classes.push(styles.rounded);
     }
 
     // Get the styles
     const newStyles = {
-        width: props.width,
-        height: props.height,
-        ...props.style,
-
-        "--progress": props.progress ? `${props.progress}%` : undefined
+        width,
+        height,
+        ...style,
     } as ButtonCSS;
 
-    return <button className={[styles.button, colorClass, props.className].join(" ")} style={newStyles} onClick={props.onClick}>
-        <div className={styles.top}>{props.children}</div>
-        <div className={styles.bottom}>{props.children}</div>
+    return <button
+        className={[styles.button, ...classes, className].join(" ")}
+        style={newStyles}
+        ref={ref}
+        {...otherProps}>
+
+        {children}
     </button>;
-};
+});
 
 export default Button;

@@ -1,8 +1,8 @@
 import styles from "./Sidebar.module.css";
 
 interface Props {
-    icon?: React.ReactNode;
-    children?: React.ReactNode;
+    icon?: React.ReactNode,
+    children?: React.ReactNode
 }
 
 const SidebarMenuButton: React.FC<Props> = ({ icon, children }: Props) => {

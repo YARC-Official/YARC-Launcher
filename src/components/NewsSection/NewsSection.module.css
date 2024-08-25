@@ -6,7 +6,24 @@
     align-self: stretch;
 }
 
-.header_container {
+.offlineContainer {
+    padding-top: 50px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1 0 0;
+    align-self: stretch;
+
+    color: #000;
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+
+    opacity: 0.5;
+}
+
+.headerContainer {
     display: flex;
     padding-bottom: 0px;
     justify-content: space-between;
@@ -17,7 +34,7 @@
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.header_text {
+.headerText {
     display: flex;
     align-items: center;
     gap: 5px;
@@ -30,7 +47,7 @@
     text-transform: uppercase;
 }
 
-.load_more {
+.loadMore {
     color: rgba(0, 0, 0, 0.5);
     font-size: 0.8em;
     font-weight: 600;

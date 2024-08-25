@@ -22,8 +22,10 @@ export class TryCloseDialog extends BaseDialog<Record<string, never>> {
 
     getButtons() {
         return <>
-            <Button color={ButtonColor.GREEN} onClick={() => closeDialog()}>Don&apos;t Close</Button>
-            <Button color={ButtonColor.YELLOW} onClick={() => closeDialog("close")}>
+            <Button color={ButtonColor.GREEN} rounded onClick={() => closeDialog()}>
+                Don&apos;t Close
+            </Button>
+            <Button color={ButtonColor.YELLOW} rounded onClick={() => closeDialog("close")}>
                 <strong>Force Close</strong>
             </Button>
         </>;

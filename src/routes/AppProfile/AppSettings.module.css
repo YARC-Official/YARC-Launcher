@@ -1,0 +1,165 @@
+.popup {
+    position: absolute;
+
+    top: var(--titleBarHeight);
+    bottom: 0;
+    left: var(--sideBarWidth);
+    right: 0;
+
+    background: rgba(0, 0, 0, 0.6);
+
+    z-index: 998;
+}
+
+.body {
+    position: absolute;
+
+    inset: 32px;
+    border-radius: 16px;
+
+    background-color: #FFF;
+
+    padding: 25px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex: 1 0 0;
+    align-self: stretch;
+    gap: 25px;
+}
+
+.tabRoot {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+
+    align-self: stretch;
+    flex: 1 0 0;
+    overflow: hidden;
+}
+
+.tabList {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+}
+
+.tabList > .tab {
+    flex: 1 0 0;
+    padding: 10px 15px;
+
+    border: none;
+    border-radius: 50px;
+    background: #E2E6F1;
+
+    color: #5C6170;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.tabList > .tab[data-state="active"] {
+    background: #41475F;
+    color: #FFF;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+
+    flex: 1 0 0;
+    align-self: stretch;
+}
+
+.content[data-state="inactive"] {
+    display: none;
+}
+
+.setting {
+    display: flex;
+    flex-direction: row;
+    align-self: stretch;
+    gap: 15px;
+}
+
+.setting > p {
+    width: 175px;
+
+    color: #41475F;
+}
+
+.setting > input {
+    align-self: center;
+    flex: 1 0 0;
+}
+
+.navigation {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 15px;
+    align-self: stretch;
+}
+
+.navigation > button {
+    flex: 1 0 0;
+}
+
+.versionList {
+    display: flex;
+    flex-direction: column;
+
+    overflow: auto;
+}
+
+.versionList[data-state="inactive"] {
+    display: none;
+}
+
+.versionList > .centered {
+    flex: 1 0 0;
+
+    text-align: center;
+
+    color: #6C7088;
+    font-size: 16px;
+    font-style: italic;
+    font-weight: 500;
+}
+
+.versionList > div {
+    display: flex;
+    flex-direction: row;
+    padding: 16px;
+
+    cursor: pointer;
+
+    color: #41475F;
+}
+
+.versionList > div:nth-child(odd) {
+    background: #F4F4F4;
+}
+
+.versionList > div[data-state="active"] {
+    color: #FFF;
+    background: #41475F;
+}
+
+.versionList > div > header {
+    flex: 1 0 0;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.versionList > div > div {
+    flex: 1 0 0;
+
+    font-size: 16px;
+    font-style: italic;
+    font-weight: 400;
+}

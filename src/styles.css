@@ -1,4 +1,7 @@
 :root {
+    --backupFonts: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji";
+
     --accent-rgb: 46, 217, 255;
     --accent: rgb(var(--accent-rgb));
 
@@ -9,38 +12,32 @@
     --primary-40: rgba(var(--primary-rgb), 0.4);
     --primary-75: rgba(var(--primary-rgb), 0.75);
 
-    --white-background: #F5F5F5;
+    --titleBarHeight: 35px;
 
-    --green-rgb: 70, 231, 79;
-    --green: rgb(var(--green-rgb));
-    --green-10: rgba(var(--green-rgb), .1);
+    --sideBarBackground: #070810;
+    --sideBarWidth: 300px;
 
-    --titleBar_background: #000209;
-    --titleBar_primary: #FFF;
-    --titleBar_accent: #868AA8;
-    --titleBar_height: 30px;
+    --buttonGreen: #17E289;
+    --buttonBlue: #2ED9FF;
+    --buttonYellow: #FCD548;
+    --buttonDark: #0F121D;
+    --buttonLight: #F4F4F4;
+    --buttonRed: #F32B37;
 
-    --sideBar_background: #05060B;
-    --sideBar_separator_color: #394452;
-    --sideBar_selection: rgba(255, 255, 255, 0.1);
+    --buttonGreenText: #005832;
+    --buttonBlueText: #03596B;
+    --buttonYellowText: #4F2600;
+    --buttonDarkText: #E0E1E7;
+    --buttonLightText: #41475F;
+    --buttonRedText: #FFF;
 
-    --button_green: #46E74F;
-    --button_blue: #2ED9FF;
-    --button_yellow: #FFB800;
-    --button_gray: #E6E6E6;
-    --button_red: #F32B37;
-
-    --buttonText_green: #003C03;
-    --buttonText_blue: #002A3D;
-    --buttonText_yellow: #351A00;
-    --buttonText_gray: #737373;
-    --buttonText_red: #FFF;
+    --buttonLightBorder: rgba(255, 255, 255, 0.4);
+    --buttonDarkBorder: #222638;
 }
 
 * {
     box-sizing: border-box;
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
-        sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+    font-family: "Inter", var(--backupFonts);
 }
 
 body {
@@ -54,35 +51,11 @@ a {
     text-decoration: none;
 }
 
-.titlebar {
-    height: 30px;
-    background: #329ea3;
-    user-select: none;
-    display: flex;
-    justify-content: flex-end;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-}
-
-.titlebar-button {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    width: 30px;
-    height: 30px;
-}
-
-.titlebar-button:hover {
-    background: #5bbec3;
-}
-
 #root {
     width: 100%;
     height: 100%;
     display: flex;
-    padding-top: var(--titleBar_height);
+    padding-top: var(--titleBarHeight);
 }
 
 #content {
@@ -93,6 +66,7 @@ a {
 
 ::-webkit-scrollbar {
     width: 10px;
+    height: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -101,6 +75,7 @@ a {
 
 ::-webkit-scrollbar-thumb {
     background: #888;
+    border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {

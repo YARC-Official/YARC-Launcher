@@ -1,19 +1,21 @@
 import { useStore } from "zustand";
-import { IBaseTask, TaskTag } from "./Processors/base";
+import { IBaseTask } from "./Processors/base";
 import QueueStore from "./queue";
-import { showErrorDialog } from "@app/dialogs/dialogUtil";
+import { showErrorDialog } from "@app/dialogs";
 
 const addTask = (task: IBaseTask) => {
     QueueStore.add(task);
 
-    if(QueueStore.firstTask() === task) {
+    if (QueueStore.firstTask() === task) {
         processNextTask();
     }
 };
 
 const processNextTask = async () => {
     const next = QueueStore.next();
-    if(!next) return;
+    if (!next) {
+        return;
+    }
 
     try {
         next.startedAt = new Date();
@@ -27,10 +29,10 @@ const processNextTask = async () => {
     processNextTask();
 };
 
-const useTask = (tag: TaskTag, profile: string) => {
+const useTask = (profileUUID: string) => {
     return useStore(
         QueueStore.store,
-        queue => QueueStore.findTask(queue, tag, profile)
+        queue => QueueStore.findTask(queue, profileUUID)
     );
 };
 

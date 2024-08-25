@@ -1,0 +1,147 @@
+.warningBox {
+    display: flex;
+    padding: 20px;
+    align-items: center;
+    gap: 15px;
+    align-self: stretch;
+
+    border-radius: 12px;
+    background: rgba(46, 217, 255, 0.15);
+
+    color: #D3F7FF;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.folderSelection {
+    display: flex;
+    height: 80px;
+    align-items: flex-start;
+    align-self: stretch;
+
+    border-radius: 12px;
+    background: var(--buttonDark);
+    color: var(--buttonDarkText);
+    border: 2px solid var(--buttonDarkBorder);
+
+    font-size: 17px;
+}
+
+.selectedFolder {
+    display: flex;
+    height: 80px;
+    padding: 25px;
+    align-items: center;
+    gap: 15px;
+    flex: 1 0 0;
+}
+
+.browseButtonContainer {
+    display: flex;
+    padding: 0px 15px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+}
+
+.componentContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 25px;
+    align-self: stretch;
+}
+
+.componentCategory {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    align-self: stretch;
+}
+
+.componentCategory > header {
+    color: #9194B1;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.componentOptionContainer {
+    display: flex;
+    height: 124px;
+    align-items: flex-start;
+    gap: 15px;
+    align-self: stretch;
+}
+
+.componentOption {
+    display: flex;
+    height: 124px;
+    padding: 25px;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1 0 0;
+    gap: 20px;
+
+    border-radius: 15px;
+    border: 2px solid var(--buttonDarkBorder);
+    background: var(--buttonDark);
+
+    cursor: pointer;
+    user-select: none;
+}
+
+.componentOption > .left {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    flex: 1 0 0;
+}
+
+.componentOption > .left > .icon {
+    flex: 0 0 75px;
+    height: 75px;
+}
+
+.componentOption > .left > div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    flex: 1 0 0;
+
+    color: #66698D;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.componentOption > .left > div > header {
+    color: #FFF;
+    font-family: Inter;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.unselectedIndicator {
+    width: 38px;
+    height: 38px;
+    border-radius: 93px;
+
+    border: 2px solid var(--buttonDarkBorder);
+    background: var(--buttonDark);
+}
+
+.selectedIndicator {
+    width: 38px;
+    height: 38px;
+    border-radius: 93px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: 2px solid var(--buttonLightBorder);
+    background: #17E289;
+    color: #006E3E;
+}

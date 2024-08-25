@@ -12,19 +12,9 @@
     display: none;
 }
 
-.icon {
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    border-radius: 8px;
-    background: #000410;
-}
-
 .icon > * {
-    width: 42px;
-    height: 42px;
+    width: 64px;
+    height: 64px;
 }
 
 .info {
@@ -39,10 +29,14 @@
     line-height: normal;
 }
 
-.info_header {
+.infoHeader {
     color: #FFF;
     font-size: 24px;
     font-style: normal;
     font-weight: 600;
     line-height: normal;
+}
+
+.infoHeader > .tag {
+    opacity: 0.5;
 }

@@ -2,270 +2,71 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod utils;
-mod app_profile;
+mod types;
 
-use app_profile::AppProfile;
-use app_profile::official_setlist::OfficialSetlistProfile;
-use app_profile::yarg::YARGAppProfile;
+use std::{fs, path::PathBuf, process::Command, sync::{LazyLock, Mutex}};
+
 use directories::BaseDirs;
-use std::fs::{self, remove_file, File};
-use std::path::PathBuf;
-use std::sync::RwLock;
 use tauri::{AppHandle, Manager};
-use utils::clear_folder;
 use window_shadows::set_shadow;
+use utils::*;
+use types::*;
+use clap::Parser;
 
-#[derive(Default, serde::Serialize, serde::Deserialize)]
-pub struct Settings {
-    pub download_location: String,
-    pub initialized: bool,
-}
-
-pub struct InnerState {
-    pub yarc_folder: PathBuf,
-    pub launcher_folder: PathBuf,
-    pub temp_folder: PathBuf,
-    pub yarg_folder: PathBuf,
-    pub setlist_folder: PathBuf,
-
-    pub settings: Settings,
-}
-
-impl InnerState {
-    pub fn init(&mut self) -> Result<(), String> {
-        let dirs = BaseDirs::new().ok_or("Failed to get directories.")?;
-
-        self.yarc_folder = PathBuf::from(dirs.data_local_dir());
-        self.yarc_folder.push("YARC");
-
-        self.launcher_folder = PathBuf::from(&self.yarc_folder);
-        self.launcher_folder.push("Launcher");
-
-        self.temp_folder = PathBuf::from(&self.launcher_folder);
-        self.temp_folder.push("Temp");
-
-        // Create launcher directory (for the settings)
-        std::fs::create_dir_all(&self.launcher_folder)
-            .map_err(|e| format!("Failed to create launcher directory.\n{:?}", e))?;
-
-        // Load settings
-        let settings_path = self.launcher_folder.join("settings.json");
-        if settings_path.exists() {
-            // Get file
-            let settings_file = File::open(settings_path)
-                .map_err(|e| format!("Failed to open settings.json file.\n{:?}", e))?;
-
-            // Convert from json and save to settings
-            let settings: Result<Settings, _> = serde_json::from_reader(settings_file);
-            if let Ok(settings) = settings {
-                self.settings = settings;
-            } else {
-                self.create_new_settings_file()?;
-            }
-        } else {
-            self.create_new_settings_file()?;
-        }
-
-        // Set the rest of the folder locations based on settings
-        self.set_download_locations()?;
-
-        // Delete everything temp (just in case)
-        clear_folder(&self.temp_folder)?;
-
-        Ok(())
-    }
-
-    fn set_download_locations(&mut self) -> Result<(), String> {
-        self.yarg_folder = PathBuf::from(&self.settings.download_location);
-        self.yarg_folder.push("YARG Installs");
-
-        self.setlist_folder = PathBuf::from(&self.settings.download_location);
-        self.setlist_folder.push("Setlists");
-
-        // Create the directories if they don't exist
-        std::fs::create_dir_all(&self.yarg_folder)
-            .map_err(|e| format!("Failed to create YARG directory.\n{:?}", e))?;
-        std::fs::create_dir_all(&self.setlist_folder)
-            .map_err(|e| format!("Failed to create setlist directory.\n{:?}", e))?;
-
-        Ok(())
-    }
-
-    fn create_new_settings_file(&mut self) -> Result<(), String> {
-        // Create new settings
-        self.settings = Default::default();
-        self.settings.download_location = self
-            .yarc_folder
-            .clone()
-            .into_os_string()
-            .into_string()
-            .unwrap();
-
-        // Then save
-        self.save_settings_file()?;
-
-        Ok(())
-    }
-
-    pub fn save_settings_file(&mut self) -> Result<(), String> {
-        // Delete the old settings (if it exists)
-        let settings_path = self.launcher_folder.join("settings.json");
-        let _ = remove_file(&settings_path);
-
-        // Create settings file
-        let settings_file = File::create(settings_path)
-            .map_err(|e| format!("Failed to create settings file.\n{:?}", e))?;
-
-        // Write to file
-        serde_json::to_writer(settings_file, &self.settings)
-            .map_err(|e| format!("Failed to write to settings file.\n{:?}", e))?;
-
-        Ok(())
-    }
-}
-
-pub struct State(pub RwLock<InnerState>);
+static COMMAND_LINE_ARG_LAUNCH: LazyLock<Mutex<Option<String>>> = LazyLock::new(|| Mutex::new(None));
 
 #[tauri::command(async)]
-fn init(state: tauri::State<State>) -> Result<(), String> {
-    let mut state_guard = state.0.write().unwrap();
-    state_guard.init()?;
+fn get_important_dirs() -> Result<ImportantDirs, String> {
+    // Get the important directories
 
-    Ok(())
+    let dirs = BaseDirs::new().ok_or("Failed to get base directories.")?;
+
+    let mut yarc_folder = PathBuf::from(dirs.data_local_dir());
+    yarc_folder.push("YARC");
+
+    let mut launcher_folder = PathBuf::from(&yarc_folder);
+    launcher_folder.push("Launcher");
+
+    let mut temp_folder = PathBuf::from(&launcher_folder);
+    temp_folder.push("Temp");
+
+    // Create the directories if they don't exist
+
+    std::fs::create_dir_all(&yarc_folder)
+        .map_err(|e| format!("Failed to create YARC directory.\n{:?}", e))?;
+    std::fs::create_dir_all(&launcher_folder)
+        .map_err(|e| format!("Failed to create launcher directory.\n{:?}", e))?;
+    std::fs::create_dir_all(&temp_folder)
+        .map_err(|e| format!("Failed to create temp directory.\n{:?}", e))?;
+
+    return Ok(ImportantDirs {
+        yarc_folder: path_to_string(yarc_folder)?,
+        launcher_folder: path_to_string(launcher_folder)?,
+        temp_folder: path_to_string(temp_folder)?,
+    });
 }
 
 #[tauri::command(async)]
-fn is_initialized(state: tauri::State<State>) -> Result<bool, String> {
-    let state_guard = state.0.read().unwrap();
-    Ok(state_guard.settings.initialized)
-}
+fn get_custom_dirs(download_location: String) -> Result<CustomDirs, String> {
+    // Get the custom directories
 
-fn create_app_profile(
-    app_name: String,
-    state: &tauri::State<State>,
-    version: String,
-    profile: String
-) -> Result<Box<dyn AppProfile + Send>, String> {
-    let state_guard = state.0.read().unwrap();
+    let mut yarg_folder = PathBuf::from(&download_location);
+    yarg_folder.push("YARG Installs");
 
-    Ok(match app_name.as_str() {
-        "yarg" => Box::new(YARGAppProfile {
-            root_folder: state_guard.yarg_folder.clone(),
-            temp_folder: state_guard.temp_folder.clone(),
-            version,
-            profile
-        }),
-        "official_setlist" => Box::new(OfficialSetlistProfile {
-            root_folder: state_guard.setlist_folder.clone(),
-            temp_folder: state_guard.temp_folder.clone(),
-            version,
-            profile
-        }),
-        _ => Err(format!("Unknown app profile `{}`.", app_name))?
-    })
-}
+    let mut setlist_folder = PathBuf::from(&download_location);
+    setlist_folder.push("Setlists");
 
-#[tauri::command]
-async fn download_and_install(
-    state: tauri::State<'_, State>,
-    app_handle: AppHandle,
-    app_name: String,
-    version: String,
-    profile: String,
-    zip_urls: Vec<String>,
-    sig_urls: Vec<String>
-) -> Result<(), String> {
-    let app_profile = create_app_profile(
-        app_name,
-        &state,
-        version,
-        profile
-    )?;
+    // Create the directories if they don't exist
 
-    let result = app_profile.download_and_install(
-        &app_handle,
-        zip_urls,
-        sig_urls
-    );
+    std::fs::create_dir_all(&yarg_folder)
+        .map_err(|e| format!("Failed to create YARG directory.\n{:?}", e))?;
+    std::fs::create_dir_all(&setlist_folder)
+        .map_err(|e| format!("Failed to create setlist directory.\n{:?}", e))?;
 
-    result.await?;
-
-    Ok(())
-}
-
-#[tauri::command(async)]
-fn uninstall(
-    state: tauri::State<State>,
-    app_name: String,
-    version: String,
-    profile: String
-) -> Result<(), String> {
-    let app_profile = create_app_profile(
-        app_name,
-        &state,
-        version,
-        profile
-    )?;
-
-    app_profile.uninstall()?;
-
-    Ok(())
-}
-
-#[tauri::command(async)]
-fn exists(
-    state: tauri::State<State>,
-    app_name: String,
-    version: String,
-    profile: String
-) -> Result<bool, String> {
-    let app_profile = create_app_profile(
-        app_name,
-        &state,
-        version,
-        profile
-    )?;
-
-    Ok(app_profile.exists())
-}
-
-#[tauri::command(async)]
-fn launch(
-    state: tauri::State<'_, State>,
-    app_name: String,
-    version: String,
-    profile: String
-) -> Result<(), String> {
-    let app_profile = create_app_profile(
-        app_name,
-        &state,
-        version,
-        profile
-    )?;
-
-    app_profile.launch()
-}
-
-#[tauri::command(async)]
-fn reveal_folder(
-    state: tauri::State<'_, State>,
-    app_name: String,
-    version: String,
-    profile: String
-) -> Result<(), String> {
-    let app_profile = create_app_profile(
-        app_name,
-        &state,
-        version,
-        profile
-    )?;
-
-    app_profile.reveal_folder()
-}
-
-#[tauri::command]
-fn get_os() -> String {
-    std::env::consts::OS.to_string()
+    return Ok(CustomDirs {
+        yarg_folder: path_to_string(yarg_folder)?,
+        setlist_folder: path_to_string(setlist_folder)?
+    });
 }
 
 #[tauri::command]
@@ -277,59 +78,196 @@ fn is_dir_empty(path: String) -> bool {
 }
 
 #[tauri::command(async)]
-async fn set_download_location(
-    state: tauri::State<'_, State>,
-    path: Option<String>,
-) -> Result<(), String> {
-    let mut state_guard = state.0.write().unwrap();
+fn profile_folder_state(path: String, wanted_tag: String) -> ProfileFolderState {
+    let mut tag_file = PathBuf::from(&path);
+    tag_file.push("tag.txt");
 
-    // If this is None, just use the default
-    if let Some(path) = path {
-        state_guard.settings.download_location = path.clone();
+    let tag_file_exists = tag_file.try_exists();
+    if let Ok(exists) = tag_file_exists {
+        if !exists {
+            return ProfileFolderState::FirstDownload;
+        }
+
+        let tag = fs::read_to_string(tag_file);
+        if let Ok(tag_string) = tag {
+            if tag_string.trim() == wanted_tag {
+                return ProfileFolderState::UpToDate;
+            } else {
+                return ProfileFolderState::UpdateRequired;
+            }
+        } else {
+            println!("Failed to read tag file at `{}`", path);
+            return ProfileFolderState::Error;
+        }
+    } else {
+        println!("Failed to find if the profile exists at `{}`", path);
+        return ProfileFolderState::Error;
+    }
+}
+
+// when i was getting disk space in rust i used "free_space" from the fs2 crate because it takes a path and works out what drive that would be
+
+#[tauri::command(async)]
+async fn download_and_install_profile(
+    handle: AppHandle,
+    profile_path: String,
+    uuid: String,
+    tag: String,
+    temp_path: String,
+    content: Vec<ReleaseContent>
+) -> Result<(), String> {
+    let mut temp_file = PathBuf::from(&temp_path);
+    temp_file.push(format!("{}.temp", uuid));
+    let _ = fs::remove_file(&temp_file);
+
+    let mut install_path = PathBuf::from(&profile_path);
+    install_path.push("installation");
+    clear_folder(&install_path)?;
+
+    // Download and install all content
+    let current_os = std::env::consts::OS.to_string();
+    for c in content {
+        // Skip release content that is not for this OS
+        if !c.platforms.iter().any(|i| i.to_owned() == current_os)  {
+            continue;
+        }
+
+        let file_count = c.files.len() as u64;
+        for (index, file) in c.files.iter().enumerate() {
+            // Download
+
+            download(
+                &handle,
+                &file.url,
+                &temp_file,
+                file_count,
+                index as u64
+            ).await?;
+
+            // Extract/install
+
+            let _ = handle.emit_all(
+                "progress_info",
+                ProgressPayload {
+                    state: "installing".to_string(),
+                    current: (index + 1) as u64,
+                    total: file_count,
+                },
+            );
+
+            if file.file_type == "zip" {
+                extract(&temp_file, &install_path)?;
+            } else if file.file_type == "encrypted" {
+                extract_encrypted(&temp_file, &install_path)?;
+            } else {
+                return Err("Unhandled release file type.".to_string());
+            }
+        }
     }
 
-    state_guard.settings.initialized = true;
+    let mut tag_file = PathBuf::from(&profile_path);
+    tag_file.push("tag.txt");
+    fs::write(&tag_file, tag).map_err(|e| format!("Failed to write tag file.\n{:?}", e))?;
 
-    state_guard.set_download_locations()?;
-    state_guard.save_settings_file()?;
+    Ok(())
+}
+
+#[tauri::command(async)]
+fn uninstall_profile(profile_path: String) -> Result<(), String> {
+    let mut install_path = PathBuf::from(&profile_path);
+    install_path.push("installation");
+    clear_folder(&install_path)?;
+
+    let mut tag_file = PathBuf::from(&profile_path);
+    tag_file.push("tag.txt");
+    fs::remove_file(tag_file).map_err(|e| format!("Failed to remove tag file.\n{:?}", e))?;
+
+    // Remove the directories if they are empty
+    let _ = fs::remove_dir(&install_path);
+    let _ = fs::remove_dir(&profile_path);
 
     Ok(())
 }
 
 #[tauri::command]
-fn get_download_location(state: tauri::State<'_, State>) -> Result<String, String> {
-    let state_guard = state.0.read().unwrap();
-    Ok(state_guard.settings.download_location.clone())
+fn launch_profile(profile_path: String, exec_path: String, arguments: Vec<String>) -> Result<(), String> {
+    let mut path = PathBuf::from(&profile_path);
+    path.push("installation");
+    path.push(exec_path);
+
+    Command::new(path)
+        .args(arguments)
+        .spawn()
+        .map_err(|e| format!("Failed to launch profile? Is the executable installed?\n{:?}", e))?;
+
+    Ok(())
+}
+
+#[tauri::command]
+fn open_folder_profile(profile_path: String) -> Result<(), String> {
+    let mut path = PathBuf::from(&profile_path);
+    path.push("installation");
+
+    opener::reveal(path)
+        .map_err(|e| format!("Failed to reveal folder. Is it installed?\n{:?}", e))?;
+
+    Ok(())
+}
+
+#[tauri::command(async)]
+fn get_launch_argument() -> Option<String> {
+    let launch_arg = COMMAND_LINE_ARG_LAUNCH.lock().unwrap();
+    return launch_arg.to_owned();
+}
+
+ #[tauri::command(async)]
+fn clean_up_old_install(yarg_folder: String, setlist_folder: String) -> Result<(), String> {
+    let mut stable_old = PathBuf::from(&yarg_folder);
+    stable_old.push("stable");
+    clear_folder(&stable_old)?;
+    let _ = fs::remove_dir(&stable_old);
+
+    let mut nightly_old = PathBuf::from(&yarg_folder);
+    nightly_old.push("nightly");
+    clear_folder(&nightly_old)?;
+    let _ = fs::remove_dir(&nightly_old);
+
+    let mut setlist_old = PathBuf::from(&setlist_folder);
+    setlist_old.push("official");
+    clear_folder(&setlist_old)?;
+    let _ = fs::remove_dir(&setlist_old);
+
+    Ok(())
 }
 
 fn main() {
+    let args = CommandLineArgs::parse();
+
+    {
+        // Stores the launch option in a static so the frontend can request it later.
+        let mut launch_option = COMMAND_LINE_ARG_LAUNCH.lock().unwrap();
+        *launch_option = args.launch;
+    }
+
     tauri::Builder::default()
         .plugin(tauri_plugin_log::Builder::default().build())
-        .manage(State(RwLock::new(InnerState {
-            yarc_folder: PathBuf::new(),
-            launcher_folder: PathBuf::new(),
-            temp_folder: PathBuf::new(),
-            yarg_folder: PathBuf::new(),
-            setlist_folder: PathBuf::new(),
-            settings: Default::default(),
-        })))
         .invoke_handler(tauri::generate_handler![
-            init,
-            is_initialized,
-
-            download_and_install,
-            uninstall,
-            exists,
-            launch,
-            reveal_folder,
-
-            get_os,
+            get_important_dirs,
+            get_custom_dirs,
             is_dir_empty,
 
-            set_download_location,
-            get_download_location
+            profile_folder_state,
+            download_and_install_profile,
+            uninstall_profile,
+            launch_profile,
+            open_folder_profile,
+
+            get_launch_argument,
+
+            clean_up_old_install
         ])
         .setup(|app| {
+            // Show the window's shadow
             let window = app.get_window("main").unwrap();
             let _ = set_shadow(&window, true);
             Ok(())

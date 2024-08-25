@@ -1,0 +1,40 @@
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.separator {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+    padding: 5px 0px;
+}
+
+.separator .name {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #434663;
+}
+
+.separator .right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.add {
+    margin-left: auto;
+}
+
+.add > * {
+    height: 15px;
+
+    transition: color 0.1s;
+    color: #434663;
+}
+
+.add > *:hover {
+    color: #17E289;
+}

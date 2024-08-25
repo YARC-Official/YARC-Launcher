@@ -1,0 +1,39 @@
+.content {
+    width: 300px;
+    background: var(--sideBarBackground);
+
+    border-radius: 8px;
+    padding: 5px;
+
+    box-shadow: 0px 10px 38px -10px rgba(22, 23, 24, 0.35), 0px 10px 20px -15px rgba(22, 23, 24, 0.2);
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    border-radius: 8px;
+    padding: 15px;
+
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0);
+
+    color: var(--primary);
+
+    transition: background 0.1s;
+
+    outline: none;
+    user-select: none;
+    cursor: pointer;
+}
+
+.item[data-highlighted] {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.arrow {
+    fill: var(--sideBarBackground);
+}
