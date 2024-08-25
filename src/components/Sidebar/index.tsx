@@ -1,5 +1,4 @@
 import styles from "./Sidebar.module.css";
-import { DiscordIcon, TwitterIcon, GithubIcon, HomeIcon, QueueIcon, MarketplaceIcon } from "@app/assets/Icons";
 import SidebarMenuButton from "./SidebarMenuButton";
 import { NavLink } from "react-router-dom";
 import ProfilesList from "./Profiles/List";
@@ -7,6 +6,18 @@ import QueueStore from "@app/tasks/queue";
 import { useOfflineStatus } from "@app/hooks/useOfflineStatus";
 import useMarketIndex from "@app/hooks/useMarketIndex";
 import { settingsManager } from "@app/settings";
+import { askOpenUrl } from "@app/utils/safeUrl";
+
+import {
+    DiscordIcon,
+    TwitterIcon,
+    GithubIcon,
+    HomeIcon,
+    QueueIcon,
+    MarketplaceIcon,
+    YoutubeIcon,
+    RedditIcon
+} from "@app/assets/Icons";
 
 const Sidebar: React.FC = () => {
     const offlineStatus = useOfflineStatus();
@@ -55,9 +66,6 @@ const Sidebar: React.FC = () => {
 
         <div className={styles.footer}>
             <div className={styles.socials}>
-                <a href="https://discord.gg/sqpu4R552r" target="_blank" className={styles.link} rel="noreferrer"><DiscordIcon /></a>
-                <a href="https://twitter.com/EliteAsian123" target="_blank" className={styles.link} rel="noreferrer"><TwitterIcon /></a>
-                <a href="https://github.com/YARC-Official/YARG" target="_blank" className={styles.link} rel="noreferrer"><GithubIcon /></a>
             </div>
         </div>
     </div>;

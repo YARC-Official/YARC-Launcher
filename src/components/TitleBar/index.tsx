@@ -4,7 +4,7 @@ import { CloseIcon, MinimizeIcon } from "@app/assets/Icons";
 import { TryCloseDialog } from "@app/dialogs/Dialogs/TryCloseDialog";
 import { useCurrentTask } from "@app/tasks";
 import { createAndShowDialog } from "@app/dialogs";
-import YARCLogo from "@app/assets/YARC.svg?react";
+import YARCLogo from "@app/assets/YARCLong.svg?react";
 import { useEffect, useState } from "react";
 import { getVersion } from "@tauri-apps/api/app";
 

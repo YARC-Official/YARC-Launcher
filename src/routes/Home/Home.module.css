@@ -1,8 +1,52 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.banner {
+    display: flex;
+    height: 290px;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    align-self: stretch;
+    flex-direction: column;
+
+    background: #05060B;
+}
+
+.banner > img {
+    width: 150px;
+    height: 150px;
+}
+
+.socials {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
+
+.socials > svg {
+    height: 25px;
+    cursor: pointer;
+
+    color: #434663;
+    transition: color 250ms;
+}
+
+.socials > svg:hover {
+    color: white;
+}
+
 .content {
+    align-self: stretch;
+
     display: flex;
     flex-direction: row;
     align-items: flex-start;
     gap: 25px;
+    flex: 1 0 0;
 
     padding: 24px;
 }

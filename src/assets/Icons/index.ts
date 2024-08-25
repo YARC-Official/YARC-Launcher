@@ -37,6 +37,8 @@ import MarketplaceIcon from "./Marketplace.svg?react";
 import MoreIcon from "./More.svg?react";
 import SidebarInQueueIcon from "./SidebarInQueue.svg?react";
 import SidebarUpdateIcon from "./SidebarUpdate.svg?react";
+import RedditIcon from "./Reddit.svg?react";
+import YoutubeIcon from "./Youtube.svg?react";
 
 export {
     AddIcon,
@@ -71,4 +73,6 @@ export {
     MoreIcon,
     SidebarInQueueIcon,
     SidebarUpdateIcon,
+    RedditIcon,
+    YoutubeIcon,
 };

@@ -34,11 +34,8 @@
 
 .socials > .link {
     height: 20px;
-}
-
-.socials > .link > svg {
-    height: 100%;
     color: var(--primary);
+    cursor: pointer;
 }
 
 .menus {
