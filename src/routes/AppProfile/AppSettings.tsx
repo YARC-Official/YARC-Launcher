@@ -1,7 +1,7 @@
 import Button, { ButtonColor } from "@app/components/Button";
 import styles from "./AppSettings.module.css";
-import { useState } from "react";
-import { ActiveProfile, VersionInfoList, VersionList } from "@app/profiles/types";
+import { useEffect, useState } from "react";
+import { ActiveProfile, GraphicsApi, VersionInfoList, VersionList } from "@app/profiles/types";
 import { localizeMetadata } from "@app/profiles/utils";
 import { tryFetchVersion, useProfileStore } from "@app/profiles/store";
 import InputBox from "@app/components/InputBox";
@@ -10,6 +10,7 @@ import { useOfflineStatus } from "@app/hooks/useOfflineStatus";
 import { useQuery } from "@tanstack/react-query";
 import { showErrorDialog } from "@app/dialogs";
 import { distanceFromToday } from "@app/utils/timeFormat";
+import { getOS, OS } from "@app/utils/os";
 
 interface VersionListProps {
     activeProfile: ActiveProfile,
@@ -89,7 +90,15 @@ const AppSettings: React.FC<Props> = ({ activeProfile, setSettingsOpen }: Props)
 
     const [displayName, setDisplayName] = useState<string>(initalDisplayName);
     const [launchArguments, setLaunchArguments] = useState<string>(activeProfile.launchArguments);
+    const [graphicsApi, setGraphicsApi] = useState<GraphicsApi>(activeProfile.graphicsApi);
     const [selectedVerison, setSelectedVersion] = useState<string | undefined>(activeProfile.selectedVersion);
+
+    const [os, setOS] = useState<OS | undefined>(undefined);
+    useEffect(() => {
+        (async () => {
+            setOS(await getOS());
+        })();
+    }, []);
 
     return <div className={styles.popup}>
         <div className={styles.body}>
@@ -110,6 +119,30 @@ const AppSettings: React.FC<Props> = ({ activeProfile, setSettingsOpen }: Props)
                     <div className={styles.setting}>
                         <p>Additional Launch Arguments</p>
                         <InputBox state={launchArguments} setState={setLaunchArguments} placeholder="Launch arguments..." />
+                    </div>
+                    <div className={styles.setting}>
+                        <p>Graphics API</p>
+                        <select defaultValue={graphicsApi} onChange={(e) => setGraphicsApi(e.target.value as GraphicsApi)}>
+                            <option value={GraphicsApi.Default}>Default</option>
+                            { (os === "windows" &&
+                                <>
+                                    <option value={GraphicsApi.D3D11}>DirectX 11</option>
+                                    <option value={GraphicsApi.D3D12}>DirectX 12</option>
+                                    <option value={GraphicsApi.OPEN_GL}>OpenGL</option>
+                                    <option value={GraphicsApi.VULKAN}>Vulkan</option>
+                                </>)
+                                || (os === "macos" &&
+                                <>
+                                    <option value={GraphicsApi.METAL}>Metal</option>
+                                    <option value={GraphicsApi.VULKAN}>Vulkan</option>
+                                </>)
+                                || (os === "linux" &&
+                                <>
+                                    <option value={GraphicsApi.OPEN_GL}>OpenGL</option>
+                                    <option value={GraphicsApi.VULKAN}>Vulkan</option>
+                                </>)
+                            }
+                        </select>
                     </div>
                 </Tabs.Content>
                 <Tabs.Content className={styles.versionList} value="version">
@@ -133,6 +166,9 @@ const AppSettings: React.FC<Props> = ({ activeProfile, setSettingsOpen }: Props)
 
                         // Update launch arguments
                         activeProfile.launchArguments = launchArguments;
+
+                        // Update graphics api
+                        activeProfile.graphicsApi = graphicsApi;
 
                         // Update profile version
                         if (selectedVerison !== activeProfile.selectedVersion) {
