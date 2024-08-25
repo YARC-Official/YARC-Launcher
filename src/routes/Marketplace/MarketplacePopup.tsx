@@ -1,16 +1,17 @@
 import { MarketplaceProfile } from "@app/profiles/marketplace";
 import { useProfileStore } from "@app/profiles/store";
 import styles from "./MarketplacePopup.module.css";
-import { AddIcon, CloseIcon, InformationIcon, VerifiedIcon } from "@app/assets/Icons";
+import { AddIcon, CloseIcon, InformationIcon, SongIcon, TimeIcon, VerifiedIcon } from "@app/assets/Icons";
 import { localizeMetadata, processAssetUrl } from "@app/profiles/utils";
 import { useQuery } from "@tanstack/react-query";
-import { ApplicationMetadata, Profile } from "@app/profiles/types";
+import { ApplicationMetadata, Profile, SetlistMetadata } from "@app/profiles/types";
 import ProfileIcon from "@app/components/ProfileIcon";
 import Button, { ButtonColor } from "@app/components/Button";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Setlist from "@app/components/Setlist";
 import Box from "@app/components/Box";
+import { millisToDisplayLength } from "@app/utils/timeFormat";
 
 interface Props {
     marketplaceProfile?: MarketplaceProfile,
@@ -96,6 +97,32 @@ const MarketplacePopup: React.FC<Props> = ({ marketplaceProfile, setSelectedProf
                     </div>
                 </div>
                 <div className={styles.bannerOptions}>
+                    <div className={styles.bannerOptionsStats}>
+                        {profile.type === "setlist" &&
+                            <>
+                                <div>
+                                    <SongIcon />
+                                    <span>
+                                        <span className={styles.highlightedStat}>
+                                            {(metadata as SetlistMetadata).songs.length}
+                                        </span>
+                                        &#32; songs
+                                    </span>
+                                </div>
+                                <div>
+                                    <TimeIcon />
+                                    <span>
+                                        <span className={styles.highlightedStat}>
+                                            {millisToDisplayLength(
+                                                (metadata as SetlistMetadata).songs.reduce((a, i) => a + i.length, 0),
+                                                true)}
+                                        </span>
+                                        &#32; long
+                                    </span>
+                                </div>
+                            </>
+                        }
+                    </div>
                     <div className={styles.bannerOptionsMain}>
                         {button}
                     </div>
