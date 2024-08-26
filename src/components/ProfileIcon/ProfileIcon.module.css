@@ -3,6 +3,7 @@
 
     --icon-border-radius: 17%;
     border-radius: var(--icon-border-radius);
+    background: #070810;
 
     box-shadow: 2px 2px 6px 0px rgba(0, 0, 0, 0.4);
 }
