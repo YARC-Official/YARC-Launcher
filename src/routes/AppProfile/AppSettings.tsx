@@ -70,7 +70,7 @@ const VersionListComp: React.FC<VersionListProps> = ({ activeProfile, selectedVe
                 data-state={selectedVersion === undefined ? "active" : "inactive"}
                 onClick={() => setSelectedVersion(undefined)}>
 
-                <header>Latest Release</header>
+                <header>Latest Release ({versionList.length > 0 ? versionList[0].tag : ""})</header>
                 <div>Recommended</div>
             </div>
             {
