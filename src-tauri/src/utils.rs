@@ -49,7 +49,7 @@ pub fn clear_folder(path: &Path) -> Result<(), String> {
 }
 
 pub async fn download(
-    app: &AppHandle,
+    app_handle: Option<&AppHandle>,
     url: &str,
     output_path: &Path,
     file_count: u64,
@@ -90,17 +90,19 @@ pub async fn download(
         }
 
         // Emitting too often could cause crashes, so buffer it to the buffer rate
-        if emit_timer.elapsed() >= Duration::from_secs_f64(EMIT_BUFFER_RATE) {
-            let _ = app.emit_all(
-                "progress_info",
-                ProgressPayload {
-                    state: "downloading".to_string(),
-                    current: current_downloaded + (total_size * file_index),
-                    total: total_size * file_count,
-                },
-            );
+        if let Some(app) = app_handle {
+            if emit_timer.elapsed() >= Duration::from_secs_f64(EMIT_BUFFER_RATE) {
+                let _ = app.emit_all(
+                    "progress_info",
+                    ProgressPayload {
+                        state: "downloading".to_string(),
+                        current: current_downloaded + (total_size * file_index),
+                        total: total_size * file_count,
+                    },
+                );
 
-            emit_timer = Instant::now();
+                emit_timer = Instant::now();
+            }
         }
     }
 

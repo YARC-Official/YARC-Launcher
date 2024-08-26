@@ -4,14 +4,19 @@
 mod utils;
 mod types;
 
-use std::{fs, path::PathBuf, process::Command, sync::{LazyLock, Mutex}};
+use std::{fs::{self, File}, path::PathBuf, process::Command, sync::{LazyLock, Mutex}};
 
 use directories::BaseDirs;
+use minisign::{PublicKeyBox, SignatureBox};
 use tauri::{AppHandle, Manager};
 use window_shadows::set_shadow;
 use utils::*;
 use types::*;
 use clap::Parser;
+
+const YARG_PUB_KEY: &str = "untrusted comment: minisign public key C26EBBBEC4C1DB81
+RWSB28HEvrtuwvPn3pweVBodgVi/d+UH22xDsL3K8VBgeRqaIrDdTvps
+";
 
 static COMMAND_LINE_ARG_LAUNCH: LazyLock<Mutex<Option<String>>> = LazyLock::new(|| Mutex::new(None));
 
@@ -120,6 +125,10 @@ async fn download_and_install_profile(
     temp_file.push(format!("{}.temp", uuid));
     let _ = fs::remove_file(&temp_file);
 
+    let mut sig_file = PathBuf::from(&temp_path);
+    sig_file.push(format!("{}.temp_sig", uuid));
+    let _ = fs::remove_file(&sig_file);
+
     let mut install_path = PathBuf::from(&profile_path);
     install_path.push("installation");
     clear_folder(&install_path)?;
@@ -137,12 +146,51 @@ async fn download_and_install_profile(
             // Download
 
             download(
-                &handle,
+                Some(&handle),
                 &file.url,
                 &temp_file,
                 file_count,
                 index as u64
             ).await?;
+
+            let payload_current = (index + 1) as u64;
+
+            // Verify (if signature is provided)
+
+            if let Some(sig_url) = &file.sig_url {
+                // Emit the verification
+                let _ = &handle.emit_all(
+                    "progress_info",
+                    ProgressPayload {
+                        state: "verifying".to_string(),
+                        current: payload_current,
+                        total: file_count,
+                    },
+                );
+
+                // Download sig file (don't pass app so it doesn't emit an update)
+                download(
+                    None,
+                    &sig_url,
+                    &sig_file,
+                    0,
+                    0
+                ).await?;
+
+                // Convert public key
+                let pk_box = PublicKeyBox::from_string(YARG_PUB_KEY).unwrap();
+                let pk = pk_box.into_public_key().unwrap();
+
+                // Create the signature box
+                let sig_box = SignatureBox::from_file(&sig_file)
+                    .map_err(|e| format!("Invalid signature file! Try reinstalling. If it keeps failing, let us know ASAP!\n{:?}", e))?;
+
+                // Verify
+                let zip_file = File::open(&temp_file)
+                    .map_err(|e| format!("Failed to open zip while verifying.\n{:?}", e))?;
+                minisign::verify(&pk, &sig_box, zip_file, true, false, false)
+                    .map_err(|_| "Failed to verify downloaded zip file! Try reinstalling. If it keeps failing, let us know ASAP!")?;
+            }
 
             // Extract/install
 
@@ -150,7 +198,7 @@ async fn download_and_install_profile(
                 "progress_info",
                 ProgressPayload {
                     state: "installing".to_string(),
-                    current: (index + 1) as u64,
+                    current: payload_current,
                     total: file_count,
                 },
             );
@@ -162,6 +210,11 @@ async fn download_and_install_profile(
             } else {
                 return Err("Unhandled release file type.".to_string());
             }
+
+            // Clean up
+
+            let _ = fs::remove_file(&temp_file);
+            let _ = fs::remove_file(&sig_file);
         }
     }
 
