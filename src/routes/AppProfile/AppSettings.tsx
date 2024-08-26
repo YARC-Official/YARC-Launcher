@@ -8,8 +8,9 @@ import InputBox from "@app/components/InputBox";
 import * as Tabs from "@radix-ui/react-tabs";
 import { useOfflineStatus } from "@app/hooks/useOfflineStatus";
 import { useQuery } from "@tanstack/react-query";
-import { showErrorDialog } from "@app/dialogs";
+import { createAndShowDialog, showErrorDialog } from "@app/dialogs";
 import { distanceFromToday } from "@app/utils/timeFormat";
+import { OldVersionDialog } from "@app/dialogs/Dialogs/OldVersionDialog";
 
 interface VersionListProps {
     activeProfile: ActiveProfile,
@@ -28,6 +29,18 @@ const VersionListComp: React.FC<VersionListProps> = ({ activeProfile, selectedVe
             await fetch((activeProfile.profile.version as VersionInfoList).listUrl)
                 .then(res => res.json())
     });
+
+    const selectVersion = async (uuid: string, index: number) => {
+        if(index != 0) {
+            const versionDialogOutput = await createAndShowDialog(OldVersionDialog);
+
+            if (versionDialogOutput === "okay") {
+                setSelectedVersion(uuid);
+            }   
+        } else {
+            setSelectedVersion(uuid);
+        }
+    };
 
     if (versionListQuery.isLoading) {
         return <span className={styles.centered}>
@@ -61,11 +74,11 @@ const VersionListComp: React.FC<VersionListProps> = ({ activeProfile, selectedVe
                 <div>Recommended</div>
             </div>
             {
-                versionList.map(i =>
+                versionList.map((i, index) =>
                     <div
                         data-state={selectedVersion === i.uuid ? "active" : "inactive"}
                         key={i.uuid}
-                        onClick={() => setSelectedVersion(i.uuid)}>
+                        onClick={() => selectVersion(i.uuid, index)}>
 
                         <header>{i.tag}</header>
                         <div>{distanceFromToday(i.release)}</div>
