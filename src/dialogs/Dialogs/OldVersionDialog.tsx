@@ -10,7 +10,7 @@ export class OldVersionDialog extends BaseDialog<Record<string, never>> {
     getInnerContents() {
         return <>
             <p>
-                <strong>You are trying to select an old version of YARG!</strong>
+                <strong>You are trying to select an old version of this application!</strong>
                 &#32;These versions may be missing features, contain bugs and potentially corrupt your game data. Use at your own risk!
             </p>
         </>;

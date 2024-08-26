@@ -31,7 +31,7 @@ const VersionListComp: React.FC<VersionListProps> = ({ activeProfile, selectedVe
     });
 
     const selectVersion = async (uuid: string, index: number) => {
-        if(index != 0) {
+        if (index !== 0) {
             const versionDialogOutput = await createAndShowDialog(OldVersionDialog);
 
             if (versionDialogOutput === "okay") {
@@ -78,7 +78,7 @@ const VersionListComp: React.FC<VersionListProps> = ({ activeProfile, selectedVe
                     <div
                         data-state={selectedVersion === i.uuid ? "active" : "inactive"}
                         key={i.uuid}
-                        onClick={() => selectVersion(i.uuid, index)}>
+                        onClick={async () => await selectVersion(i.uuid, index)}>
 
                         <header>{i.tag}</header>
                         <div>{distanceFromToday(i.release)}</div>
