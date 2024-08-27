@@ -15,7 +15,7 @@ tauri-build = { version = "1.5.0", features = [] }
 [dependencies]
 log = "^0.4"
 tauri-plugin-log = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
-tauri = { version = "1.5.2", features = [ "shell-open",
+tauri = { version = "1.5.2", features = [ "process-relaunch", "shell-open",
     "fs-read-file",
     "fs-read-dir",
     "fs-create-dir",

@@ -46,6 +46,10 @@
         "readFile": true,
         "writeFile": true,
         "scope": [ "$APPCONFIG", "$APPCONFIG/*" ]
+      },
+      "process": {
+        // Required for changing the download location
+        "relaunch": true
       }
     },
     "bundle": {

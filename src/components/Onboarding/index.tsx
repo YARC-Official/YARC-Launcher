@@ -25,7 +25,7 @@ interface Props {
 
 const Onboarding: React.FC<Props> = (props: Props) => {
     const [loading, setLoading] = useState<boolean>(false);
-    const [step, setStep] = useState<OnboardingStep>(OnboardingStep.INSTALL_PATH);
+    const [stepIndex, setStepIndex] = useState<number>(0);
 
     let directories = useDirectories();
     const offlineStatus = useOfflineStatus();
@@ -39,6 +39,20 @@ const Onboarding: React.FC<Props> = (props: Props) => {
     const [downloadEmpty, setDownloadEmpty] = useState<boolean>(true);
 
     const [profileUrls, setProfileUrls] = useState<string[]>([]);
+
+    // If the user is attempting to change the install path, they would have active profiles
+    const hasActiveProfiles = settingsManager.getCache("activeProfiles").length > 0;
+    let steps: OnboardingStep[];
+    if (!hasActiveProfiles) {
+        steps = [
+            OnboardingStep.INSTALL_PATH,
+            OnboardingStep.COMPONENTS
+        ];
+    } else {
+        steps = [
+            OnboardingStep.INSTALL_PATH
+        ];
+    }
 
     if (offlineStatus.isOffline) {
         return <main className={styles.mainContainer}>
@@ -85,19 +99,21 @@ const Onboarding: React.FC<Props> = (props: Props) => {
             // Ignore
         }
 
-        for (const url of profileUrls) {
-            const uuid = await useProfileStore.getState().activateProfile(url);
-            if (uuid === undefined) {
-                continue;
-            }
+        if (!hasActiveProfiles) {
+            for (const url of profileUrls) {
+                const uuid = await useProfileStore.getState().activateProfile(url);
+                if (uuid === undefined) {
+                    continue;
+                }
 
-            const activeProfile = useProfileStore.getState().getProfileByUUID(uuid);
-            if (activeProfile === undefined) {
-                continue;
-            }
+                const activeProfile = useProfileStore.getState().getProfileByUUID(uuid);
+                if (activeProfile === undefined) {
+                    continue;
+                }
 
-            const path = await getPathForProfile(directories, activeProfile);
-            await downloadAndInstall(activeProfile, path);
+                const path = await getPathForProfile(directories, activeProfile);
+                await downloadAndInstall(activeProfile, path);
+            }
         }
 
         props.setOnboarding(false);
@@ -106,38 +122,34 @@ const Onboarding: React.FC<Props> = (props: Props) => {
     return <main className={styles.mainContainer}>
         {!loading &&
             <div className={styles.container}>
-                <OnboardingSidebar onboardingStep={step} />
+                <OnboardingSidebar steps={steps} stepIndex={stepIndex} />
                 <div className={styles.content}>
                     <div className={styles.contentContainer}>
                         <div className={styles.stepContainer}>
-                            {step === OnboardingStep.INSTALL_PATH &&
+                            {steps[stepIndex] === OnboardingStep.INSTALL_PATH &&
                                 <InstallFolderPage
                                     downloadLocation={downloadLocation}
                                     downloadEmpty={downloadEmpty}
                                     askForFolder={askForFolder} />
                             }
-                            {step === OnboardingStep.COMPONENTS &&
+                            {steps[stepIndex] === OnboardingStep.COMPONENTS &&
                                 <ComponentsPage profileUrls={profileUrls} setProfileUrls={setProfileUrls} />
                             }
                         </div>
                         <div className={styles.stepNavigation}>
                             <div className={styles.stepNavigationButtons}>
                                 <Button color={ButtonColor.DARK} border onClick={() => {
-                                    if (step > OnboardingStep.INSTALL_PATH) {
-                                        setStep(step - 1);
+                                    if (stepIndex > 0) {
+                                        setStepIndex(stepIndex - 1);
                                     }
                                 }}>
                                     Back
                                 </Button>
                                 <Button color={ButtonColor.GREEN} border onClick={() => {
-                                    switch (step) {
-                                        case OnboardingStep.INSTALL_PATH:
-                                            if (downloadEmpty) {
-                                                setStep(step + 1);
-                                            }
-                                            break;
-                                        case OnboardingStep.COMPONENTS:
-                                            finish();
+                                    if (stepIndex === steps.length - 1) {
+                                        finish();
+                                    } else {
+                                        setStepIndex(stepIndex + 1);
                                     }
                                 }}>
                                     Next

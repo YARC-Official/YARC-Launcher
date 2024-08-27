@@ -82,3 +82,28 @@
     font-weight: 800;
     text-transform: uppercase;
 }
+
+.settingsButton {
+    width: 38px;
+    height: 38px;
+    padding: 10px;
+
+    background: transparent;
+    color: #B8BDD6;
+    border-radius: 8px;
+    transition: background 0.1s;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.settingsButton[aria-current="page"], .settingsButton:hover {
+    background: #0D0F23;
+    color: #D4D9EE;
+}
+
+.settingsButton > svg {
+    width: 20px;
+    height: 20px;
+}

@@ -6,7 +6,7 @@ import QueueStore from "@app/tasks/queue";
 import { useOfflineStatus } from "@app/hooks/useOfflineStatus";
 import useMarketIndex from "@app/hooks/useMarketIndex";
 import { settingsManager } from "@app/settings";
-import { HomeIcon, QueueIcon, MarketplaceIcon } from "@app/assets/Icons";
+import { HomeIcon, QueueIcon, MarketplaceIcon, SettingsIcon } from "@app/assets/Icons";
 
 const Sidebar: React.FC = () => {
     const offlineStatus = useOfflineStatus();
@@ -52,6 +52,12 @@ const Sidebar: React.FC = () => {
         </div>
 
         <ProfilesList isOffline={offlineStatus.isOffline} />
+
+        <div className={styles.footer}>
+            <NavLink to="/settings" className={styles.settingsButton}>
+                <SettingsIcon />
+            </NavLink>
+        </div>
     </div>;
 };
 

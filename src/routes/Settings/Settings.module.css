@@ -1,0 +1,43 @@
+.mainContainer {
+    display: flex;
+    flex-flow: column;
+    padding: 16px;
+    gap: 16px;
+}
+
+.downloadLocation {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+
+    align-items: center;
+}
+
+.downloadLocation > span {
+    font-size: 16px;
+    flex: 1 0 0;
+
+    border: 1px solid #E3E4E7;
+    padding: 16px;
+    border-radius: 12px;
+}
+
+.loadingScreen {
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background: var(--sideBarBackground);
+
+    color: #FFF;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+
+    z-index: 10000;
+}
