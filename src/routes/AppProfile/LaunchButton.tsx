@@ -5,6 +5,7 @@ import { ProfileFolderState, ProfileState } from "@app/hooks/useProfileState";
 import { localize } from "@app/utils/localized";
 import { usePayload } from "@app/tasks/payload";
 import PayloadProgress from "@app/components/PayloadProgress";
+import { useEffect, useRef, useState } from "react";
 
 interface Props {
     profileState: ProfileState
@@ -22,11 +23,20 @@ export function LaunchButton({ profileState }: Props) {
 
     const payload = usePayload(currentTask?.taskUUID);
 
+    const [launching, setLaunching] = useState<boolean>(false);
+    const launchTimeoutRef = useRef<NodeJS.Timeout>();
+
+    // Make sure to reset the launching status when the profile changes
+    useEffect(() => {
+        setLaunching(false);
+        clearTimeout(launchTimeoutRef.current);
+    }, [activeProfile]);
+
     const profile = activeProfile.profile;
 
     // Loading button
-    if (loading) {
-        return <Button color={ButtonColor.LIGHT} rounded border>
+    if (loading || launching) {
+        return <Button color={ButtonColor.DARK} rounded border>
             Loading...
         </Button>;
     }
@@ -69,7 +79,16 @@ export function LaunchButton({ profileState }: Props) {
 
     // Launch/up-to-date button
     if (folderState === ProfileFolderState.UpToDate) {
-        return <Button color={ButtonColor.BLUE} rounded border onClick={async () => await launch()}>
+        return <Button color={ButtonColor.BLUE} rounded border onClick={async () => {
+            if (profile.type === "application") {
+                setLaunching(true);
+                launchTimeoutRef.current = setTimeout(() => {
+                    setLaunching(false);
+                }, 10 * 1000);
+            }
+
+            await launch();
+        }}>
             {profile.type === "application" &&
                 <>
                     Launch {releaseName}
