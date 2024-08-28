@@ -1,11 +1,27 @@
 import { intlFormatDistance } from "date-fns";
-import prettyMilliseconds from "pretty-ms";
+import humanizeDuration from "humanize-duration";
 
 export const millisToDisplayLength = (length: number, long = false) => {
-    return prettyMilliseconds(length, {
-        colonNotation: !long,
-        secondsDecimalDigits: 0,
-    });
+    if (long) {
+        return humanizeDuration(length, {
+            round: true
+        });
+    } else {
+        const totalSeconds = Math.round(length / 1000);
+        const totalMinutes = Math.floor(totalSeconds / 60);
+
+        const seconds = totalSeconds % 60;
+        const minutes = totalMinutes % 60;
+        const hours = Math.floor(totalMinutes / 60);
+
+        const secondsStr = seconds.toString().padStart(2, "0");
+
+        if (hours === 0) {
+            return `${minutes}:${secondsStr}`;
+        } else {
+            return `${hours}:${minutes}:${secondsStr}`;
+        }
+    }
 };
 
 export const isConsideredNewRelease = (releaseDate: string, newestInSetlist: string) => {
