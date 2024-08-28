@@ -1,7 +1,7 @@
 {
   "name": "yet_another_launcher",
   "private": true,
-  "version": "0.3.2",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "tauri": "tauri",
