@@ -117,6 +117,7 @@ export interface ActiveProfile {
     displayName?: string,
     selectedVersion?: string,
     launchArguments: string,
+    useObsVkcapture: boolean,
 
     lastPlayed?: string,
 

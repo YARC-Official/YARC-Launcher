@@ -63,6 +63,7 @@ export const launch = async (activeProfile: ActiveProfile, profilePath: string):
         await invoke("launch_profile", {
             profilePath: profilePath,
             execPath: launchOptions.executablePath,
+            useObsVkcapture: os === "linux" && activeProfile.useObsVkcapture,
             arguments: [...launchOptions.arguments, ...otherArguments, ...customArguments]
         });
     } catch (e) {

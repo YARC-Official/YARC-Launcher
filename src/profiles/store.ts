@@ -85,6 +85,7 @@ export const useProfileStore = create<ProfileStore>()((set, get) => ({
             displayName: undefined,
             selectedVersion: undefined,
             launchArguments: "",
+            useObsVkcapture: false,
 
             lastPlayed: undefined,
 

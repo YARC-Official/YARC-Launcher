@@ -1,6 +1,6 @@
 import Button, { ButtonColor } from "@app/components/Button";
 import styles from "./AppSettings.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ActiveProfile, VersionInfoList, VersionList } from "@app/profiles/types";
 import { localizeMetadata } from "@app/profiles/utils";
 import { tryFetchVersion, useProfileStore } from "@app/profiles/store";
@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createAndShowDialog, showErrorDialog } from "@app/dialogs";
 import { distanceFromToday } from "@app/utils/timeFormat";
 import { OldVersionDialog } from "@app/dialogs/Dialogs/OldVersionDialog";
+import { OS, getOS } from "@app/utils/os";
 
 interface VersionListProps {
     activeProfile: ActiveProfile,
@@ -36,7 +37,7 @@ const VersionListComp: React.FC<VersionListProps> = ({ activeProfile, selectedVe
 
             if (versionDialogOutput === "okay") {
                 setSelectedVersion(uuid);
-            }   
+            }
         } else {
             setSelectedVersion(uuid);
         }
@@ -100,8 +101,17 @@ const AppSettings: React.FC<Props> = ({ activeProfile, setSettingsOpen }: Props)
         initalDisplayName = localizeMetadata(activeProfile.profile, "en-US").name;
     }
 
+    const [os, setOs] = useState<OS | undefined>();
+    useEffect(() => {
+        (async () => {
+            setOs(await getOS());
+        })();
+    });
+
     const [displayName, setDisplayName] = useState<string>(initalDisplayName);
     const [launchArguments, setLaunchArguments] = useState<string>(activeProfile.launchArguments);
+    const [obsVkcapture, setObsVkcapture] = useState<boolean>(activeProfile.useObsVkcapture);
+
     const [selectedVerison, setSelectedVersion] = useState<string | undefined>(activeProfile.selectedVersion);
 
     return <div className={styles.popup}>
@@ -124,6 +134,25 @@ const AppSettings: React.FC<Props> = ({ activeProfile, setSettingsOpen }: Props)
                         <p>Additional Launch Arguments</p>
                         <InputBox state={launchArguments} setState={setLaunchArguments} placeholder="Launch arguments..." />
                     </div>
+                    {os === "linux" &&
+                        <div className={[styles.setting, styles.wide].join(" ")}>
+                            <p>Use obs-vkcapture wrapper (you need to have it installed)</p>
+                            {obsVkcapture &&
+                                <Button color={ButtonColor.GREEN} rounded border
+                                    onClick={() => setObsVkcapture(false)}>
+
+                                    Enabled
+                                </Button>
+                            }
+                            {!obsVkcapture &&
+                                <Button color={ButtonColor.LIGHT} rounded
+                                    onClick={() => setObsVkcapture(true)}>
+
+                                    Disabled
+                                </Button>
+                            }
+                        </div>
+                    }
                 </Tabs.Content>
                 <Tabs.Content className={styles.versionList} value="version">
                     <VersionListComp
@@ -144,8 +173,9 @@ const AppSettings: React.FC<Props> = ({ activeProfile, setSettingsOpen }: Props)
                             activeProfile.displayName = displayName;
                         }
 
-                        // Update launch arguments
+                        // Update other fields
                         activeProfile.launchArguments = launchArguments;
+                        activeProfile.useObsVkcapture = obsVkcapture;
 
                         // Update profile version
                         if (selectedVerison !== activeProfile.selectedVersion) {

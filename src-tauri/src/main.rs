@@ -243,15 +243,24 @@ fn uninstall_profile(profile_path: String) -> Result<(), String> {
 }
 
 #[tauri::command]
-fn launch_profile(profile_path: String, exec_path: String, arguments: Vec<String>) -> Result<(), String> {
+fn launch_profile(profile_path: String, exec_path: String, use_obs_vkcapture: bool, arguments: Vec<String>) -> Result<(), String> {
     let mut path = PathBuf::from(&profile_path);
     path.push("installation");
     path.push(exec_path);
 
-    Command::new(path)
-        .args(arguments)
-        .spawn()
-        .map_err(|e| format!("Failed to launch profile? Is the executable installed?\n{:?}", e))?;
+    if !use_obs_vkcapture {
+        Command::new(path)
+            .args(arguments)
+            .spawn()
+            .map_err(|e| format!("Failed to launch profile! Is the executable installed?\n{:?}", e))?;
+    } else {
+        let path_str = path_to_string(path)?;
+
+        Command::new("obs-gamecapture")
+            .args([path_str].iter().chain(&arguments))
+            .spawn()
+            .map_err(|e| format!("Failed to launch profile! Is the executable installed? Is obs-vkcapture installed and pathed?\n{:?}", e))?;
+    }
 
     Ok(())
 }

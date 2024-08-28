@@ -85,15 +85,27 @@
     gap: 15px;
 }
 
+.setting.wide {
+    justify-content: space-between;
+}
+
 .setting > p {
     width: 175px;
 
     color: #41475F;
 }
 
+.setting.wide > p {
+    width: auto;
+}
+
 .setting > input {
     align-self: center;
     flex: 1 0 0;
+}
+
+.setting > button {
+    align-self: center;
 }
 
 .navigation {
