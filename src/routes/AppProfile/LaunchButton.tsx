@@ -6,6 +6,7 @@ import { localize } from "@app/utils/localized";
 import { usePayload } from "@app/tasks/payload";
 import PayloadProgress from "@app/components/PayloadProgress";
 import { useEffect, useRef, useState } from "react";
+import { useOfflineStatus } from "@app/hooks/useOfflineStatus";
 
 interface Props {
     profileState: ProfileState
@@ -21,6 +22,7 @@ export function LaunchButton({ profileState }: Props) {
         launch,
     } = profileState;
 
+    const offlineStatus = useOfflineStatus();
     const payload = usePayload(currentTask?.taskUUID);
 
     const [launching, setLaunching] = useState<boolean>(false);
@@ -63,6 +65,12 @@ export function LaunchButton({ profileState }: Props) {
 
     // Update/install button
     if (folderState === ProfileFolderState.UpdateRequired || folderState === ProfileFolderState.FirstDownload) {
+        if (offlineStatus.isOffline) {
+            return <Button color={ButtonColor.DARK} rounded border>
+                Offline
+            </Button>;
+        }
+
         return <Button color={ButtonColor.GREEN} rounded border onClick={async () => await downloadAndInstall()}>
             {folderState === ProfileFolderState.UpdateRequired &&
                 <>
