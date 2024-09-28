@@ -56,7 +56,6 @@
     "dompurify": "^3.0.6",
     "gray-matter": "^4.0.3",
     "humanize-duration": "^3.32.1",
-    "is-online": "^11.0.0",
     "js-video-url-parser": "^0.5.1",
     "lodash": "^4.17.21",
     "marked": "^11.1.0",

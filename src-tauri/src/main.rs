@@ -8,6 +8,7 @@ use std::{fs::{self, File}, path::PathBuf, process::Command, sync::{LazyLock, Mu
 
 use directories::BaseDirs;
 use minisign::{PublicKeyBox, SignatureBox};
+use online::check;
 use tauri::{AppHandle, Manager};
 use window_shadows::set_shadow;
 use utils::*;
@@ -79,6 +80,14 @@ fn is_dir_empty(path: String) -> bool {
     match fs::read_dir(path) {
         Ok(mut entries) => entries.next().is_none(),
         Err(_) => false,
+    }
+}
+
+#[tauri::command(async)]
+fn is_connected_to_internet() -> bool {
+    match check(Some(7)) {
+        Ok(()) => true,
+        Err(_) => false
     }
 }
 
@@ -282,7 +291,7 @@ fn get_launch_argument() -> Option<String> {
     return launch_arg.to_owned();
 }
 
- #[tauri::command(async)]
+#[tauri::command(async)]
 fn clean_up_old_install(yarg_folder: String, setlist_folder: String) -> Result<(), String> {
     let mut stable_old = PathBuf::from(&yarg_folder);
     stable_old.push("stable");
@@ -317,6 +326,7 @@ fn main() {
             get_important_dirs,
             get_custom_dirs,
             is_dir_empty,
+            is_connected_to_internet,
 
             profile_folder_state,
             download_and_install_profile,

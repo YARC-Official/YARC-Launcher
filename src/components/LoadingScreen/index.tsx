@@ -12,7 +12,6 @@ import { getPathForProfile } from "@app/profiles/utils";
 import { useDirectories } from "@app/profiles/directories";
 import { createAndShowDialog, showErrorDialog } from "@app/dialogs";
 import { useOfflineStatus } from "@app/hooks/useOfflineStatus";
-import isOnline from "is-online";
 import { OfflineDialog } from "@app/dialogs/Dialogs/OfflineDialog";
 
 enum LoadingState {
@@ -35,7 +34,7 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
     useEffect(() => {
         (async () => {
             try {
-                const offline = !await isOnline();
+                const offline = !await invoke("is_connected_to_internet");
                 if (offline) {
                     const offlineStatus = useOfflineStatus.getState();
                     offlineStatus.setOffline(true);

@@ -2461,6 +2461,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3fdb12b2476b595f9358c5161aa467c2438859caa136dec86c26fdd2efe17b92"
 
 [[package]]
+name = "online"
+version = "4.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "644d4b55e7e65885eba895f7958912e86eb04370d858a28779860223a8b5ec43"
+
+[[package]]
 name = "open"
 version = "3.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5488,6 +5494,7 @@ dependencies = [
  "lazy_static",
  "log",
  "minisign",
+ "online",
  "opener",
  "reqwest 0.12.5",
  "serde",
