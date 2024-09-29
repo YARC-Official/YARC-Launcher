@@ -39,7 +39,7 @@ const SortChanger: React.FC<Props> = ({ sortType, setSortType }: Props) => {
         </ToggleGroup.Item>
         <ToggleGroup.Item className={styles.item} value="releaseDate">
             <DateIcon />
-            Release
+            Chart Release
         </ToggleGroup.Item>
     </ToggleGroup.Root>;
 };
