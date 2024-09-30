@@ -4,6 +4,7 @@ export interface MarketplaceIndex {
     banner: Localized<{
         backgroundUrl: string,
         backgroundAccent?: string,
+        useLightText?: boolean,
         preHeaderText?: string,
         headerText: string,
 

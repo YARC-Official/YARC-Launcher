@@ -36,10 +36,15 @@ function Marketplace() {
 
     const banner = localizeObject(marketIndex.banner, "en-US");
 
+    const bannerStyles = [ styles.banner ];
+    if (banner.useLightText) {
+        bannerStyles.push(styles.lightBannerText);
+    }
+
     return <main className={styles.main}>
         <MarketplacePopup marketplaceProfile={selectedProfile} setSelectedProfile={setSelectedProfile} />
 
-        <div className={styles.banner}
+        <div className={bannerStyles.join(" ")}
             style={{
                 "--banner": `url(${processAssetUrl(banner.backgroundUrl)})`,
                 "--accent": banner.backgroundAccent === undefined ? "transparent" : banner.backgroundAccent
@@ -71,7 +76,7 @@ function Marketplace() {
                 </Button>
 
                 {banner.previewUrl !== undefined &&
-                    <Button color={ButtonColor.DARK} rounded border
+                    <Button color={banner.useLightText ? ButtonColor.BLUE : ButtonColor.DARK} rounded border
                         onClick={async () => await askOpenUrl(banner.previewUrl as string)}>
 
                         Preview

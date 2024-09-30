@@ -54,6 +54,14 @@
     text-transform: uppercase;
 }
 
+.lightBannerText > .preHeader {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.lightBannerText > .header {
+    color: #FFF;
+}
+
 .banner > .buttons {
     margin-top: 12px;
     display: flex;
