@@ -54,7 +54,7 @@ const Sidebar: React.FC = () => {
         <ProfilesList isOffline={offlineStatus.isOffline} />
 
         <div className={styles.footer}>
-            <NavLink to="/settings" className={styles.settingsButton}>
+            <NavLink to="/settings" className={styles.footerButton}>
                 <SettingsIcon />
             </NavLink>
         </div>

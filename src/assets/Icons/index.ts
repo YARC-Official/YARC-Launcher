@@ -39,6 +39,7 @@ import SidebarInQueueIcon from "./SidebarInQueue.svg?react";
 import SidebarUpdateIcon from "./SidebarUpdate.svg?react";
 import RedditIcon from "./Reddit.svg?react";
 import YoutubeIcon from "./Youtube.svg?react";
+import RefreshIcon from "./Refresh.svg?react";
 
 export {
     AddIcon,
@@ -75,4 +76,5 @@ export {
     SidebarUpdateIcon,
     RedditIcon,
     YoutubeIcon,
+    RefreshIcon,
 };

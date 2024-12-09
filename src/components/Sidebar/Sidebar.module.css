@@ -18,6 +18,7 @@
     margin-top: auto;
     display: flex;
     align-items: center;
+    gap: 5px;
 }
 
 .menus {
@@ -83,7 +84,7 @@
     text-transform: uppercase;
 }
 
-.settingsButton {
+.footerButton {
     width: 38px;
     height: 38px;
     padding: 10px;
@@ -93,17 +94,19 @@
     border-radius: 8px;
     transition: background 0.1s;
 
+    border: none;
+
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.settingsButton[aria-current="page"], .settingsButton:hover {
+.footerButton[aria-current="page"], .footerButton:hover {
     background: #0D0F23;
     color: #D4D9EE;
 }
 
-.settingsButton > svg {
+.footerButton > svg {
     width: 20px;
     height: 20px;
 }

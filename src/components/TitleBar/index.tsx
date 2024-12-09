@@ -1,6 +1,6 @@
 import { appWindow } from "@tauri-apps/api/window";
 import styles from "./TitleBar.module.css";
-import { CloseIcon, MinimizeIcon } from "@app/assets/Icons";
+import { CloseIcon, MinimizeIcon, RefreshIcon, UpdateIcon } from "@app/assets/Icons";
 import { TryCloseDialog } from "@app/dialogs/Dialogs/TryCloseDialog";
 import { useCurrentTask } from "@app/tasks";
 import { createAndShowDialog } from "@app/dialogs";
@@ -43,11 +43,14 @@ const TitleBar: React.FC = () => {
             }
         </div>
 
+        <div onClick={() => window.location.reload()} className={styles.refreshButton}>
+            <RefreshIcon />
+        </div>
+
         <div className={styles.controls}>
             <div onClick={() => appWindow.minimize()} className={styles.control}>
                 <MinimizeIcon />
             </div>
-
             <div onClick={() => tryClose()} className={styles.control}>
                 <CloseIcon />
             </div>

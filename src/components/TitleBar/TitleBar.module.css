@@ -5,7 +5,6 @@
     display: flex;
     height: var(--titleBarHeight);
     padding-left: 10px;
-    justify-content: space-between;
     align-items: center;
     align-self: stretch;
 
@@ -21,9 +20,30 @@
     pointer-events: none;
 }
 
+.refreshButton {
+    display: flex;
+    width: var(--titleBarHeight);
+    height: var(--titleBarHeight);
+    justify-content: center;
+    align-items: center;
+
+    transition: color 0.1s;
+    color: #858BB5;
+}
+
+.refreshButton:hover {
+    color: #FFF;
+}
+
+.refreshButton > * {
+    width: 12px;
+    height: 12px;
+}
+
 .controls {
     display: flex;
     align-items: center;
+    margin: 0 0 0 auto;
 }
 
 .version {
@@ -48,6 +68,7 @@
     justify-content: center;
     align-items: center;
 
+    transition: background 0.1s, color 0.1s;
     color: #858BB5;
 }
 
