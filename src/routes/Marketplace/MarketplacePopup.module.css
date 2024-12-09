@@ -39,6 +39,7 @@
     align-items: flex-start;
     gap: 10px;
     flex-direction: column;
+    align-self: stretch;
 
     overflow: auto;
 }

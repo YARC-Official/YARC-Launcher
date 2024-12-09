@@ -118,7 +118,7 @@
 }
 
 .section > .list {
-    --item-width: 400px;
+    --item-width: 450px;
 
     max-width: 100%;
     overflow-x: auto;
