@@ -4,21 +4,20 @@ import React from "react";
 
 type Props = React.PropsWithChildren<{
     text: string,
-    className?: string,
+    side?: "left" | "right" | "top" | "bottom",
+    sideOffset?: number
 }>;
 
-const TooltipWrapper: React.FC<Props> = ({ children, text, className }: Props) => {
-    return <Tooltip.Provider delayDuration={200}>
+const TooltipWrapper: React.FC<Props> = ({ children, text, side, sideOffset }: Props) => {
+    return <Tooltip.Provider delayDuration={600}>
         <Tooltip.Root>
             <Tooltip.Trigger asChild>
-                <div className={className}>
-                    {children}
-                </div>
+                {children}
             </Tooltip.Trigger>
             <Tooltip.Portal>
-                <Tooltip.Content className={styles.TooltipContent}>
+                <Tooltip.Content className={styles.content} side={side} sideOffset={sideOffset}>
                     {text}
-                    <Tooltip.Arrow className={styles.TooltipArrow} />
+                    <Tooltip.Arrow className={styles.arrow} />
                 </Tooltip.Content>
             </Tooltip.Portal>
         </Tooltip.Root>

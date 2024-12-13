@@ -29,6 +29,7 @@
 
     transition: color 0.1s;
     color: #858BB5;
+    cursor: pointer;
 }
 
 .refreshButton:hover {
@@ -70,6 +71,7 @@
 
     transition: background 0.1s, color 0.1s;
     color: #858BB5;
+    cursor: pointer;
 }
 
 .control > * {

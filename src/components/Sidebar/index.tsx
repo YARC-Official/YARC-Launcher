@@ -7,6 +7,7 @@ import { useOfflineStatus } from "@app/hooks/useOfflineStatus";
 import useMarketIndex from "@app/hooks/useMarketIndex";
 import { settingsManager } from "@app/settings";
 import { HomeIcon, QueueIcon, MarketplaceIcon, SettingsIcon } from "@app/assets/Icons";
+import TooltipWrapper from "../TooltipWrapper";
 
 const Sidebar: React.FC = () => {
     const offlineStatus = useOfflineStatus();
@@ -54,9 +55,11 @@ const Sidebar: React.FC = () => {
         <ProfilesList isOffline={offlineStatus.isOffline} />
 
         <div className={styles.footer}>
-            <NavLink to="/settings" className={styles.footerButton}>
-                <SettingsIcon />
-            </NavLink>
+            <TooltipWrapper text="Launcher Settings" side="right" sideOffset={3}>
+                <NavLink to="/settings" className={styles.footerButton}>
+                    <SettingsIcon />
+                </NavLink>
+            </TooltipWrapper>
         </div>
     </div>;
 };

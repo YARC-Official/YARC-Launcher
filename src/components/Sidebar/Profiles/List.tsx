@@ -6,6 +6,7 @@ import { Link, NavLink } from "react-router-dom";
 import { Localized, localize } from "@app/utils/localized";
 import { Metadata } from "@app/profiles/types";
 import Selector from "./Selector";
+import TooltipWrapper from "@app/components/TooltipWrapper";
 
 interface Props {
     isOffline: boolean;
@@ -43,18 +44,22 @@ const ProfilesList: React.FC<Props> = ({ isOffline }: Props) => {
     return <div className={styles.list}>
         <Separator name="Applications">
             {!isOffline &&
-                <Link to="/marketplace" className={styles.add}>
-                    <AddIcon />
-                </Link>
+                <TooltipWrapper text="Look for Applications on the Marketplace" sideOffset={3}>
+                    <Link to="/marketplace" className={styles.add}>
+                        <AddIcon />
+                    </Link>
+                </TooltipWrapper>
             }
         </Separator>
         {activeProfileList("application")}
 
         <Separator name="Setlists">
             {!isOffline &&
-                <Link to="/marketplace" className={styles.add}>
-                    <AddIcon />
-                </Link>
+                <TooltipWrapper text="Look for Setlists on the Marketplace" sideOffset={3}>
+                    <Link to="/marketplace" className={styles.add}>
+                        <AddIcon />
+                    </Link>
+                </TooltipWrapper>
             }
         </Separator>
         {activeProfileList("setlist")}

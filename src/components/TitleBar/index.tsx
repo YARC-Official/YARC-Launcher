@@ -7,6 +7,8 @@ import { createAndShowDialog } from "@app/dialogs";
 import YARCLogo from "@app/assets/YARCLong.svg?react";
 import { useEffect, useState } from "react";
 import { getVersion } from "@tauri-apps/api/app";
+import * as Tooltip from "@radix-ui/react-tooltip";
+import TooltipWrapper from "../TooltipWrapper";
 
 const TitleBar: React.FC = () => {
     const [launcherVersion, setLauncherVersion] = useState("");
@@ -43,9 +45,11 @@ const TitleBar: React.FC = () => {
             }
         </div>
 
-        <div onClick={() => window.location.reload()} className={styles.refreshButton}>
-            <RefreshIcon />
-        </div>
+        <TooltipWrapper text="Check for App Updates (Reload Launcher)">
+            <div onClick={() => window.location.reload()} className={styles.refreshButton}>
+                <RefreshIcon />
+            </div>
+        </TooltipWrapper>
 
         <div className={styles.controls}>
             <div onClick={() => appWindow.minimize()} className={styles.control}>

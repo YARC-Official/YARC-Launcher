@@ -15,6 +15,7 @@ import { askOpenUrl } from "@app/utils/safeUrl";
 import AppSettings from "./AppSettings";
 import { useEffect, useState } from "react";
 import Setlist from "../../components/Setlist";
+import TooltipWrapper from "@app/components/TooltipWrapper";
 
 function AppProfile() {
     const { uuid } = useParams();
@@ -98,14 +99,17 @@ function AppProfile() {
                 </div>
                 <div className={styles.bannerOptionsMain}>
                     {profile.type === "application" &&
-                        <Button color={ButtonColor.DARK} rounded border
-                            style={{padding: "15px"}} onClick={() => setSettingsOption(true)}>
+                        <TooltipWrapper text="Profile Settings" sideOffset={3}>
+                            <Button color={ButtonColor.DARK} rounded border
+                                style={{padding: "15px"}} onClick={() => setSettingsOption(true)}>
 
-                            <SettingsIcon width={24} height={24} />
-                        </Button>
+                                <SettingsIcon width={24} height={24} />
+                            </Button>
+                        </TooltipWrapper>
                     }
 
                     <LaunchButton profileState={profileState} />
+
                     <MoreDropdown profileState={profileState} />
                 </div>
             </div>
