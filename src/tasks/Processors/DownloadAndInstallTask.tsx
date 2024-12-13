@@ -50,7 +50,6 @@ export class DownloadAndInstallTask extends BaseTask implements IBaseTask {
 
             return <QueueEntry
                 name={metadata.name}
-                tag={this.activeProfile.version.tag}
                 icon={<ProfileIcon iconUrl={metadata.iconUrl} />}
                 bannerMode={bannerMode} />;
         }

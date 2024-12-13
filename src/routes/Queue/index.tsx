@@ -79,7 +79,7 @@ function Queue() {
     return <>
         {getBanner()}
         <div className={styles.main}>
-            <QueueSection icon={<QueueListIcon />} title="QUEUE">
+            <QueueSection icon={<QueueListIcon />} title="Download Queue">
                 {
                     queue.size > 1 ?
                         Array.from(queue).splice(1).map(downloader => downloader.getQueueEntry(false)) :

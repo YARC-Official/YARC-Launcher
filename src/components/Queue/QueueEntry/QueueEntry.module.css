@@ -10,7 +10,6 @@
 
 .main {
     display: flex;
-    width: 350px;
     align-items: center;
     gap: 10px;
 }

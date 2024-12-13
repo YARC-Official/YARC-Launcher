@@ -22,9 +22,11 @@ const QueueEntry: React.FC<Props> = ({ icon, name, releaseName, tag, bannerMode 
             <div className={styles.info}>
                 <span className={styles.infoHeader}>
                     {name}
-                    <span className={styles.tag}>
-                        &#32;({tag})
-                    </span>
+                    {tag !== undefined &&
+                        <span className={styles.tag}>
+                            &#32;({tag})
+                        </span>
+                    }
                 </span>
                 {releaseName}
             </div>

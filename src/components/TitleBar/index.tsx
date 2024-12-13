@@ -45,11 +45,13 @@ const TitleBar: React.FC = () => {
             }
         </div>
 
-        <TooltipWrapper text="Check for App Updates (Reload Launcher)">
-            <div onClick={() => window.location.reload()} className={styles.refreshButton}>
-                <RefreshIcon />
-            </div>
-        </TooltipWrapper>
+        {!currentTask?.startedAt &&
+            <TooltipWrapper text="Check for App Updates (Reload Launcher)">
+                <div onClick={() => window.location.reload()} className={styles.refreshButton}>
+                    <RefreshIcon />
+                </div>
+            </TooltipWrapper>
+        }
 
         <div className={styles.controls}>
             <div onClick={() => appWindow.minimize()} className={styles.control}>
