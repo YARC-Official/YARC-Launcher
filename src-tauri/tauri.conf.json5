@@ -45,6 +45,7 @@
         "readDir": true,
         "readFile": true,
         "writeFile": true,
+        "removeFile": true,
         "scope": [ "$APPCONFIG", "$APPCONFIG/*" ]
       },
       "process": {

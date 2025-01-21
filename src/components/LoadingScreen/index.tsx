@@ -13,6 +13,8 @@ import { useDirectories } from "@app/profiles/directories";
 import { createAndShowDialog, showErrorDialog } from "@app/dialogs";
 import { useOfflineStatus } from "@app/hooks/useOfflineStatus";
 import { OfflineDialog } from "@app/dialogs/Dialogs/OfflineDialog";
+import { removeFile } from "@tauri-apps/api/fs";
+import { appConfigDir, join } from "@tauri-apps/api/path";
 
 enum LoadingState {
     "LOADING",
@@ -42,7 +44,22 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
 
                 // Make sure to save the settings afterwards in case a new key has been added
                 // If "get" is called and the settings didn't save, it would cause an error.
-                await settingsManager.initialize();
+                // Along with this, it's possible for `initialize` to fail if the file gets
+                // corrupted. If it does fail, delete the settings file and try again.
+                try {
+                    await settingsManager.initialize();
+                } catch {
+                    try {
+                        await removeFile(await join(await appConfigDir(), "settings.json"));
+                    } catch {
+                        // This may fail while in dev mode as this function may be ran twice
+                    }
+
+                    await settingsManager.initialize();
+                    showErrorDialog(
+                        "The launcher settings file was corrupted, so it had to be deleted. Because of this, " +
+                        "you will have to restart the onboarding process. Apologies for the inconvenience.");
+                }
                 await settingsManager.syncCache();
 
                 const onboardingCompleted = settingsManager.getCache("onboardingCompleted");
