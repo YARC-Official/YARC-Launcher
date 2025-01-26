@@ -1,14 +1,14 @@
-import { appWindow } from "@tauri-apps/api/window";
+import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import styles from "./TitleBar.module.css";
-import { CloseIcon, MinimizeIcon, RefreshIcon, UpdateIcon } from "@app/assets/Icons";
+import { CloseIcon, MinimizeIcon, RefreshIcon } from "@app/assets/Icons";
 import { TryCloseDialog } from "@app/dialogs/Dialogs/TryCloseDialog";
 import { useCurrentTask } from "@app/tasks";
 import { createAndShowDialog } from "@app/dialogs";
 import YARCLogo from "@app/assets/YARCLong.svg?react";
 import { useEffect, useState } from "react";
 import { getVersion } from "@tauri-apps/api/app";
-import * as Tooltip from "@radix-ui/react-tooltip";
 import TooltipWrapper from "../TooltipWrapper";
+const appWindow = getCurrentWebviewWindow();
 
 const TitleBar: React.FC = () => {
     const [launcherVersion, setLauncherVersion] = useState("");

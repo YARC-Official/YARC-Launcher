@@ -3,7 +3,7 @@ import { ActiveProfile } from "./types";
 import { addTask } from "@app/tasks";
 import { UninstallTask } from "@app/tasks/Processors/UninstallTask";
 import { getOS } from "@app/utils/os";
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/core";
 import { useDirectories } from "./directories";
 import { showErrorDialog } from "@app/dialogs";
 import { useOfflineStatus } from "@app/hooks/useOfflineStatus";
