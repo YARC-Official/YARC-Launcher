@@ -154,7 +154,7 @@ const AppSettings: React.FC<Props> = ({ activeProfile, setSettingsOpen }: Props)
                             }
                         </div>
                     }
-                    <div className={styles.container}>
+                    <div className={styles.setting}>
                         <p>Graphics API</p>
                         <ToggleGroup.Root
                             className={styles.container}
