@@ -6,6 +6,7 @@ import { localizeMetadata } from "@app/profiles/utils";
 import { tryFetchVersion, useProfileStore } from "@app/profiles/store";
 import InputBox from "@app/components/InputBox";
 import * as Tabs from "@radix-ui/react-tabs";
+import * as ToggleGroup from "@radix-ui/react-toggle-group";
 import { useOfflineStatus } from "@app/hooks/useOfflineStatus";
 import { useQuery } from "@tanstack/react-query";
 import { createAndShowDialog, showErrorDialog } from "@app/dialogs";
@@ -153,29 +154,53 @@ const AppSettings: React.FC<Props> = ({ activeProfile, setSettingsOpen }: Props)
                             }
                         </div>
                     }
-                    <div className={styles.setting}>
+                    <div className={styles.container}>
                         <p>Graphics API</p>
-                        <select defaultValue={graphicsApi} onChange={(e) => setGraphicsApi(e.target.value as GraphicsApi)}>
-                            <option value={GraphicsApi.Default}>Default</option>
+                        <ToggleGroup.Root
+                            className={styles.container}
+                            type="single"
+                            value={graphicsApi}
+                            onValueChange={(value) => {
+                                setGraphicsApi(value as GraphicsApi);
+                            }}>
+                            <ToggleGroup.Item className={styles.item} value={GraphicsApi.Default}>
+                                Default
+                            </ToggleGroup.Item>
                             { (os === "windows" &&
                                 <>
-                                    <option value={GraphicsApi.D3D11}>DirectX 11</option>
-                                    <option value={GraphicsApi.D3D12}>DirectX 12</option>
-                                    <option value={GraphicsApi.OPEN_GL}>OpenGL</option>
-                                    <option value={GraphicsApi.VULKAN}>Vulkan</option>
+                                    <ToggleGroup.Item className={styles.item} value={GraphicsApi.D3D11}>
+                                    DirectX 11
+                                    </ToggleGroup.Item>
+                                    <ToggleGroup.Item className={styles.item} value={GraphicsApi.D3D12}>
+                                    DirectX 12
+                                    </ToggleGroup.Item>
+                                    <ToggleGroup.Item className={styles.item} value={GraphicsApi.OPEN_GL}>
+                                    OpenGL
+                                    </ToggleGroup.Item>
+                                    <ToggleGroup.Item className={styles.item} value={GraphicsApi.VULKAN}>
+                                    Vulkan
+                                    </ToggleGroup.Item>
                                 </>)
                                 || (os === "macos" &&
                                 <>
-                                    <option value={GraphicsApi.METAL}>Metal</option>
-                                    <option value={GraphicsApi.VULKAN}>Vulkan</option>
+                                    <ToggleGroup.Item className={styles.item} value={GraphicsApi.METAL}>
+                                    Metal
+                                    </ToggleGroup.Item>
+                                    <ToggleGroup.Item className={styles.item} value={GraphicsApi.VULKAN}>
+                                    Vulkan
+                                    </ToggleGroup.Item>
                                 </>)
                                 || (os === "linux" &&
                                 <>
-                                    <option value={GraphicsApi.OPEN_GL}>OpenGL</option>
-                                    <option value={GraphicsApi.VULKAN}>Vulkan</option>
+                                    <ToggleGroup.Item className={styles.item} value={GraphicsApi.VULKAN}>
+                                    Vulkan
+                                    </ToggleGroup.Item>
+                                    <ToggleGroup.Item className={styles.item} value={GraphicsApi.OPEN_GL}>
+                                    OpenGL
+                                    </ToggleGroup.Item>
                                 </>)
                             }
-                        </select>
+                        </ToggleGroup.Root>
                     </div>
                 </Tabs.Content>
                 <Tabs.Content className={styles.versionList} value="version">
