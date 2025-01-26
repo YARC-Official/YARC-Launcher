@@ -8,11 +8,11 @@ import { settingsManager } from "@app/settings";
 import { createAndShowDialog } from "@app/dialogs";
 import { ChangeDownloadLocationDialog } from "@app/dialogs/Dialogs/ChangeDownloadLocationDialog";
 import { useProfileStore } from "@app/profiles/store";
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/core";
 import { useDirectories } from "@app/profiles/directories";
 import { getPathForProfile } from "@app/profiles/utils";
 import { useCurrentTask } from "@app/tasks";
-import { relaunch } from "@tauri-apps/api/process";
+import { relaunch } from "@tauri-apps/plugin-process";
 
 interface LauncherInfo {
     name: string;

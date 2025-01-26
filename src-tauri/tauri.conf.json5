@@ -2,77 +2,42 @@
   "build": {
     "beforeDevCommand": "npm run front:dev",
     "beforeBuildCommand": "npm run front:build",
-    "devPath": "http://localhost:1420",
-    "distDir": "../dist",
-    "withGlobalTauri": false
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:1420"
   },
-  "package": {
-    "productName": "YARC Launcher",
-    "version": "1.0.2"
+  "bundle": {
+    "active": true,
+    "targets": [
+      "appimage",
+      "msi",
+      "app"
+    ],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "createUpdaterArtifacts": "v1Compatible"
   },
-  "tauri": {
-    "allowlist": {
-      "window": {
-        // Used for the essential functions of the title bar
-        "close": true,
-        "hide": true,
-        "show": true,
-        "maximize": true,
-        "minimize": true,
-        "unmaximize": true,
-        "unminimize": true,
-        "startDragging": true
-      },
-      "dialog": {
-        // Used primarily for the file picker dialog
-        "all": true
-      },
-      "os": {
-        // Used to determine what OS the user is on
-        "all": true
-      },
-      "shell": {
-        // Used to open URLs using the default program
-        "open": true
-      },
-      "path": {
-        // Required for tauri-settings
-        "all": true
-      },
-      "fs": {
-        // Required for tauri-settings
-        "createDir": true,
-        "readDir": true,
-        "readFile": true,
-        "writeFile": true,
-        "removeFile": true,
-        "scope": [ "$APPCONFIG", "$APPCONFIG/*" ]
-      },
-      "process": {
-        // Required for changing the download location
-        "relaunch": true
-      }
-    },
-    "bundle": {
-      "active": true,
-      "targets": [
-        "appimage",
-        "msi",
-        "app",
-        "updater"
+  "productName": "YARC Launcher",
+  "mainBinaryName": "YARC Launcher",
+  "version": "1.0.2",
+  "identifier": "in.yarg.launcher",
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDczMjdBMkM2RjYzRkExQ0MKUldUTW9ULzJ4cUluYzJTNG9VUis2azlaejYzcmc1SHRzT1Rtc0RUVWVCNEY2T0V1djlReENMV2gK",
+      "endpoints": [
+        "https://releases.yarg.in/launcher/update.json"
       ],
-      "identifier": "in.yarg.launcher",
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ]
-    },
-    "security": {
-      "csp": null
-    },
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  },
+  "app": {
+    "withGlobalTauri": false,
     "windows": [
       {
         "label": "main",
@@ -83,19 +48,12 @@
         "height": 800,
         "minWidth": 1200,
         "minHeight": 575,
-        "decorations": false
+        "decorations": false,
+        "useHttpsScheme": true
       }
     ],
-    "updater": {
-      "active": true,
-      "endpoints": [
-        "https://releases.yarg.in/launcher/update.json"
-      ],
-      "dialog": true,
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDczMjdBMkM2RjYzRkExQ0MKUldUTW9ULzJ4cUluYzJTNG9VUis2azlaejYzcmc1SHRzT1Rtc0RUVWVCNEY2T0V1djlReENMV2gK",
-      "windows": {
-        "installMode": "passive"
-      }
+    "security": {
+      "csp": null
     }
   }
 }

@@ -5,16 +5,17 @@ import { error as logError } from "tauri-plugin-log-api";
 import { serializeError } from "serialize-error";
 import { useProfileStore } from "@app/profiles/store";
 import { settingsManager } from "@app/settings";
-import { invoke } from "@tauri-apps/api";
-import { appWindow } from "@tauri-apps/api/window";
+import { invoke } from "@tauri-apps/api/core";
+import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { launch } from "@app/profiles/actions";
 import { getPathForProfile } from "@app/profiles/utils";
 import { useDirectories } from "@app/profiles/directories";
 import { createAndShowDialog, showErrorDialog } from "@app/dialogs";
 import { useOfflineStatus } from "@app/hooks/useOfflineStatus";
 import { OfflineDialog } from "@app/dialogs/Dialogs/OfflineDialog";
-import { removeFile } from "@tauri-apps/api/fs";
+import { remove } from "@tauri-apps/plugin-fs";
 import { appConfigDir, join } from "@tauri-apps/api/path";
+const appWindow = getCurrentWebviewWindow();
 
 enum LoadingState {
     "LOADING",
@@ -50,7 +51,7 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
                     await settingsManager.initialize();
                 } catch {
                     try {
-                        await removeFile(await join(await appConfigDir(), "settings.json"));
+                        await remove(await join(await appConfigDir(), "settings.json"));
                     } catch {
                         // This may fail while in dev mode as this function may be ran twice
                     }

@@ -2,14 +2,14 @@ use crate::ProgressPayload;
 
 use futures_util::StreamExt;
 use lazy_static::lazy_static;
-use reqwest::{self, Client};
 use reqwest::header::{HeaderMap, HeaderValue, USER_AGENT};
+use reqwest::{self, Client};
 use sevenz_rust::Password;
+use std::fs::File;
 use std::io::{BufWriter, Write};
 use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant};
-use std::fs::File;
-use tauri::{AppHandle, Manager};
+use tauri::{AppHandle, Emitter};
 
 lazy_static! {
     pub static ref REQWEST_CLIENT: reqwest::Client = {
@@ -53,7 +53,7 @@ pub async fn download(
     url: &str,
     output_path: &Path,
     file_count: u64,
-    file_index: u64
+    file_index: u64,
 ) -> Result<(), String> {
     // Send the initial request
     let download = REQWEST_CLIENT
@@ -78,8 +78,7 @@ pub async fn download(
 
     // Download into the file
     while let Some(item) = stream.next().await {
-        let chunk = item
-            .map_err(|e| format!("Error while downloading file.\n{:?}", e))?;
+        let chunk = item.map_err(|e| format!("Error while downloading file.\n{:?}", e))?;
         file.write_all(&chunk)
             .map_err(|e| format!("Error while writing to file.\n{:?}", e))?;
 
@@ -92,7 +91,7 @@ pub async fn download(
         // Emitting too often could cause crashes, so buffer it to the buffer rate
         if let Some(app) = app_handle {
             if emit_timer.elapsed() >= Duration::from_secs_f64(EMIT_BUFFER_RATE) {
-                let _ = app.emit_all(
+                let _ = app.emit(
                     "progress_info",
                     ProgressPayload {
                         state: "downloading".to_string(),
@@ -134,15 +133,13 @@ pub fn extract_encrypted(from: &Path, to: &Path) -> Result<(), String> {
     }
 
     let p: &[u16] = &chars;
-    sevenz_rust::decompress_file_with_password(from, to, Password::from(p)).map_err(
-        |e| {
-            format!(
-                "Failed to extract setlist part `{}`.\n{:?}",
-                from.display(),
-                e
-            )
-        },
-    )?;
+    sevenz_rust::decompress_file_with_password(from, to, Password::from(p)).map_err(|e| {
+        format!(
+            "Failed to extract setlist part `{}`.\n{:?}",
+            from.display(),
+            e
+        )
+    })?;
 
     Ok(())
 }

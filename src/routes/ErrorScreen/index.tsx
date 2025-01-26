@@ -1,7 +1,8 @@
 import styles from "./ErrorScreen.module.css";
 import { error as LogError } from "tauri-plugin-log-api";
 import { FallbackProps } from "react-error-boundary";
-import { appWindow } from "@tauri-apps/api/window";
+import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
+const appWindow = getCurrentWebviewWindow();
 
 export function ErrorScreen({error}: FallbackProps) {
     return <div className={styles.error}>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styles from "./Onboarding.module.css";
-import { open } from "@tauri-apps/api/dialog";
-import { invoke } from "@tauri-apps/api";
+import { open } from "@tauri-apps/plugin-dialog";
+import { invoke } from "@tauri-apps/api/core";
 import { settingsManager } from "@app/settings";
 import OnboardingSidebar from "./Sidebar";
 import Button, { ButtonColor } from "../Button";

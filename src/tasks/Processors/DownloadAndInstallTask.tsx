@@ -1,6 +1,6 @@
 import { ActiveProfile } from "@app/profiles/types";
 import { BaseTask, IBaseTask } from "./base";
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/core";
 import { ReactNode } from "react";
 import QueueEntry from "@app/components/Queue/QueueEntry";
 import { localizeObject } from "@app/utils/localized";
