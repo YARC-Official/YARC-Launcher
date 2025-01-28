@@ -166,7 +166,10 @@ const AppSettings: React.FC<Props> = ({ activeProfile, setSettingsOpen }: Props)
                             <ToggleGroup.Item className={styles.item} value={GraphicsApi.Default}>
                                 Default
                             </ToggleGroup.Item>
-                            { (os === "windows" &&
+                            <ToggleGroup.Item className={styles.item} value={GraphicsApi.VULKAN}>
+                            Vulkan
+                            </ToggleGroup.Item>
+                            {  os === "windows" &&
                                 <>
                                     <ToggleGroup.Item className={styles.item} value={GraphicsApi.D3D11}>
                                     DirectX 11
@@ -174,31 +177,21 @@ const AppSettings: React.FC<Props> = ({ activeProfile, setSettingsOpen }: Props)
                                     <ToggleGroup.Item className={styles.item} value={GraphicsApi.D3D12}>
                                     DirectX 12
                                     </ToggleGroup.Item>
-                                    <ToggleGroup.Item className={styles.item} value={GraphicsApi.OPEN_GL}>
-                                    OpenGL
-                                    </ToggleGroup.Item>
-                                    <ToggleGroup.Item className={styles.item} value={GraphicsApi.VULKAN}>
-                                    Vulkan
-                                    </ToggleGroup.Item>
-                                </>)
-                                || (os === "macos" &&
+                                </>
+                            }
+                            {  os === "macos" &&
                                 <>
                                     <ToggleGroup.Item className={styles.item} value={GraphicsApi.METAL}>
                                     Metal
                                     </ToggleGroup.Item>
-                                    <ToggleGroup.Item className={styles.item} value={GraphicsApi.VULKAN}>
-                                    Vulkan
-                                    </ToggleGroup.Item>
-                                </>)
-                                || (os === "linux" &&
+                                </>
+                            }
+                            {  os !== "macos" &&
                                 <>
-                                    <ToggleGroup.Item className={styles.item} value={GraphicsApi.VULKAN}>
-                                    Vulkan
-                                    </ToggleGroup.Item>
                                     <ToggleGroup.Item className={styles.item} value={GraphicsApi.OPEN_GL}>
-                                    OpenGL
+                                OpenGL
                                     </ToggleGroup.Item>
-                                </>)
+                                </>
                             }
                         </ToggleGroup.Root>
                     </div>
