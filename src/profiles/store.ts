@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { ActiveProfile, Profile, Version, VersionList } from "./types";
+import { ActiveProfile, GraphicsApi, Profile, Version, VersionList } from "./types";
 import { v4 as createUUID } from "uuid";
 import { settingsManager } from "@app/settings";
 import { showErrorDialog } from "@app/dialogs";
@@ -56,6 +56,13 @@ export const useProfileStore = create<ProfileStore>()((set, get) => ({
             }
         }
 
+        // Older profile without graphicsAPI setting
+        for (const profile of activeProfiles) {
+            if (profile.graphicsApi === undefined) {
+                profile.graphicsApi = GraphicsApi.Default;
+            }
+        }
+
         set({
             activeProfiles
         });
@@ -86,6 +93,7 @@ export const useProfileStore = create<ProfileStore>()((set, get) => ({
             selectedVersion: undefined,
             launchArguments: "",
             useObsVkcapture: false,
+            graphicsApi: GraphicsApi.Default,
 
             lastPlayed: undefined,
 
