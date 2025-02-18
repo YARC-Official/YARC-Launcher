@@ -46,7 +46,10 @@
         "readFile": true,
         "writeFile": true,
         "removeFile": true,
-        "scope": [ "$APPCONFIG", "$APPCONFIG/*" ]
+        "scope": {
+          "allow":[ "$APPCONFIG", "$APPCONFIG/*", "**"],
+          "requireLiteralLeadingDot":false
+        }
       },
       "process": {
         // Required for changing the download location
