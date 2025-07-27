@@ -175,3 +175,37 @@
     font-style: italic;
     font-weight: 400;
 }
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    gap: 5px;
+}
+
+.item {
+    all: unset;
+
+    display: flex;
+    padding: 7px 14px;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+
+    border-radius: 50px;
+    background: #E2E6F1;
+    cursor: pointer;
+
+    color: #5C6170;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.item svg {
+    height: 15px;
+}
+
+.item[data-state="on"] {
+    background: #41475F;
+    color: #FFF;
+}
