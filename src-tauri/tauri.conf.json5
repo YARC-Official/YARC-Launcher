@@ -27,7 +27,7 @@
   "identifier": "in.yarg.launcher",
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQzMjczQ0Y5ODNDQTI3OEYKUldTUEo4cUQrVHduMHcrUE5wUmpDLzJjdXBHVnJyVjR0YW9GN0pEZnpKM1Fsc1JCVEo5SGZzemoK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDczMjdBMkM2RjYzRkExQ0MKUldUTW9ULzJ4cUluYzJTNG9VUis2azlaejYzcmc1SHRzT1Rtc0RUVWVCNEY2T0V1djlReENMV2gK",
       "endpoints": [
         "https://releases.yarg.in/launcher/update.json"
       ],

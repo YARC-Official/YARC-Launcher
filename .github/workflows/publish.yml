@@ -1,6 +1,12 @@
 name: 'publish'
 
-on: push
+on:
+  workflow_dispatch:
+    inputs:
+        keyPassword:
+          description: 'Key Password'
+          required: true
+          type: string
 
 jobs:
   build-tauri:
@@ -39,8 +45,8 @@ jobs:
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAURI_SIGNING_PRIVATE_KEY: "dW50cnVzdGVkIGNvbW1lbnQ6IHJzaWduIGVuY3J5cHRlZCBzZWNyZXQga2V5ClJXUlRZMEl5UXhkb0lDY3pSKzZyMnAwWHg3QVVrbUtOTHg5YnpLU2RWRUtwR3dldFEyWUFBQkFBQUFBQUFBQUFBQUlBQUFBQTBuTlF4eFZKRng0Y2lJUkovQ0RSemQ4SWhQeXRBK3ByRTdiVzVQNXJBKzdDQ2pKUTMxV0tUbDgyUGN3M2RiQkRkWlhEMTVsMFl0MjVsSS93UmlVYTgySVRaeENTMjNZYWxvUnBCbkZOV0IwMjJxL084akdHQ1NVZFpwd0tqR0FMR3JIZGQwdXVDeEU9Cg=="
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: "yarg"
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ inputs.keyPassword }}
         with:
           tagName: v__VERSION__
           releaseName: 'YARC Launcher v__VERSION__'
