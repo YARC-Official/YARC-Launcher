@@ -12,7 +12,7 @@ jobs:
         include:
           - platform: 'macos-latest'
             args: '--target universal-apple-darwin'
-          - platform: 'ubuntu-20.04'
+          - platform: 'ubuntu-22.04'
             args: ''
           - platform: 'windows-latest'
             args: ''
@@ -23,24 +23,24 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 22.17
+          node-version: lts/*
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
           # Those targets are only used on macos runners so it's in an `if` to slightly speed up windows and linux builds.
           targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
       - name: install dependencies (ubuntu only)
-        if: matrix.platform == 'ubuntu-20.04'
+        if: matrix.platform == 'ubuntu-22.04' # This must match the platform value defined above.
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
       - name: install frontend dependencies
         run: npm install
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAURI_PRIVATE_KEY: "dW50cnVzdGVkIGNvbW1lbnQ6IHJzaWduIGVuY3J5cHRlZCBzZWNyZXQga2V5ClJXUlRZMEl5UXhkb0lDY3pSKzZyMnAwWHg3QVVrbUtOTHg5YnpLU2RWRUtwR3dldFEyWUFBQkFBQUFBQUFBQUFBQUlBQUFBQTBuTlF4eFZKRng0Y2lJUkovQ0RSemQ4SWhQeXRBK3ByRTdiVzVQNXJBKzdDQ2pKUTMxV0tUbDgyUGN3M2RiQkRkWlhEMTVsMFl0MjVsSS93UmlVYTgySVRaeENTMjNZYWxvUnBCbkZOV0IwMjJxL084akdHQ1NVZFpwd0tqR0FMR3JIZGQwdXVDeEU9Cg=="
-          TAURI_KEY_PASSWORD: "yarg"
+          TAURI_SIGNING_PRIVATE_KEY: "dW50cnVzdGVkIGNvbW1lbnQ6IHJzaWduIGVuY3J5cHRlZCBzZWNyZXQga2V5ClJXUlRZMEl5UXhkb0lDY3pSKzZyMnAwWHg3QVVrbUtOTHg5YnpLU2RWRUtwR3dldFEyWUFBQkFBQUFBQUFBQUFBQUlBQUFBQTBuTlF4eFZKRng0Y2lJUkovQ0RSemQ4SWhQeXRBK3ByRTdiVzVQNXJBKzdDQ2pKUTMxV0tUbDgyUGN3M2RiQkRkWlhEMTVsMFl0MjVsSS93UmlVYTgySVRaeENTMjNZYWxvUnBCbkZOV0IwMjJxL084akdHQ1NVZFpwd0tqR0FMR3JIZGQwdXVDeEU9Cg=="
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: "yarg"
         with:
           tagName: v__VERSION__
           releaseName: 'YARC Launcher v__VERSION__'
