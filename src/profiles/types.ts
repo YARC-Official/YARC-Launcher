@@ -57,6 +57,7 @@ export interface VersionInfoEmbedded {
 export interface Metadata {
     name: string,
     description: string,
+    badge?: string,
 
     iconUrl: string,
     bannerBackUrl: string,
@@ -119,8 +120,19 @@ export interface ActiveProfile {
     launchArguments: string,
     useObsVkcapture: boolean,
 
+    graphicsApi: GraphicsApi,
+
     lastPlayed?: string,
 
     profile: Profile,
     version: Version,
+}
+
+export enum GraphicsApi {
+    Default = "Default",
+    D3D11 = "D3D11",
+    D3D12 = "D3D12",
+    OPEN_GL = "OpenGL",
+    VULKAN = "Vulkan",
+    METAL = "Metal",
 }

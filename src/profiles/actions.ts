@@ -3,11 +3,12 @@ import { ActiveProfile } from "./types";
 import { addTask } from "@app/tasks";
 import { UninstallTask } from "@app/tasks/Processors/UninstallTask";
 import { getOS } from "@app/utils/os";
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/core";
 import { useDirectories } from "./directories";
 import { showErrorDialog } from "@app/dialogs";
 import { useOfflineStatus } from "@app/hooks/useOfflineStatus";
 import { settingsManager } from "@app/settings";
+import { getApiLaunchArgument } from "@app/utils/graphicsApi";
 
 export const downloadAndInstall = async (profile: ActiveProfile, profilePath: string, onFinish?: () => void): Promise<void> => {
     const directories = useDirectories.getState();
@@ -64,7 +65,7 @@ export const launch = async (activeProfile: ActiveProfile, profilePath: string):
             profilePath: profilePath,
             execPath: launchOptions.executablePath,
             useObsVkcapture: os === "linux" && activeProfile.useObsVkcapture,
-            arguments: [...launchOptions.arguments, ...otherArguments, ...customArguments]
+            arguments: [...launchOptions.arguments, getApiLaunchArgument(activeProfile.graphicsApi), ...otherArguments, ...customArguments]
         });
     } catch (e) {
         showErrorDialog(e as string);

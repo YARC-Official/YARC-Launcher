@@ -1,4 +1,4 @@
-import { SettingsManager } from "tauri-settings";
+import { SettingsManager } from "tauri-settings-v2";
 import { ActiveProfile } from "./profiles/types";
 
 export interface Settings {

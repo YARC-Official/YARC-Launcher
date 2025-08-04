@@ -1,25 +1,30 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-mod utils;
 mod types;
+mod utils;
 
-use std::{fs::{self, File}, path::PathBuf, process::Command, sync::{LazyLock, Mutex}};
+use std::{
+    fs::{self, File},
+    path::PathBuf,
+    process::Command,
+    sync::{LazyLock, Mutex},
+};
 
+use clap::Parser;
 use directories::BaseDirs;
 use minisign::{PublicKeyBox, SignatureBox};
 use online::check;
-use tauri::{AppHandle, Manager};
-use window_shadows::set_shadow;
-use utils::*;
+use tauri::{AppHandle, Emitter, Manager};
 use types::*;
-use clap::Parser;
+use utils::*;
 
 const YARG_PUB_KEY: &str = "untrusted comment: minisign public key C26EBBBEC4C1DB81
 RWSB28HEvrtuwvPn3pweVBodgVi/d+UH22xDsL3K8VBgeRqaIrDdTvps
 ";
 
-static COMMAND_LINE_ARG_LAUNCH: LazyLock<Mutex<Option<String>>> = LazyLock::new(|| Mutex::new(None));
+static COMMAND_LINE_ARG_LAUNCH: LazyLock<Mutex<Option<String>>> =
+    LazyLock::new(|| Mutex::new(None));
 
 #[tauri::command(async)]
 fn get_important_dirs() -> Result<ImportantDirs, String> {
@@ -71,7 +76,7 @@ fn get_custom_dirs(download_location: String) -> Result<CustomDirs, String> {
 
     return Ok(CustomDirs {
         yarg_folder: path_to_string(yarg_folder)?,
-        setlist_folder: path_to_string(setlist_folder)?
+        setlist_folder: path_to_string(setlist_folder)?,
     });
 }
 
@@ -87,7 +92,7 @@ fn is_dir_empty(path: String) -> bool {
 fn is_connected_to_internet() -> bool {
     match check(Some(7)) {
         Ok(()) => true,
-        Err(_) => false
+        Err(_) => false,
     }
 }
 
@@ -128,7 +133,7 @@ async fn download_and_install_profile(
     uuid: String,
     tag: String,
     temp_path: String,
-    content: Vec<ReleaseContent>
+    content: Vec<ReleaseContent>,
 ) -> Result<(), String> {
     let mut temp_file = PathBuf::from(&temp_path);
     temp_file.push(format!("{}.temp", uuid));
@@ -146,7 +151,7 @@ async fn download_and_install_profile(
     let current_os = std::env::consts::OS.to_string();
     for c in content {
         // Skip release content that is not for this OS
-        if !c.platforms.iter().any(|i| i.to_owned() == current_os)  {
+        if !c.platforms.iter().any(|i| i.to_owned() == current_os) {
             continue;
         }
 
@@ -159,8 +164,9 @@ async fn download_and_install_profile(
                 &file.url,
                 &temp_file,
                 file_count,
-                index as u64
-            ).await?;
+                index as u64,
+            )
+            .await?;
 
             let payload_current = (index + 1) as u64;
 
@@ -168,7 +174,7 @@ async fn download_and_install_profile(
 
             if let Some(sig_url) = &file.sig_url {
                 // Emit the verification
-                let _ = &handle.emit_all(
+                let _ = &handle.emit(
                     "progress_info",
                     ProgressPayload {
                         state: "verifying".to_string(),
@@ -178,13 +184,7 @@ async fn download_and_install_profile(
                 );
 
                 // Download sig file (don't pass app so it doesn't emit an update)
-                download(
-                    None,
-                    &sig_url,
-                    &sig_file,
-                    0,
-                    0
-                ).await?;
+                download(None, &sig_url, &sig_file, 0, 0).await?;
 
                 // Convert public key
                 let pk_box = PublicKeyBox::from_string(YARG_PUB_KEY).unwrap();
@@ -203,7 +203,7 @@ async fn download_and_install_profile(
 
             // Extract/install
 
-            let _ = handle.emit_all(
+            let _ = handle.emit(
                 "progress_info",
                 ProgressPayload {
                     state: "installing".to_string(),
@@ -252,16 +252,23 @@ fn uninstall_profile(profile_path: String) -> Result<(), String> {
 }
 
 #[tauri::command]
-fn launch_profile(profile_path: String, exec_path: String, use_obs_vkcapture: bool, arguments: Vec<String>) -> Result<(), String> {
+fn launch_profile(
+    profile_path: String,
+    exec_path: String,
+    use_obs_vkcapture: bool,
+    arguments: Vec<String>,
+) -> Result<(), String> {
     let mut path = PathBuf::from(&profile_path);
     path.push("installation");
     path.push(exec_path);
 
     if !use_obs_vkcapture {
-        Command::new(path)
-            .args(arguments)
-            .spawn()
-            .map_err(|e| format!("Failed to launch profile! Is the executable installed?\n{:?}", e))?;
+        Command::new(path).args(arguments).spawn().map_err(|e| {
+            format!(
+                "Failed to launch profile! Is the executable installed?\n{:?}",
+                e
+            )
+        })?;
     } else {
         let path_str = path_to_string(path)?;
 
@@ -321,27 +328,32 @@ fn main() {
     }
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_os::init())
+        .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_log::Builder::default().build())
         .invoke_handler(tauri::generate_handler![
             get_important_dirs,
             get_custom_dirs,
             is_dir_empty,
             is_connected_to_internet,
-
             profile_folder_state,
             download_and_install_profile,
             uninstall_profile,
             launch_profile,
             open_folder_profile,
-
             get_launch_argument,
-
             clean_up_old_install
         ])
         .setup(|app| {
             // Show the window's shadow
-            let window = app.get_window("main").unwrap();
-            let _ = set_shadow(&window, true);
+            app.get_webview_window("main")
+                .unwrap()
+                .set_shadow(true)
+                .unwrap();
             Ok(())
         })
         .run(tauri::generate_context!())
