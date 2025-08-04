@@ -90,9 +90,11 @@ const MarketplacePopup: React.FC<Props> = ({ marketplaceProfile, setSelectedProf
                 <div className={styles.bannerApp}>
                     <ProfileIcon className={styles.bannerAppIcon} iconUrl={metadata.iconUrl} />
                     <div>
-                        <div className={styles.verifiedTag}>
-                            Official <VerifiedIcon />
-                        </div>
+                        {profile.metadata.badge &&
+                            <div className={styles.verifiedTag}>
+                                {profile.metadata.badge} {profile.metadata.badge === "Official" && <VerifiedIcon />}
+                            </div>
+                        }
                         {metadata.name}
                     </div>
                 </div>

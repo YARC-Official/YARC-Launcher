@@ -57,6 +57,7 @@ export interface VersionInfoEmbedded {
 export interface Metadata {
     name: string,
     description: string,
+    badge?: string,
 
     iconUrl: string,
     bannerBackUrl: string,
