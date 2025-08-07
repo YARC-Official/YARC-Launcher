@@ -1,11 +1,12 @@
 import Button, { ButtonColor } from "@app/components/Button";
 import styles from "./AppSettings.module.css";
 import { useEffect, useState } from "react";
-import { ActiveProfile, VersionInfoList, VersionList } from "@app/profiles/types";
+import { ActiveProfile, GraphicsApi, VersionInfoList, VersionList } from "@app/profiles/types";
 import { localizeMetadata } from "@app/profiles/utils";
 import { tryFetchVersion, useProfileStore } from "@app/profiles/store";
 import InputBox from "@app/components/InputBox";
 import * as Tabs from "@radix-ui/react-tabs";
+import * as ToggleGroup from "@radix-ui/react-toggle-group";
 import { useOfflineStatus } from "@app/hooks/useOfflineStatus";
 import { useQuery } from "@tanstack/react-query";
 import { createAndShowDialog, showErrorDialog } from "@app/dialogs";
@@ -111,7 +112,7 @@ const AppSettings: React.FC<Props> = ({ activeProfile, setSettingsOpen }: Props)
     const [displayName, setDisplayName] = useState<string>(initalDisplayName);
     const [launchArguments, setLaunchArguments] = useState<string>(activeProfile.launchArguments);
     const [obsVkcapture, setObsVkcapture] = useState<boolean>(activeProfile.useObsVkcapture);
-
+    const [graphicsApi, setGraphicsApi] = useState<GraphicsApi>(activeProfile.graphicsApi);
     const [selectedVerison, setSelectedVersion] = useState<string | undefined>(activeProfile.selectedVersion);
 
     return <div className={styles.popup}>
@@ -153,6 +154,47 @@ const AppSettings: React.FC<Props> = ({ activeProfile, setSettingsOpen }: Props)
                             }
                         </div>
                     }
+                    <div className={styles.setting}>
+                        <p>Graphics API</p>
+                        <ToggleGroup.Root
+                            className={styles.container}
+                            type="single"
+                            value={graphicsApi}
+                            onValueChange={(value) => {
+                                setGraphicsApi(value as GraphicsApi);
+                            }}>
+                            <ToggleGroup.Item className={styles.item} value={GraphicsApi.Default}>
+                                Default
+                            </ToggleGroup.Item>
+                            <ToggleGroup.Item className={styles.item} value={GraphicsApi.VULKAN}>
+                            Vulkan
+                            </ToggleGroup.Item>
+                            {  os === "windows" &&
+                                <>
+                                    <ToggleGroup.Item className={styles.item} value={GraphicsApi.D3D11}>
+                                    DirectX 11
+                                    </ToggleGroup.Item>
+                                    <ToggleGroup.Item className={styles.item} value={GraphicsApi.D3D12}>
+                                    DirectX 12
+                                    </ToggleGroup.Item>
+                                </>
+                            }
+                            {  os === "macos" &&
+                                <>
+                                    <ToggleGroup.Item className={styles.item} value={GraphicsApi.METAL}>
+                                    Metal
+                                    </ToggleGroup.Item>
+                                </>
+                            }
+                            {  os !== "macos" &&
+                                <>
+                                    <ToggleGroup.Item className={styles.item} value={GraphicsApi.OPEN_GL}>
+                                OpenGL
+                                    </ToggleGroup.Item>
+                                </>
+                            }
+                        </ToggleGroup.Root>
+                    </div>
                 </Tabs.Content>
                 <Tabs.Content className={styles.versionList} value="version">
                     <VersionListComp
@@ -176,6 +218,9 @@ const AppSettings: React.FC<Props> = ({ activeProfile, setSettingsOpen }: Props)
                         // Update other fields
                         activeProfile.launchArguments = launchArguments;
                         activeProfile.useObsVkcapture = obsVkcapture;
+
+                        // Update graphics api
+                        activeProfile.graphicsApi = graphicsApi;
 
                         // Update profile version
                         if (selectedVerison !== activeProfile.selectedVersion) {

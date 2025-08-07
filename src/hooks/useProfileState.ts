@@ -7,7 +7,7 @@ import { ActiveProfile } from "@app/profiles/types";
 import { getPathForProfile } from "@app/profiles/utils";
 import { useTask } from "@app/tasks";
 import { IBaseTask } from "@app/tasks/Processors/base";
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/core";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
