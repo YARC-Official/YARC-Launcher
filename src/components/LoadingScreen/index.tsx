@@ -15,9 +15,12 @@ import { useOfflineStatus } from "@app/hooks/useOfflineStatus";
 import { OfflineDialog } from "@app/dialogs/Dialogs/OfflineDialog";
 import { remove } from "@tauri-apps/plugin-fs";
 import { appConfigDir, join } from "@tauri-apps/api/path";
+import CheckForUpdates from "@app/components/Updater";
+
 const appWindow = getCurrentWebviewWindow();
 
 enum LoadingState {
+    "CHECKING_UPDATES",
     "LOADING",
     "LAUNCHING",
     "FADE_OUT",
@@ -31,7 +34,7 @@ interface Props {
 }
 
 const LoadingScreen: React.FC<Props> = (props: Props) => {
-    const [loading, setLoading] = useState(LoadingState.LOADING);
+    const [loading, setLoading] = useState(LoadingState.CHECKING_UPDATES);
 
     // Load
     useEffect(() => {
@@ -41,7 +44,16 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
                 if (offline) {
                     const offlineStatus = useOfflineStatus.getState();
                     offlineStatus.setOffline(true);
+                } else {
+                    try {
+                        await CheckForUpdates();
+                    } catch (e) {
+                        console.error("Update check failed:", e);
+                        logError(`Update check failed: ${JSON.stringify(serializeError(e))}`);
+                    }
                 }
+
+                setLoading(LoadingState.LOADING);
 
                 // Make sure to save the settings afterwards in case a new key has been added
                 // If "get" is called and the settings didn't save, it would cause an error.
@@ -133,22 +145,28 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
     }
 
     // Display loading screen
-    return <div className={styles.container} style={{opacity: loading ? 0 : 1}}>
+    return <div className={styles.container} style={{opacity: loading === LoadingState.FADE_OUT  ? 0 : 1}}>
         <Progress.Root className={styles.progressRoot}>
             <Progress.Indicator className={styles.progressIndicator} />
         </Progress.Root>
 
         <div className={styles.factContainer}>
-            {loading == LoadingState.LAUNCHING ?
+            {loading == LoadingState.LAUNCHING ? (
                 <>
                     <p className={styles.factHeader}>Launching...</p>
                     Sit tight...
-                </> :
+                </>
+            ) : loading === LoadingState.CHECKING_UPDATES ? (
+                <>
+                    <p className={styles.factHeader}>Checking for Updates...</p>
+                    Sit tight...
+                </>
+            ) : (
                 <>
                     <p className={styles.factHeader}>Fun Fact</p>
                     YARG stands for Yet Another Rhythm Game
                 </>
-            }
+            )}
 
         </div>
     </div>;
