@@ -263,17 +263,17 @@ fn launch_profile(
     path.push(exec_path);
 
     if !use_obs_vkcapture {
-        Command::new(path).args(arguments).spawn().map_err(|e| {
-            format!(
-                "Failed to launch profile! Is the executable installed?\n{:?}",
-                e
-            )
-        })?;
+        Command::new(path)
+            .args(arguments)
+            .env_remove("LD_LIBRARY_PATH")
+            .spawn()
+            .map_err(|e| format!("Failed to launch profile! Is the executable installed?\n{:?}", e))?;
     } else {
         let path_str = path_to_string(path)?;
 
         Command::new("obs-gamecapture")
             .args([path_str].iter().chain(&arguments))
+            .env_remove("LD_LIBRARY_PATH")
             .spawn()
             .map_err(|e| format!("Failed to launch profile! Is the executable installed? Is obs-vkcapture installed and pathed?\n{:?}", e))?;
     }
