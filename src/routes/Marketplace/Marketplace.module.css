@@ -141,6 +141,7 @@
 
     min-width: var(--item-width);
     max-width: var(--item-width);
+    height: fit-content;
 
     padding: 12px;
     align-items: center;
