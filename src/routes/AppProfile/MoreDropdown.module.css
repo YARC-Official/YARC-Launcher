@@ -34,6 +34,13 @@
     background: rgba(255, 255, 255, 0.1);
 }
 
+.item.disabled {
+    opacity: 0.5;
+    cursor: default;
+    pointer-events: none; /* ensures clicks don’t fire */
+    user-select: none;
+}
+
 .arrow {
     fill: var(--sideBarBackground);
 }
