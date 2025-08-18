@@ -2,14 +2,18 @@ import { MoreIcon } from "@app/assets/Icons";
 import Button, { ButtonColor } from "@app/components/Button";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import styles from "./MoreDropdown.module.css";
-import { ProfileState } from "@app/hooks/useProfileState";
+import { ProfileFolderState, ProfileState } from "@app/hooks/useProfileState";
 
 type ItemProps = React.PropsWithChildren<{
     onClick?: React.MouseEventHandler<HTMLDivElement>
+    disabled?: boolean;
 }>;
 
 const Item: React.FC<ItemProps> = (props: ItemProps) => {
-    return <DropdownMenu.Item className={styles.item} onClick={props.onClick}>
+    return <DropdownMenu.Item 
+        className={`${styles.item} ${props.disabled ? styles.disabled : ""}`}
+        onClick={props.disabled ? undefined : props.onClick}
+        aria-disabled={props.disabled}>
         {props.children}
     </DropdownMenu.Item>;
 };
@@ -21,6 +25,7 @@ interface Props {
 const MoreDropdown: React.FC<Props> = (props: Props) => {
     const {
         activeProfile,
+        folderState,
         openInstallFolder,
         uninstall,
         deleteProfile
@@ -40,12 +45,16 @@ const MoreDropdown: React.FC<Props> = (props: Props) => {
                 align="end">
 
                 {activeProfile.profile.type === "application" &&
-                    <Item onClick={async () => await openInstallFolder()}>
+                    <Item 
+                        onClick={async () => await openInstallFolder()}
+                        disabled={folderState === ProfileFolderState.FirstDownload}>
                         Open Install Folder
                     </Item>
                 }
 
-                <Item onClick={async () => await uninstall()}>
+                <Item 
+                    onClick={async () => await uninstall()}
+                    disabled={folderState === ProfileFolderState.FirstDownload}>
                     Uninstall
                 </Item>
                 <Item onClick={async () => await deleteProfile()}>
