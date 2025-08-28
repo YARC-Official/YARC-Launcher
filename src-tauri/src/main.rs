@@ -50,11 +50,11 @@ fn get_important_dirs() -> Result<ImportantDirs, String> {
     std::fs::create_dir_all(&temp_folder)
         .map_err(|e| format!("Failed to create temp directory.\n{:?}", e))?;
 
-    return Ok(ImportantDirs {
+    Ok(ImportantDirs {
         yarc_folder: path_to_string(yarc_folder)?,
         launcher_folder: path_to_string(launcher_folder)?,
         temp_folder: path_to_string(temp_folder)?,
-    });
+    })
 }
 
 #[tauri::command(async)]
@@ -74,10 +74,10 @@ fn get_custom_dirs(download_location: String) -> Result<CustomDirs, String> {
     std::fs::create_dir_all(&setlist_folder)
         .map_err(|e| format!("Failed to create setlist directory.\n{:?}", e))?;
 
-    return Ok(CustomDirs {
+    Ok(CustomDirs {
         yarg_folder: path_to_string(yarg_folder)?,
         setlist_folder: path_to_string(setlist_folder)?,
-    });
+    })
 }
 
 #[tauri::command]
@@ -110,17 +110,17 @@ fn profile_folder_state(path: String, wanted_tag: String) -> ProfileFolderState 
         let tag = fs::read_to_string(tag_file);
         if let Ok(tag_string) = tag {
             if tag_string.trim() == wanted_tag {
-                return ProfileFolderState::UpToDate;
+                ProfileFolderState::UpToDate
             } else {
-                return ProfileFolderState::UpdateRequired;
+                ProfileFolderState::UpdateRequired
             }
         } else {
             println!("Failed to read tag file at `{}`", path);
-            return ProfileFolderState::Error;
+            ProfileFolderState::Error
         }
     } else {
         println!("Failed to find if the profile exists at `{}`", path);
-        return ProfileFolderState::Error;
+        ProfileFolderState::Error
     }
 }
 
@@ -151,7 +151,7 @@ async fn download_and_install_profile(
     let current_os = std::env::consts::OS.to_string();
     for c in content {
         // Skip release content that is not for this OS
-        if !c.platforms.iter().any(|i| i.to_owned() == current_os) {
+        if !c.platforms.contains(&current_os) {
             continue;
         }
 
@@ -184,7 +184,7 @@ async fn download_and_install_profile(
                 );
 
                 // Download sig file (don't pass app so it doesn't emit an update)
-                download(None, &sig_url, &sig_file, 0, 0).await?;
+                download(None, sig_url, &sig_file, 0, 0).await?;
 
                 // Convert public key
                 let pk_box = PublicKeyBox::from_string(YARG_PUB_KEY).unwrap();
@@ -295,7 +295,7 @@ fn open_folder_profile(profile_path: String) -> Result<(), String> {
 #[tauri::command(async)]
 fn get_launch_argument() -> Option<String> {
     let launch_arg = COMMAND_LINE_ARG_LAUNCH.lock().unwrap();
-    return launch_arg.to_owned();
+    launch_arg.to_owned()
 }
 
 #[tauri::command(async)]
