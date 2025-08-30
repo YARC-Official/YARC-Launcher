@@ -107,7 +107,6 @@
 
 .section > .title > .left {
     display: flex;
-    width: 179px;
     justify-content: space-between;
     align-items: center;
 

@@ -94,7 +94,14 @@ function Marketplace() {
             </MarketplaceSection>
             <MarketplaceSection name="All Setlists">
                 {
-                    marketIndex.profiles.filter(i => i.type === "setlist").map(i =>
+                    marketIndex.profiles.filter(i => i.type === "setlist" && i.category === "official_setlist").map(i =>
+                        <MarketplaceProfileView profile={i} setSelectedProfile={setSelectedProfile} key={i.uuid} />
+                    )
+                }
+            </MarketplaceSection>
+            <MarketplaceSection name="Yet Another Rhythm Network Setlists">
+                {
+                    marketIndex.profiles.filter(i => i.type === "setlist" && i.category === "yarn_setlist").map(i =>
                         <MarketplaceProfileView profile={i} setSelectedProfile={setSelectedProfile} key={i.uuid} />
                     )
                 }
