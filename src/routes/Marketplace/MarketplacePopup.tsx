@@ -72,7 +72,7 @@ const MarketplacePopup: React.FC<Props> = ({ marketplaceProfile, setSelectedProf
         button = <Button color={ButtonColor.BLUE} border rounded onClick={addToLibrary}>
             <AddIcon width={16} height={16} /> Add Another Instance
         </Button>;
-    } else if (anyOfProfile && profile.type === "setlist") {
+    } else if (anyOfProfile && profile.type !== "application") {
         button = <Button color={ButtonColor.DARK} border rounded>
             Already Added
         </Button>;

@@ -139,6 +139,14 @@ pub fn extract(from: &Path, to: &Path) -> Result<(), String> {
     Ok(())
 }
 
+pub fn extract_7z(from: &Path, to: &Path) -> Result<(), String> {
+    let file = File::open(from).map_err(|e| format!("Error while opening file.\n{:?}", e))?;
+    sevenz_rust::decompress_file(from, to)
+        .map_err(|e| format!("Error while extracting 7z.\n{:?}", e))?;
+    
+    Ok(())
+}
+
 pub fn extract_encrypted(from: &Path, to: &Path) -> Result<(), String> {
     // Idiot prevention
     let mut chars = Vec::new();

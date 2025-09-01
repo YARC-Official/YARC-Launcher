@@ -10,6 +10,8 @@ export const getPathForProfile = async (store: DirectoriesStore, activeProfile: 
 
     if (activeProfile.profile.type === "setlist") {
         return await path.join(store.customDirs.setlistFolder, activeProfile.uuid);
+    } else if (activeProfile.profile.type === "venue") {
+        return await path.join(store.customDirs.venueFolder, activeProfile.uuid);
     } else {
         return await path.join(store.customDirs.yargFolder, activeProfile.uuid);
     }
@@ -21,6 +23,8 @@ export const localizeMetadata = (profile: Profile, locale: string): Metadata => 
     if (profile.type === "application") {
         out = localizeObject(profile.metadata, locale);
     } else if (profile.type === "setlist") {
+        out = localizeObject(profile.metadata, locale);
+    } else if (profile.type === "venue") {
         out = localizeObject(profile.metadata, locale);
     } else {
         throw new Error("Unhandled profile type!");

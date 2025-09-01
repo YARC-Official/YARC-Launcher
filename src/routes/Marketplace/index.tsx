@@ -106,6 +106,13 @@ function Marketplace() {
                     )
                 }
             </MarketplaceSection>
+            <MarketplaceSection name="Venues">
+                {
+                    marketIndex.profiles.filter(i => i.type === "venue").map(i =>
+                        <MarketplaceProfileView profile={i} setSelectedProfile={setSelectedProfile} key={i.uuid} />
+                    )
+                }
+            </MarketplaceSection>
         </div>
     </main>;
 }
