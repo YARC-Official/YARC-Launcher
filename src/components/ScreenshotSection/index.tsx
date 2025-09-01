@@ -1,4 +1,3 @@
-import {Component} from "react";
 import {Profile} from "@app/profiles/types";
 import Box from "@app/components/Box";
 import {InformationIcon} from "@app/assets/Icons";
