@@ -1,4 +1,4 @@
-import { intlFormatDistance } from "date-fns";
+import { formatDistance } from "date-fns";
 import humanizeDuration from "humanize-duration";
 
 export const millisToDisplayLength = (length: number, long = false) => {
@@ -42,7 +42,7 @@ export const isConsideredNewRelease = (releaseDate: string, newestInSetlist: str
 };
 
 export const distanceFromToday = (initial: string) => {
-    return intlFormatDistance(new Date(initial), new Date());
+    return formatDistance(new Date(initial), new Date());
 };
 
 export const localizeDate = (date: string) => {

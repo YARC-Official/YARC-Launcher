@@ -96,6 +96,10 @@ export type SetlistMetadata = Localized<Metadata & {
 export type VenueMetadata = Localized<Metadata & {
     venueAuthor: string,
     venueType: VenueType,
+    screenshots?: {
+        url: string,
+        caption?: string,
+    }[],
     credits: {
         name: string,
         url: string,

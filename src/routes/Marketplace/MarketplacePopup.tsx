@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ApplicationMetadata, Profile, SetlistMetadata } from "@app/profiles/types";
 import ProfileIcon from "@app/components/ProfileIcon";
 import Button, { ButtonColor } from "@app/components/Button";
+import ScreenshotSection from "@app/components/ScreenshotSection";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Setlist from "@app/components/Setlist";
@@ -142,6 +143,10 @@ const MarketplacePopup: React.FC<Props> = ({ marketplaceProfile, setSelectedProf
 
                     {metadata.description}
                 </Box>
+
+                {(profile.type === "venue" && profile.metadata.screenshots !== undefined) &&
+                    <ScreenshotSection profile={profile} />
+                }
 
                 {profile.type === "setlist" &&
                     <Setlist profile={profile} />

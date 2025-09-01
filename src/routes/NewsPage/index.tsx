@@ -7,7 +7,7 @@ import styles from "./NewsPage.module.css";
 import NewsBadge from "@app/components/NewsSection/NewsBadge";
 import { CSSProperties } from "react";
 import { BackIcon, TimeIcon } from "@app/assets/Icons";
-import { intlFormatDistance } from "date-fns";
+import { formatDistance } from "date-fns";
 import { newsBaseURL } from "@app/utils/consts";
 import { useQueries } from "@tanstack/react-query";
 import { useNewsAuthorSettings } from "@app/hooks/useNewsAuthor";
@@ -63,7 +63,7 @@ function NewsPage() {
                     articleData?.release ? (
                         <div className={styles.releaseDate}>
                             <TimeIcon />
-                            {intlFormatDistance(new Date(articleData?.release), new Date())}
+                            {formatDistance(new Date(articleData?.release), new Date())}
                         </div>
                     ) : ""
                 }

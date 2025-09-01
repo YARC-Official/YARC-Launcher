@@ -140,7 +140,6 @@ pub fn extract(from: &Path, to: &Path) -> Result<(), String> {
 }
 
 pub fn extract_7z(from: &Path, to: &Path) -> Result<(), String> {
-    let file = File::open(from).map_err(|e| format!("Error while opening file.\n{:?}", e))?;
     sevenz_rust::decompress_file(from, to)
         .map_err(|e| format!("Error while extracting 7z.\n{:?}", e))?;
     
