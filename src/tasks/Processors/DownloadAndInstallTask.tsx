@@ -45,6 +45,13 @@ export class DownloadAndInstallTask extends BaseTask implements IBaseTask {
                 tag={this.activeProfile.version.tag}
                 icon={<ProfileIcon iconUrl={metadata.iconUrl} />}
                 bannerMode={bannerMode} />;
+        } else if (profile.type === "venue") {
+            const metadata = localizeObject(profile.metadata, "en-US");
+
+            return <QueueEntry
+                name={metadata.name}
+                icon={<ProfileIcon iconUrl={metadata.iconUrl} />}
+                bannerMode={bannerMode} />;
         } else {
             const metadata = localizeObject(profile.metadata, "en-US");
 

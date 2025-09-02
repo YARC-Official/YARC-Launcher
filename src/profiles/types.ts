@@ -7,7 +7,7 @@ export interface ReleaseContent {
     files: {
         url: string,
         sigUrl?: string,
-        fileType: "zip" | "encrypted",
+        fileType: "zip" | "encrypted" | "7z",
     }[];
 }
 
@@ -93,7 +93,20 @@ export type SetlistMetadata = Localized<Metadata & {
     }[],
 }>;
 
-export type Profile = ApplicationProfile | SetlistProfile;
+export type VenueMetadata = Localized<Metadata & {
+    venueAuthor: string,
+    venueType: VenueType,
+    screenshots?: {
+        url: string,
+        caption?: string,
+    }[],
+    credits: {
+        name: string,
+        url: string,
+    }[],
+}>;
+
+export type Profile = ApplicationProfile | SetlistProfile | VenueProfile;
 
 export interface ApplicationProfile {
     type: "application",
@@ -108,6 +121,14 @@ export interface SetlistProfile {
 
     uuid: string,
     metadata: SetlistMetadata,
+    version: VersionInfo,
+}
+
+export interface VenueProfile {
+    type: "venue",
+
+    uuid: string,
+    metadata: VenueMetadata,
     version: VersionInfo,
 }
 
@@ -135,4 +156,11 @@ export enum GraphicsApi {
     OPEN_GL = "OpenGL",
     VULKAN = "Vulkan",
     METAL = "Metal",
+}
+
+export enum VenueType {
+    Shader = "Shader",
+    AudioReactive = "Audio Visualizer",
+    ThreeD = "3D",
+    ThreeDWithCharacters = "3D with Characters",
 }

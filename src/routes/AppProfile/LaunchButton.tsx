@@ -107,6 +107,11 @@ export function LaunchButton({ profileState }: Props) {
                     Installed
                 </>
             }
+            {profile.type === "venue" &&
+                <>
+                    Installed
+                </>
+            }
         </Button>;
     }
 

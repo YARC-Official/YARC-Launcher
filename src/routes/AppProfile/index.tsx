@@ -153,7 +153,7 @@ function AppProfile() {
                         </div>
                     }
                 </Box>
-                {profile.type === "setlist" &&
+                {(profile.type === "setlist" || profile.type === "venue") &&
                     <Box>
                         <header>
                             <ChartersIcon />
