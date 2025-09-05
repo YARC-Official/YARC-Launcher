@@ -9,6 +9,7 @@ interface ViteTypeOptions {
 
 interface ImportMetaEnv {
   readonly VITE_RELEASES_SERVER_URL: string
+  readonly VITE_NEWS_SERVER_URL: string
 }
 
 interface ImportMeta {

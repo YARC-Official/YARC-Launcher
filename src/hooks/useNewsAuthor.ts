@@ -1,4 +1,3 @@
-import { newsBaseURL } from "@app/utils/consts";
 import { useQuery } from "@tanstack/react-query";
 
 export interface AuthorData {
@@ -11,7 +10,7 @@ export const useNewsAuthorSettings = (authorId: string) => {
     return {
         queryKey: ["NewsAuthor", authorId],
         queryFn: async (): Promise<AuthorData> => await fetch(
-            `${newsBaseURL}/authors/${authorId}.json`)
+            `${import.meta.env.VITE_NEWS_SERVER_URL}/authors/${authorId}.json`)
             .then(res => res.json())
     };
 };

@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import { Img } from "react-image";
 import UnknownUserIcon from "@app/assets/Icons/UnknownUser.svg";
 import { TimeIcon } from "@app/assets/Icons";
-import { newsBaseURL } from "@app/utils/consts";
 import { useNewsAuthorSettings } from "@app/hooks/useNewsAuthor";
 import { useQueries } from "@tanstack/react-query";
 import { distanceFromToday } from "@app/utils/timeFormat";
@@ -22,7 +21,7 @@ const NewsEntry: React.FC<Props> = ({ article }: Props) => {
 
     return <Link to={`/news/${article.md}`} key={article.md} style={{ width: "100%" }}>
         <div className={styles.container}>
-            <img className={styles.thumbnail} src={`${newsBaseURL}/images/thumbs/${article.thumb}`} />
+            <img className={styles.thumbnail} src={`${import.meta.env.VITE_NEWS_SERVER_URL}/images/thumbs/${article.thumb}`} />
             <div className={styles.main}>
                 <div className={styles.top_container}>
                     <div className={styles.top}>
@@ -46,7 +45,7 @@ const NewsEntry: React.FC<Props> = ({ article }: Props) => {
                                 key={`${data?.avatar}`}
                                 height={24}
                                 alt={`${data?.displayName}'s avatar`}
-                                src={[`${newsBaseURL}/images/avatars/${data?.avatar}`, UnknownUserIcon]}
+                                src={[`${import.meta.env.VITE_NEWS_SERVER_URL}/images/avatars/${data?.avatar}`, UnknownUserIcon]}
                                 style={{ borderRadius: "50%" }}
                             />))
                     }

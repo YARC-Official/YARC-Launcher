@@ -1,4 +1,3 @@
-import { newsBaseURL } from "@app/utils/consts";
 import { useQuery } from "@tanstack/react-query";
 
 export interface ArticleData {
@@ -19,7 +18,7 @@ export const useNews = () => {
     return useQuery({
         queryKey: ["NewsIndex"],
         queryFn: async (): Promise<NewsData> => await fetch(
-            `${newsBaseURL}/index.json`)
+            `${import.meta.env.VITE_NEWS_SERVER_URL}/index.json`)
             .then(res => res.json())
     });
 };

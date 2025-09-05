@@ -1,7 +1,6 @@
 import styles from "./NewsAuthor.module.css";
 import UnknownUserIcon from "@app/assets/Icons/UnknownUser.svg";
 import { AuthorData } from "@app/hooks/useNewsAuthor";
-import { newsBaseURL } from "@app/utils/consts";
 import { Img } from "react-image";
 
 interface Props {
@@ -14,7 +13,7 @@ const NewsAuthor: React.FC<Props> = ({author}: Props) => {
             <Img
                 height={48}
                 alt={`${author.displayName}'s avatar`}
-                src={[`${newsBaseURL}/images/avatars/${author.avatar}`, UnknownUserIcon]}
+                src={[`${import.meta.env.VITE_NEWS_SERVER_URL}/images/avatars/${author.avatar}`, UnknownUserIcon]}
             />
         </div>
         <div className={styles.authorInformation}>
