@@ -1,1 +1,0 @@
-export const newsBaseURL = "https://raw.githubusercontent.com/YARC-Official/News/master";

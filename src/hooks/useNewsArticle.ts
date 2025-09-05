@@ -1,4 +1,3 @@
-import { newsBaseURL } from "@app/utils/consts";
 import { useQuery } from "@tanstack/react-query";
 
 export interface Article {
@@ -15,7 +14,7 @@ export const useNewsArticle = (md: string) => {
         queryKey: ["NewsArticle", md],
         gcTime: 60 * 60 * 1000,
         queryFn: async () => await fetch(
-            `${newsBaseURL}/articles/${md}.md`)
+            `${import.meta.env.VITE_NEWS_SERVER_URL}/articles/${md}.md`)
             .then(res => res.text())
     });
 };
