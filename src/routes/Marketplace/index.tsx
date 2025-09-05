@@ -103,7 +103,7 @@ function Marketplace() {
                 </MarketplaceSection>
             }
             { setlists.length > 0 &&
-                <MarketplaceSection name="All Setlists">
+                <MarketplaceSection name="Official Setlists">
                     {
                         setlists.map(i =>
                             <MarketplaceProfileView profile={i} setSelectedProfile={setSelectedProfile} key={i.uuid} />
@@ -139,5 +139,4 @@ function Marketplace() {
     </main>;
 }
 
-// @ts-expect-error - Linter falsely claims that there is another export default
 export default Marketplace;
