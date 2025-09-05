@@ -11,6 +11,7 @@ export interface CustomDirs {
     installFolder: string,
     yargFolder: string,
     setlistFolder: string,
+    venueFolder: string,
 }
 
 export interface DirectoriesStore {

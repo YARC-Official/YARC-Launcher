@@ -4,7 +4,7 @@ export type OnboardingIndex = OnboardingOption[];
 
 export type OnboardingOption =  Localized<{
     uuid: string,
-    type: "application" | "setlist",
+    type: "application" | "setlist" | "venue",
     url: string,
 
     name: string,

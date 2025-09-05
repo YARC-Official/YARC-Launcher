@@ -101,7 +101,7 @@ export const useProfileState = (profileUUID: string): ProfileState => {
             await uninstall(activeProfile, profilePath);
         },
         launch: async () => {
-            if (loading || activeProfile.profile.type === "setlist") {
+            if (loading || activeProfile.profile.type === "setlist" || activeProfile.profile.type === "venue") {
                 return;
             }
 

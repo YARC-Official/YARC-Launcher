@@ -25,6 +25,10 @@ export const localizeObject = <T>(obj: Localized<T>, locale: string): T => {
     } = obj;
     const newObj = omittedObj as T;
 
+    if (obj.localeOverrides === undefined) {
+        return newObj;
+    }
+
     if (locale in obj.localeOverrides) {
         const override = obj.localeOverrides[locale];
 

@@ -104,6 +104,16 @@ export const ComponentsPage: React.FC<Props> = ({ profileUrls, setProfileUrls }:
                     }
                 </div>
             </div>
+            <div className={styles.componentCategory}>
+                <header>Venues</header>
+                <div className={styles.componentOptionContainer}>
+                    {
+                        onboardingIndex.filter(i => i.type === "venue").map(i =>
+                            <ComponentOption option={i} setOption={setOption} key={i.uuid} />
+                        )
+                    }
+                </div>
+            </div>
         </div>
     </>;
 };

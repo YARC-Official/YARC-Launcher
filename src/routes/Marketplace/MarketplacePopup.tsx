@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ApplicationMetadata, Profile, SetlistMetadata } from "@app/profiles/types";
 import ProfileIcon from "@app/components/ProfileIcon";
 import Button, { ButtonColor } from "@app/components/Button";
+import ScreenshotSection from "@app/components/ScreenshotSection";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Setlist from "@app/components/Setlist";
@@ -72,7 +73,7 @@ const MarketplacePopup: React.FC<Props> = ({ marketplaceProfile, setSelectedProf
         button = <Button color={ButtonColor.BLUE} border rounded onClick={addToLibrary}>
             <AddIcon width={16} height={16} /> Add Another Instance
         </Button>;
-    } else if (anyOfProfile && profile.type === "setlist") {
+    } else if (anyOfProfile && profile.type !== "application") {
         button = <Button color={ButtonColor.DARK} border rounded>
             Already Added
         </Button>;
@@ -90,9 +91,11 @@ const MarketplacePopup: React.FC<Props> = ({ marketplaceProfile, setSelectedProf
                 <div className={styles.bannerApp}>
                     <ProfileIcon className={styles.bannerAppIcon} iconUrl={metadata.iconUrl} />
                     <div>
-                        <div className={styles.verifiedTag}>
-                            Official <VerifiedIcon />
-                        </div>
+                        {profile.metadata.badge &&
+                            <div className={styles.profileBadge}>
+                                {profile.metadata.badge} {profile.metadata.badge === "Official" && <VerifiedIcon />}
+                            </div>
+                        }
                         {metadata.name}
                     </div>
                 </div>
@@ -140,6 +143,10 @@ const MarketplacePopup: React.FC<Props> = ({ marketplaceProfile, setSelectedProf
 
                     {metadata.description}
                 </Box>
+
+                {(profile.type === "venue" && profile.metadata.screenshots !== undefined) &&
+                    <ScreenshotSection profile={profile} />
+                }
 
                 {profile.type === "setlist" &&
                     <Setlist profile={profile} />
