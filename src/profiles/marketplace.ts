@@ -17,7 +17,7 @@ export interface MarketplaceIndex {
 
 export type MarketplaceProfile = Localized<{
     uuid: string,
-    type: "application" | "setlist",
+    type: "application" | "setlist" | "venue",
     category: string,
     url: string,
     release: string,

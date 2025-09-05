@@ -67,16 +67,22 @@ fn get_custom_dirs(download_location: String) -> Result<CustomDirs, String> {
     let mut setlist_folder = PathBuf::from(&download_location);
     setlist_folder.push("Setlists");
 
+    let mut venue_folder = PathBuf::from(&download_location);
+    venue_folder.push("Venues");
+
     // Create the directories if they don't exist
 
     std::fs::create_dir_all(&yarg_folder)
         .map_err(|e| format!("Failed to create YARG directory.\n{:?}", e))?;
     std::fs::create_dir_all(&setlist_folder)
         .map_err(|e| format!("Failed to create setlist directory.\n{:?}", e))?;
+    std::fs::create_dir_all(&venue_folder)
+        .map_err(|e| format!("Failed to create venue directory.\n{:?}", e))?;
 
     Ok(CustomDirs {
         yarg_folder: path_to_string(yarg_folder)?,
         setlist_folder: path_to_string(setlist_folder)?,
+        venue_folder: path_to_string(venue_folder)?,
     })
 }
 
@@ -214,6 +220,8 @@ async fn download_and_install_profile(
 
             if file.file_type == "zip" {
                 extract(&temp_file, &install_path)?;
+            } else if file.file_type == "7z" {
+                extract_7z(&temp_file, &install_path)?;
             } else if file.file_type == "encrypted" {
                 extract_encrypted(&temp_file, &install_path)?;
             } else {
@@ -263,17 +271,17 @@ fn launch_profile(
     path.push(exec_path);
 
     if !use_obs_vkcapture {
-        Command::new(path).args(arguments).spawn().map_err(|e| {
-            format!(
-                "Failed to launch profile! Is the executable installed?\n{:?}",
-                e
-            )
-        })?;
+        Command::new(path)
+            .args(arguments)
+            .env_remove("LD_LIBRARY_PATH")
+            .spawn()
+            .map_err(|e| format!("Failed to launch profile! Is the executable installed?\n{:?}", e))?;
     } else {
         let path_str = path_to_string(path)?;
 
         Command::new("obs-gamecapture")
             .args([path_str].iter().chain(&arguments))
+            .env_remove("LD_LIBRARY_PATH")
             .spawn()
             .map_err(|e| format!("Failed to launch profile! Is the executable installed? Is obs-vkcapture installed and pathed?\n{:?}", e))?;
     }

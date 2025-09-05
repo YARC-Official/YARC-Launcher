@@ -49,7 +49,8 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 25px;
+    column-gap: 25px;
+    row-gap: 15px;
     align-self: stretch;
 }
 

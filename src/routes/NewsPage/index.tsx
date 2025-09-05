@@ -7,8 +7,7 @@ import styles from "./NewsPage.module.css";
 import NewsBadge from "@app/components/NewsSection/NewsBadge";
 import { CSSProperties } from "react";
 import { BackIcon, TimeIcon } from "@app/assets/Icons";
-import { intlFormatDistance } from "date-fns";
-import { newsBaseURL } from "@app/utils/consts";
+import { formatDistance } from "date-fns";
 import { useQueries } from "@tanstack/react-query";
 import { useNewsAuthorSettings } from "@app/hooks/useNewsAuthor";
 import NewsAuthor from "@app/components/NewsSection/NewsAuthor";
@@ -35,7 +34,7 @@ function NewsPage() {
     if (error) return `An error has occurred: ${error}`;
 
     return <>
-        <div className={styles.header} style={{ "--bannerURL": `url(${newsBaseURL}/images/banners/${articleData?.banner})` } as CSSProperties}>
+        <div className={styles.header} style={{ "--bannerURL": `url(${import.meta.env.VITE_NEWS_SERVER_URL}/images/banners/${articleData?.banner})` } as CSSProperties}>
             <div onClick={() => navigate(-1)} className={styles.header_back}>
                 <BackIcon />
                     RETURN
@@ -63,7 +62,7 @@ function NewsPage() {
                     articleData?.release ? (
                         <div className={styles.releaseDate}>
                             <TimeIcon />
-                            {intlFormatDistance(new Date(articleData?.release), new Date())}
+                            {formatDistance(new Date(articleData?.release), new Date())}
                         </div>
                     ) : ""
                 }

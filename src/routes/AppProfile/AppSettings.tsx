@@ -161,7 +161,7 @@ const AppSettings: React.FC<Props> = ({ activeProfile, setSettingsOpen }: Props)
                             type="single"
                             value={graphicsApi}
                             onValueChange={(value) => {
-                                setGraphicsApi(value as GraphicsApi);
+                                if (value) setGraphicsApi(value as GraphicsApi);
                             }}>
                             <ToggleGroup.Item className={styles.item} value={GraphicsApi.Default}>
                                 Default

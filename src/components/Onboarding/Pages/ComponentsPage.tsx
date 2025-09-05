@@ -51,7 +51,7 @@ interface Props {
 export const ComponentsPage: React.FC<Props> = ({ profileUrls, setProfileUrls }: Props) => {
     const onboardingIndexQuery = useQuery({
         queryKey: ["OnboardingIndex"],
-        queryFn: async (): Promise<OnboardingIndex> => await fetch("https://releases.yarg.in/profiles/onboarding.json")
+        queryFn: async (): Promise<OnboardingIndex> => await fetch(`${import.meta.env.VITE_RELEASES_SERVER_URL}/profiles/onboarding.json`)
             .then(res => res.json())
     });
 
@@ -99,6 +99,16 @@ export const ComponentsPage: React.FC<Props> = ({ profileUrls, setProfileUrls }:
                 <div className={styles.componentOptionContainer}>
                     {
                         onboardingIndex.filter(i => i.type === "setlist").map(i =>
+                            <ComponentOption option={i} setOption={setOption} key={i.uuid} />
+                        )
+                    }
+                </div>
+            </div>
+            <div className={styles.componentCategory}>
+                <header>Venues</header>
+                <div className={styles.componentOptionContainer}>
+                    {
+                        onboardingIndex.filter(i => i.type === "venue").map(i =>
                             <ComponentOption option={i} setOption={setOption} key={i.uuid} />
                         )
                     }

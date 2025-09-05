@@ -29,6 +29,7 @@ pub struct ImportantDirs {
 pub struct CustomDirs {
     pub yarg_folder: String,
     pub setlist_folder: String,
+    pub venue_folder: String,
 }
 
 // WARNING: This type is also defined in TypeScript. Make sure to change it in both places!

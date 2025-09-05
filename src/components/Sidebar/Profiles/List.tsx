@@ -15,7 +15,7 @@ interface Props {
 const ProfilesList: React.FC<Props> = ({ isOffline }: Props) => {
     const profileStore = useProfileStore();
 
-    function activeProfileList(type: "application" | "setlist") {
+    function activeProfileList(type: "application" | "setlist" | "venue") {
         const output = [];
 
         for (const activeProfile of profileStore.activeProfiles) {
@@ -63,6 +63,16 @@ const ProfilesList: React.FC<Props> = ({ isOffline }: Props) => {
             }
         </Separator>
         {activeProfileList("setlist")}
+        <Separator name="Venues">
+            {!isOffline &&
+                <TooltipWrapper text="Look for Venues on the Marketplace" sideOffset={3}>
+                    <Link to="/marketplace" className={styles.add}>
+                        <AddIcon />
+                    </Link>
+                </TooltipWrapper>
+            }
+        </Separator>
+        {activeProfileList("venue")}
     </div>;
 };
 

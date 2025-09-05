@@ -41,6 +41,13 @@ function Marketplace() {
         bannerStyles.push(styles.lightBannerText);
     }
 
+    // We could use reduce to do this all in one pass, but this is easier to read and the performance difference is irrelevant
+    const applications = marketIndex.profiles.filter(i => i.type === "application");
+    const setlists = marketIndex.profiles.filter(i => i.type === "setlist" && i.category === "official_setlist");
+    const yarnSetlists = marketIndex.profiles.filter(i => i.type === "setlist" && i.category === "yarn_setlist");
+    const venues = marketIndex.profiles.filter(i => i.type === "venue");
+    const hasNoContent = applications.length === 0 && setlists.length === 0 && yarnSetlists.length === 0 && venues.length === 0;
+
     return <main className={styles.main}>
         <MarketplacePopup marketplaceProfile={selectedProfile} setSelectedProfile={setSelectedProfile} />
 
@@ -84,21 +91,50 @@ function Marketplace() {
                 }
             </div>
         </div>
+
         <div className={styles.content}>
-            <MarketplaceSection name="All Applications">
-                {
-                    marketIndex.profiles.filter(i => i.type === "application").map(i =>
-                        <MarketplaceProfileView profile={i} setSelectedProfile={setSelectedProfile} key={i.uuid} />
-                    )
-                }
-            </MarketplaceSection>
-            <MarketplaceSection name="All Setlists">
-                {
-                    marketIndex.profiles.filter(i => i.type === "setlist").map(i =>
-                        <MarketplaceProfileView profile={i} setSelectedProfile={setSelectedProfile} key={i.uuid} />
-                    )
-                }
-            </MarketplaceSection>
+            {applications.length > 0 &&
+                <MarketplaceSection name="All Applications">
+                    {
+                        applications.map(i =>
+                            <MarketplaceProfileView profile={i} setSelectedProfile={setSelectedProfile} key={i.uuid} />
+                        )
+                    }
+                </MarketplaceSection>
+            }
+            { setlists.length > 0 &&
+                <MarketplaceSection name="Official Setlists">
+                    {
+                        setlists.map(i =>
+                            <MarketplaceProfileView profile={i} setSelectedProfile={setSelectedProfile} key={i.uuid} />
+                        )
+                    }
+                </MarketplaceSection>
+            }
+            { yarnSetlists.length > 0 &&
+                <MarketplaceSection name="Yet Another Rhythm Network Setlists">
+                    {
+                        yarnSetlists.map(i =>
+                            <MarketplaceProfileView profile={i} setSelectedProfile={setSelectedProfile} key={i.uuid} />
+                        )
+                    }
+                </MarketplaceSection>
+            }
+            { venues.length > 0 &&
+                <MarketplaceSection name="Venues">
+                    {
+                        venues.map(i =>
+                            <MarketplaceProfileView profile={i} setSelectedProfile={setSelectedProfile} key={i.uuid} />
+                        )
+                    }
+                </MarketplaceSection>
+            }
+            { hasNoContent &&
+                <div className={styles.content}>
+                    <h2>Marketplace is Empty</h2>
+                    <p>There are currently no items in the marketplace. Please check back later.</p>
+                </div>
+            }
         </div>
     </main>;
 }

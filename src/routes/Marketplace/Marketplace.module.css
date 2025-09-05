@@ -107,7 +107,6 @@
 
 .section > .title > .left {
     display: flex;
-    width: 179px;
     justify-content: space-between;
     align-items: center;
 
@@ -122,6 +121,7 @@
 
     max-width: 100%;
     overflow-x: auto;
+    overflow-y: hidden;
 
     padding: 12px;
 
@@ -141,6 +141,7 @@
 
     min-width: var(--item-width);
     max-width: var(--item-width);
+    height: fit-content;
 
     padding: 12px;
     align-items: center;
