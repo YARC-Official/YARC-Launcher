@@ -26,6 +26,17 @@ RWSB28HEvrtuwvPn3pweVBodgVi/d+UH22xDsL3K8VBgeRqaIrDdTvps
 static COMMAND_LINE_ARG_LAUNCH: LazyLock<Mutex<Option<String>>> =
     LazyLock::new(|| Mutex::new(None));
 
+#[tauri::command]
+fn is_msvcp_install_required() -> bool {
+    #[cfg(not(windows))]
+    return false;
+    #[cfg(windows)]
+    return unsafe {
+        windows::Win32::System::LibraryLoader::LoadLibraryW(windows::core::w!("msvcp140.dll"))
+            .map_or(true, |h| h.is_invalid())
+    };
+}
+
 #[tauri::command(async)]
 fn get_important_dirs() -> Result<ImportantDirs, String> {
     // Get the important directories
@@ -275,7 +286,12 @@ fn launch_profile(
             .args(arguments)
             .env_remove("LD_LIBRARY_PATH")
             .spawn()
-            .map_err(|e| format!("Failed to launch profile! Is the executable installed?\n{:?}", e))?;
+            .map_err(|e| {
+                format!(
+                    "Failed to launch profile! Is the executable installed?\n{:?}",
+                    e
+                )
+            })?;
     } else {
         let path_str = path_to_string(path)?;
 
@@ -354,6 +370,7 @@ fn main() {
             launch_profile,
             open_folder_profile,
             get_launch_argument,
+            is_msvcp_install_required,
             clean_up_old_install
         ])
         .setup(|app| {
@@ -366,4 +383,12 @@ fn main() {
         })
         .run(tauri::generate_context!())
         .expect("Error while running Tauri application.");
+}
+
+#[cfg(test)]
+mod t {
+    #[test]
+    fn test_msvcp_installed() {
+        println!("{}", super::is_msvcp_install_required());
+    }
 }
