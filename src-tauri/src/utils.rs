@@ -31,9 +31,9 @@ const LETTERS: &str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const EMIT_BUFFER_RATE: f64 = 1.0 / 15.0;
 
 pub fn path_to_string(p: PathBuf) -> Result<String, String> {
-    Ok(p.into_os_string()
+    p.into_os_string()
         .into_string()
-        .map_err(|e| format!("Failed to convert path to string!\n{:?}", e))?)
+        .map_err(|e| format!("Failed to convert path to string!\n{:?}", e))
 }
 
 pub fn clear_folder(path: &Path) -> Result<(), String> {
@@ -155,8 +155,9 @@ pub fn extract_encrypted(from: &Path, to: &Path) -> Result<(), String> {
         let c = a.wrapping_rem(b).wrapping_rem(52);
         chars.push(
             LETTERS
-                .bytes()
-                .nth(c as usize)
+                .as_bytes()
+                .get(c as usize)
+                .copied()
                 .ok_or("Failed to index LETTERS.")? as u16,
         );
     }
