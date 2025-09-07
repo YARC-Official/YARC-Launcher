@@ -10,6 +10,7 @@ import { IBaseTask } from "@app/tasks/Processors/base";
 import { invoke } from "@tauri-apps/api/core";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import QueueStore from "../tasks/queue";
 
 export enum ProfileFolderState {
     Error = 0,
@@ -122,7 +123,8 @@ export const useProfileState = (profileUUID: string): ProfileState => {
                 return;
             }
 
-            if (folderState !== ProfileFolderState.FirstDownload) {
+            if (folderState !== ProfileFolderState.FirstDownload ||
+                QueueStore.findTask(QueueStore.store.getState(), activeProfile.uuid)) {
                 createAndShowDialog(UninstallBeforeDeleteDialog);
                 return;
             }
