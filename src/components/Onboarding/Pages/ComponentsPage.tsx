@@ -78,6 +78,10 @@ export const ComponentsPage: React.FC<Props> = ({ profileUrls, setProfileUrls }:
         }
     };
 
+    const applications = onboardingIndex.filter(i => i.type === "application");
+    const setlists = onboardingIndex.filter(i => i.type === "setlist");
+    const venues = onboardingIndex.filter(i => i.type === "venue");
+
     return <>
         <WarningBox>
             You can download other applications and songs at any time after the initial onboarding
@@ -88,7 +92,7 @@ export const ComponentsPage: React.FC<Props> = ({ profileUrls, setProfileUrls }:
                 <header>Applications</header>
                 <div className={styles.componentOptionContainer}>
                     {
-                        onboardingIndex.filter(i => i.type === "application").map(i =>
+                        applications.map(i =>
                             <ComponentOption option={i} setOption={setOption} key={i.uuid} />
                         )
                     }
@@ -98,22 +102,25 @@ export const ComponentsPage: React.FC<Props> = ({ profileUrls, setProfileUrls }:
                 <header>Songs</header>
                 <div className={styles.componentOptionContainer}>
                     {
-                        onboardingIndex.filter(i => i.type === "setlist").map(i =>
+                        setlists.map(i =>
                             <ComponentOption option={i} setOption={setOption} key={i.uuid} />
                         )
                     }
                 </div>
             </div>
-            <div className={styles.componentCategory}>
-                <header>Venues</header>
-                <div className={styles.componentOptionContainer}>
-                    {
-                        onboardingIndex.filter(i => i.type === "venue").map(i =>
-                            <ComponentOption option={i} setOption={setOption} key={i.uuid} />
-                        )
-                    }
+            { venues.length > 0 &&
+                <div className={styles.componentCategory}>
+
+                    <header>Venues</header>
+                    <div className={styles.componentOptionContainer}>
+                        {
+                            venues.map(i =>
+                                <ComponentOption option={i} setOption={setOption} key={i.uuid} />
+                            )
+                        }
+                    </div>
                 </div>
-            </div>
+            }
         </div>
     </>;
 };

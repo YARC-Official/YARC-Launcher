@@ -5,10 +5,13 @@ import { UninstallTask } from "@app/tasks/Processors/UninstallTask";
 import { getOS } from "@app/utils/os";
 import { invoke } from "@tauri-apps/api/core";
 import { useDirectories } from "./directories";
-import { showErrorDialog } from "@app/dialogs";
+import { createAndShowDialog, showErrorDialog } from "@app/dialogs";
 import { useOfflineStatus } from "@app/hooks/useOfflineStatus";
 import { settingsManager } from "@app/settings";
 import { getApiLaunchArgument } from "@app/utils/graphicsApi";
+import { MsvcDialog } from "@app/dialogs/Dialogs/MsvcDialog";
+import {TaskPayload} from "@app/tasks/payload";
+import {listen, UnlistenFn} from "@tauri-apps/api/event";
 
 export const downloadAndInstall = async (profile: ActiveProfile, profilePath: string, onFinish?: () => void): Promise<void> => {
     const directories = useDirectories.getState();
@@ -85,4 +88,32 @@ export const openInstallFolder = async (activeProfile: ActiveProfile, profilePat
     } catch (e) {
         showErrorDialog(e as string);
     }
+};
+
+export const promptDownloadMsvc = async (
+    onProgress?: (payload: TaskPayload) => void): Promise<boolean> => {
+    const result = await createAndShowDialog(MsvcDialog);
+
+    if (result === "continue") {
+        let unlistenFn: UnlistenFn | undefined;
+        try {
+            if (onProgress) {
+                unlistenFn = await listen("progress_info", (event) => {
+                    onProgress(event.payload as TaskPayload);
+                });
+            }
+
+            await invoke("download_and_install_msvc");
+            return true;
+        } catch (e) {
+            showErrorDialog(e as string);
+            return false;
+        } finally {
+            if (unlistenFn) {
+                unlistenFn();
+            }
+        }
+    }
+
+    return false;
 };

@@ -11,6 +11,7 @@ use std::{
     sync::{LazyLock, Mutex},
 };
 
+use tempfile::NamedTempFile;
 use clap::Parser;
 use directories::BaseDirs;
 use minisign::{PublicKeyBox, SignatureBox};
@@ -139,6 +140,61 @@ fn profile_folder_state(path: String, wanted_tag: String) -> ProfileFolderState 
         println!("Failed to find if the profile exists at `{}`", path);
         ProfileFolderState::Error
     }
+}
+
+#[tauri::command(async)]
+async fn download_and_install_msvc(
+    handle: AppHandle
+) -> Result<(), String> {
+    // Create a temporary file for the installer to be downloaded to
+    let temp_file = NamedTempFile::new()
+        .map_err(|e| format!("Failed to create temporary file: {:?}", e))?;
+
+    // I'm hardcoding the URL here so there is zero chance of it somehow getting changed and
+    // causing us to execute something we didn't intend
+    let url = "https://aka.ms/vs/17/release/vc_redist.x64.exe";
+
+    let _ = handle.emit(
+        "progress_info",
+        ProgressPayload {
+            state: "downloading".to_string(),
+            current: 0,
+            total: 1,
+        },
+    );
+
+    download(
+        Some(&handle),
+        url,
+        &temp_file.path(),
+        1,
+        0,
+    ).await
+        .map_err(|e| format!("Failed to download MSVC installer: {}", e))?;
+
+
+    let _ = handle.emit(
+        "progress_info",
+        ProgressPayload {
+            state: "installing".to_string(),
+            current: 1,
+            total: 1,
+        },
+    );
+
+    let temp_path = temp_file.into_temp_path();
+
+    // Now execute the installer
+    let status = Command::new(&temp_path)
+        .args(["/install", "/passive", "/norestart"])
+        .status()
+        .map_err(|e| format!("Failed to execute MSVC installer: {}", e))?;
+
+    if !status.success() {
+        return Err(format!("Failed to install MSVC redistributable: {:?}", status.code()));
+    }
+
+    Ok(())
 }
 
 // when i was getting disk space in rust i used "free_space" from the fs2 crate because it takes a path and works out what drive that would be
@@ -366,6 +422,7 @@ fn main() {
             is_connected_to_internet,
             profile_folder_state,
             download_and_install_profile,
+            download_and_install_msvc,
             uninstall_profile,
             launch_profile,
             open_folder_profile,

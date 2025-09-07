@@ -1,17 +1,19 @@
-import { useState } from "react";
+import {useState} from "react";
 import styles from "./Onboarding.module.css";
-import { open } from "@tauri-apps/plugin-dialog";
-import { invoke } from "@tauri-apps/api/core";
-import { settingsManager } from "@app/settings";
+import {open} from "@tauri-apps/plugin-dialog";
+import {invoke} from "@tauri-apps/api/core";
+import {settingsManager} from "@app/settings";
 import OnboardingSidebar from "./Sidebar";
-import Button, { ButtonColor } from "../Button";
+import Button, {ButtonColor} from "../Button";
 import InstallFolderPage from "./Pages/InstallFolderPage";
 import ComponentsPage from "./Pages/ComponentsPage";
-import { useDirectories } from "@app/profiles/directories";
-import { useProfileStore } from "@app/profiles/store";
-import { downloadAndInstall } from "@app/profiles/actions";
-import { getPathForProfile } from "@app/profiles/utils";
-import { useOfflineStatus } from "@app/hooks/useOfflineStatus";
+import {useDirectories} from "@app/profiles/directories";
+import {useProfileStore} from "@app/profiles/store";
+import {downloadAndInstall, promptDownloadMsvc} from "@app/profiles/actions";
+import {getPathForProfile} from "@app/profiles/utils";
+import {useOfflineStatus} from "@app/hooks/useOfflineStatus";
+import {checkMsvc} from "@app/utils/checkMsvc";
+import {TaskPayload} from "@app/tasks/payload";
 
 export enum OnboardingStep {
     // LANGUAGE = 0,
@@ -26,6 +28,9 @@ interface Props {
 const Onboarding: React.FC<Props> = (props: Props) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [stepIndex, setStepIndex] = useState<number>(0);
+    const [msvcProgress, setMsvcProgress] = useState<TaskPayload | undefined>(undefined);
+
+    let downloadingMsvc = true;
 
     let directories = useDirectories();
     const offlineStatus = useOfflineStatus();
@@ -65,6 +70,10 @@ const Onboarding: React.FC<Props> = (props: Props) => {
         </main>;
     }
 
+    async function isMsvcNeeded() {
+        return await checkMsvc();
+    }
+
     async function askForFolder() {
         const select = await open({
             directory: true
@@ -80,6 +89,25 @@ const Onboarding: React.FC<Props> = (props: Props) => {
     }
 
     async function finish() {
+
+        const msvcNeeded = await isMsvcNeeded();
+
+        setLoading(true);
+
+        if (msvcNeeded) {
+            downloadingMsvc = true;
+            const success = await promptDownloadMsvc((payload) => {
+                setMsvcProgress(payload);
+            });
+
+            if (!success) {
+                setLoading(false);
+                setMsvcProgress(undefined);
+            }
+
+            downloadingMsvc = false;
+        }
+
         setLoading(true);
 
         settingsManager.setCache("downloadLocation", downloadLocation);
@@ -162,9 +190,18 @@ const Onboarding: React.FC<Props> = (props: Props) => {
         }
         {loading &&
             <div className={styles.center}>
-                <span>
-                    Loading, please wait...
-                </span>
+                {
+                    // There would be a progress counter here for the MSVC download, but I can't make it work
+                }
+                {downloadingMsvc ? (
+                    <div>Installing MSVC Redistributable...<br />
+                        This may take a while to download, so please don&apos;t close the launcher.
+                    </div>
+                ) : (
+                    <span>
+                        Loading, please wait...
+                    </span>
+                )}
             </div>
         }
     </main>;
