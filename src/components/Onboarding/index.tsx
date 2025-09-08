@@ -14,6 +14,7 @@ import {getPathForProfile} from "@app/profiles/utils";
 import {useOfflineStatus} from "@app/hooks/useOfflineStatus";
 import {checkMsvc} from "@app/utils/checkMsvc";
 import {TaskPayload} from "@app/tasks/payload";
+import PayloadProgress from "@app/components/PayloadProgress";
 
 export enum OnboardingStep {
     // LANGUAGE = 0,
@@ -30,7 +31,7 @@ const Onboarding: React.FC<Props> = (props: Props) => {
     const [stepIndex, setStepIndex] = useState<number>(0);
     const [msvcProgress, setMsvcProgress] = useState<TaskPayload | undefined>(undefined);
 
-    let downloadingMsvc = true;
+    const [downloadingMsvc, setDownloadingMsvc] = useState<boolean>(false);
 
     let directories = useDirectories();
     const offlineStatus = useOfflineStatus();
@@ -95,7 +96,7 @@ const Onboarding: React.FC<Props> = (props: Props) => {
         setLoading(true);
 
         if (msvcNeeded) {
-            downloadingMsvc = true;
+            setDownloadingMsvc(true);
             const success = await promptDownloadMsvc((payload) => {
                 setMsvcProgress(payload);
             });
@@ -105,7 +106,7 @@ const Onboarding: React.FC<Props> = (props: Props) => {
                 setMsvcProgress(undefined);
             }
 
-            downloadingMsvc = false;
+            setDownloadingMsvc(false);
         }
 
         setLoading(true);
@@ -190,13 +191,13 @@ const Onboarding: React.FC<Props> = (props: Props) => {
         }
         {loading &&
             <div className={styles.center}>
-                {
-                    // There would be a progress counter here for the MSVC download, but I can't make it work
-                }
-                {downloadingMsvc ? (
-                    <div>Installing MSVC Redistributable...<br />
-                        This may take a while to download, so please don&apos;t close the launcher.
-                    </div>
+                {msvcProgress !== undefined ? (
+                    <span>Downloading MSVC Redistributable...
+                        <PayloadProgress payload={msvcProgress} /></span>
+                ) : downloadingMsvc ? (
+                    <span>Installing MSVC Redistributable...<br />
+                        This may take a while, so please don&apos;t close the launcher.
+                    </span>
                 ) : (
                     <span>
                         Loading, please wait...

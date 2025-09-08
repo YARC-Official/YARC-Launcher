@@ -56,15 +56,12 @@ pub async fn download(
     file_count: u64,
     file_index: u64,
 ) -> Result<(), String> {
-    let head_response = REQWEST_CLIENT
-        .head(url)
+    let download = REQWEST_CLIENT
+        .get(url)
         .send()
         .await
-        .map_err(|e| format!("Failed to get file info from `{}`.\n{:?}", &url, e))?;
-
-    let total_size = head_response.content_length().unwrap();
-    let final_url = head_response.url();
-
+        .map_err(|e| format!("Failed to initialize download from `{}`.\n{:?}", &url, e))?;
+    let total_size = download.content_length().unwrap();
     // Create the file to download into
     let mut file = BufWriter::new(File::create(output_path).map_err(|e| {
         format!(
@@ -79,7 +76,7 @@ pub async fn download(
     'retry: loop {
         // Send the initial request
         let download = REQWEST_CLIENT
-            .get(final_url.clone())
+            .get(url)
             .header(RANGE, format!("bytes={current_downloaded}-"))
             .send()
             .await
