@@ -16,6 +16,7 @@ import AppSettings from "./AppSettings";
 import { useEffect, useState } from "react";
 import Setlist from "../../components/Setlist";
 import TooltipWrapper from "@app/components/TooltipWrapper";
+import ScreenshotSection from "@app/components/ScreenshotSection";
 
 function AppProfile() {
     const { uuid } = useParams();
@@ -118,11 +119,19 @@ function AppProfile() {
         </div>
         <div className={styles.pageContainer}>
             <div className={styles.content}>
+
                 {profile.type === "setlist" &&
                     <Setlist profile={profile} />
                 }
 
-                <NewsSection categoryFilter={metadata.newsCategory} startingEntries={4}/>
+                {profile.type === "application" &&
+                    <NewsSection categoryFilter={metadata.newsCategory} startingEntries={4}/>
+                }
+
+                {(profile.type === "venue" && profile.metadata.screenshots !== undefined) &&
+
+                    <ScreenshotSection profile={profile} />
+                }
             </div>
             <div className={styles.sidebar}>
                 <Box>
