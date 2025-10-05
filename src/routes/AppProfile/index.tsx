@@ -125,7 +125,7 @@ function AppProfile() {
                 }
 
                 {profile.type === "application" &&
-                    <NewsSection categoryFilter={metadata.newsCategory} startingEntries={4}/>
+                    <NewsSection startingEntries={4}/>
                 }
 
                 {(profile.type === "venue" && profile.metadata.screenshots !== undefined) &&
