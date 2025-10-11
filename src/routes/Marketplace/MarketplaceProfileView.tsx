@@ -4,6 +4,7 @@ import ProfileIcon from "@app/components/ProfileIcon";
 import { localizeObject } from "@app/utils/localized";
 import { processAssetUrl } from "@app/profiles/utils";
 import { useProfileStore } from "@app/profiles/store";
+import {CheckmarkIcon} from "@app/assets/Icons";
 
 interface Props {
     profile: MarketplaceProfile,
@@ -32,7 +33,9 @@ const MarketplaceProfileView: React.FC<Props> = ({ profile, setSelectedProfile }
         </div>
 
         {isInstalled && (
-            <span className={styles.installedLabel}>✔️</span>
+            <span className={styles.installedLabel}>
+                <CheckmarkIcon className={styles.checkmarkIcon} />
+            </span>
         )}
     </button>;
 };
