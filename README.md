@@ -8,7 +8,8 @@ Download the bundle or installer for your platform of choice, run it, and you're
 
 ### Linux
 
-If you are on Linux, you need FUSE to use the `.AppImage` files. If you don't already have it, install it with `sudo apt install libfuse2`.
+If you are on Linux, you need FUSE to use the `.AppImage` files. If you don't already have it, install it with `sudo apt install libfuse2` (Debian based) or `sudo dnf install -y fuse-libs` (Fedora based).
+In GNOME, toggle on "Executable as Program" in the file's properties.
 
 ### SteamOS (Steam Deck)
 
