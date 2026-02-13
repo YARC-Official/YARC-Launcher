@@ -337,7 +337,24 @@ fn launch_profile(
     path.push("installation");
     path.push(exec_path);
 
-    if !use_obs_vkcapture {
+    if cfg!(target_os = "macos") {
+        // Extract the .app bundle path from the inner binary path
+        // e.g. "./YARG.app/Contents/MacOS/YARG" -> "./YARG.app"
+        let path_str = path_to_string(path)?;
+        let app_path = match path_str.find(".app") {
+            Some(idx) => &path_str[..idx + 4],
+            None => &path_str,
+        };
+
+        Command::new("open")
+            .arg(app_path)
+            .arg("--args")
+            .args(&arguments)
+            .spawn()
+            .map_err(|e| format!(
+                "Failed to launch profile! Is the executable installed?\n{:?}", e
+            ))?;
+    } else if !use_obs_vkcapture {
         Command::new(path)
             .args(arguments)
             .env_remove("LD_LIBRARY_PATH")
