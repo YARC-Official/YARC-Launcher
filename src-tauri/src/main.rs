@@ -338,13 +338,11 @@ fn launch_profile(
     path.push(exec_path);
 
     if cfg!(target_os = "macos") {
-        // Extract the .app bundle path from the inner binary path
-        // e.g. "./YARG.app/Contents/MacOS/YARG" -> "./YARG.app"
-        let path_str = path_to_string(path)?;
-        let app_path = match path_str.find(".app") {
-            Some(idx) => &path_str[..idx + 4],
-            None => &path_str,
-        };
+        // Find the path to the .app bundle
+        let app_path = path
+            .ancestors()
+            .find(|p| p.extension().is_some_and(|ext| ext == "app"))
+            .unwrap_or(path.as_path());
 
         Command::new("open")
             .arg(app_path)
