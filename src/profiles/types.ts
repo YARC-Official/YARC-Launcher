@@ -135,6 +135,7 @@ export interface VenueProfile {
 
 export interface Alternative {
     label: string,
+    uuid: string,
     default?: boolean,
     content: ReleaseContent[],
 }
@@ -145,7 +146,7 @@ export interface ActiveProfile {
 
     displayName?: string,
     selectedVersion?: string,
-    selectedAlternative?: Alternative,
+    selectedAlternative?: string,
     launchArguments: string,
     useObsVkcapture: boolean,
 

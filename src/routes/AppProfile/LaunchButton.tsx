@@ -12,10 +12,16 @@ import {
     DropdownRadioGroup, DropdownRadioGroupIndicator,
     DropdownRadioItem
 } from "@app/components/Button/DropdownButton";
+import {useProfileStore} from "@app/profiles/store";
+import {ActiveProfile} from "@app/profiles/types";
 
 
 interface Props {
     profileState: ProfileState
+}
+
+async function saveProfile(profile: ActiveProfile) {
+    await useProfileStore.getState().updateProfile(profile);
 }
 
 export function LaunchButton({ profileState }: Props) {
@@ -95,22 +101,27 @@ export function LaunchButton({ profileState }: Props) {
 
         // Use a DropdownButton so the user can select their preferred alternative download
 
-        let dropdownDefault = 0;
+        let dropdownDefault;
         if (profileState.activeProfile.selectedAlternative === undefined) {
-            dropdownDefault = profileState.activeProfile.version.alternatives.findLastIndex((alternative) => alternative.default === true);
+            // dropdownDefault = profileState.activeProfile.version.alternatives.findLastIndex((alternative) => alternative.default === true);
+            dropdownDefault = profileState.activeProfile.version.alternatives.find(alternative => alternative.default === true)?.uuid;
         } else {
-            // @ts-expect-error We already checked if selectedAlternative is undefined
-            dropdownDefault = profileState.activeProfile.version.alternatives.findIndex((alternative) => alternative.label === profileState.activeProfile.selectedAlternative.label);
+            dropdownDefault = profileState.activeProfile.selectedAlternative;
+            // dropdownDefault = profileState.activeProfile.version.alternatives.findIndex((alternative) => alternative.label === profileState.activeProfile.selectedAlternative.label);
+
         }
 
-        const dropdownElements = profileState.activeProfile.version.alternatives.map((alternative, index) => {
-            return <DropdownRadioItem key={index} label={alternative.label} value={index.toString()} onClick={() => {profileState.activeProfile.selectedAlternative = alternative;}}>
+        const dropdownElements = profileState.activeProfile.version.alternatives.map((alternative) => {
+            return <DropdownRadioItem key={alternative.uuid} label={alternative.label} value={alternative.uuid} onClick={() => {
+                profileState.activeProfile.selectedAlternative = alternative.uuid;
+                saveProfile(profileState.activeProfile);
+            }}>
                 {alternative.label}
                 <DropdownRadioGroupIndicator />
             </DropdownRadioItem>;
         });
 
-        const dropdownItems = <><DropdownRadioGroup defaultValue={dropdownDefault.toString()} value={profileState.activeProfile.selectedAlternative?.label} onValueChange={() => {}}>{dropdownElements}</DropdownRadioGroup></>;
+        const dropdownItems = <><DropdownRadioGroup defaultValue={dropdownDefault} value={profileState.activeProfile.selectedAlternative} onValueChange={() => {}}>{dropdownElements}</DropdownRadioGroup></>;
 
         return <DropdownButton color={ButtonColor.GREEN} rounded border
             onClick={async () => await downloadAndInstall()}
