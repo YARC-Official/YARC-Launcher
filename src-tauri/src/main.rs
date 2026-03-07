@@ -337,7 +337,22 @@ fn launch_profile(
     path.push("installation");
     path.push(exec_path);
 
-    if !use_obs_vkcapture {
+    if cfg!(target_os = "macos") {
+        // Find the path to the .app bundle
+        let app_path = path
+            .ancestors()
+            .find(|p| p.extension().is_some_and(|ext| ext == "app"))
+            .unwrap_or(path.as_path());
+
+        Command::new("open")
+            .arg(app_path)
+            .arg("--args")
+            .args(&arguments)
+            .spawn()
+            .map_err(|e| format!(
+                "Failed to launch profile! Is the executable installed?\n{:?}", e
+            ))?;
+    } else if !use_obs_vkcapture {
         Command::new(path)
             .args(arguments)
             .env_remove("LD_LIBRARY_PATH")
