@@ -4,7 +4,7 @@
     align-items: flex-start;
     flex-shrink: 0;
 
-    border-radius: 8px;
+    /*border-radius: 8px;*/
 
     /* Masking works WAY better than below */
     /*overflow: none;*/
@@ -13,7 +13,9 @@
 
 .button {
     /* Disable the button's border radius and replace it with our own */
-    --borderRadius: 0;
+    /*--borderRadius: 0;*/
+    border-radius: var(--borderRadius) 0 0 var(--borderRadius);
+    border-right: 1px solid var(--sideBarBackground);
 
     width: 100%;
 }
@@ -21,7 +23,7 @@
 .dropdown_button {
     display: flex;
     box-sizing: border-box;
-    padding: 10px;
+    padding: 17.5px;
     height: 100%;
     flex-direction: column;
     justify-content: center;
@@ -29,8 +31,12 @@
     gap: 10px;
     flex-shrink: 0;
 
-    background: var(--sideBarBackground);
-    border: none;
+    background: var(--background);
+    color: var(--color);
+    border-radius: 0 50px 50px 0;
+    border: 2px solid var(--border);
+    border-left: 1px solid var(--sideBarBackground);
+
     cursor: pointer;
 }
 
@@ -66,10 +72,85 @@
     cursor: pointer;
 }
 
+.dropdown_radio_root {
+    display: flex;
+    flex-direction: column;
+    /*gap: 10px;*/
+}
+
+.dropdown_radio_item {
+    background-color: white;
+    width: 25px;
+    height: 25px;
+    border: 1px solid var(--sideBarBackground);
+    border-radius: 100%;
+}
+
+.dropdown_radio_indicator {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.dropdown_radio_label {
+    padding-left: 10px;
+}
+
+.dropdown_radio_label_text {
+    padding-left: 10px;
+}
+
+.dropdown_radio_indicator::after {
+    content: "";
+    display: block;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background-color: var(--buttonBlue);
+}
+
 .dropdown_item[data-highlighted] {
     background: var(--sideBarSelection);
 }
 
 .dropdown_arrow {
     fill: var(--sideBarBackground);
+}
+
+.colorsGreen {
+    --background: var(--buttonGreen);
+    --color: var(--buttonGreenText);
+    --border: var(--buttonLightBorder);
+}
+
+.colorsBlue {
+    --background: var(--buttonBlue);
+    --color: var(--buttonBlueText);
+    --border: var(--buttonLightBorder);
+}
+
+.colorsYellow {
+    --background: var(--buttonYellow);
+    --color: var(--buttonYellowText);
+    --border: var(--buttonLightBorder);
+}
+
+.colorsDark {
+    --background: var(--buttonDark);
+    --color: var(--buttonDarkText);
+    --border: var(--buttonDarkBorder);
+}
+
+.colorsLight {
+    --background: var(--buttonLight);
+    --color: var(--buttonLightText);
+    --border: var(--buttonLightBorder);
+}
+
+.colorsRed {
+    --background: var(--buttonRed);
+    --color: var(--buttonRedText);
+    --border: var(--buttonLightBorder);
 }

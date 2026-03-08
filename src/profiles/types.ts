@@ -23,6 +23,7 @@ export interface Version {
     tag: string,
     release: string,
     content: ReleaseContent[],
+    alternatives?: Alternative[],
     launchOptions?: {
         [platform in OS]?: {
             executablePath: string,
@@ -132,12 +133,20 @@ export interface VenueProfile {
     version: VersionInfo,
 }
 
+export interface Alternative {
+    label: string,
+    uuid: string,
+    default?: boolean,
+    content: ReleaseContent[],
+}
+
 export interface ActiveProfile {
     uuid: string,
     originalUrl: string,
 
     displayName?: string,
     selectedVersion?: string,
+    selectedAlternative?: string,
     launchArguments: string,
     useObsVkcapture: boolean,
 

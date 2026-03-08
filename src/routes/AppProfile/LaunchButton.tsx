@@ -7,9 +7,21 @@ import { usePayload } from "@app/tasks/payload";
 import PayloadProgress from "@app/components/PayloadProgress";
 import { useEffect, useRef, useState } from "react";
 import { useOfflineStatus } from "@app/hooks/useOfflineStatus";
+import {
+    DropdownButton,
+    DropdownRadioGroup, DropdownRadioGroupIndicator,
+    DropdownRadioItem
+} from "@app/components/Button/DropdownButton";
+import {useProfileStore} from "@app/profiles/store";
+import {ActiveProfile} from "@app/profiles/types";
+
 
 interface Props {
     profileState: ProfileState
+}
+
+async function saveProfile(profile: ActiveProfile) {
+    await useProfileStore.getState().updateProfile(profile);
 }
 
 export function LaunchButton({ profileState }: Props) {
@@ -71,18 +83,61 @@ export function LaunchButton({ profileState }: Props) {
             </Button>;
         }
 
-        return <Button color={ButtonColor.GREEN} rounded border onClick={async () => await downloadAndInstall()}>
+        // No alternatives
+        if (profileState.activeProfile.version.alternatives === undefined || profileState.activeProfile.version.alternatives.length < 2) {
+            return <Button color={ButtonColor.GREEN} rounded border onClick={async () => await downloadAndInstall()}>
+                {folderState === ProfileFolderState.UpdateRequired &&
+                    <>
+                        <UpdateIcon/> Update {releaseName}
+                    </>
+                }
+                {folderState === ProfileFolderState.FirstDownload &&
+                    <>
+                        <UpdateIcon/> Install {releaseName}
+                    </>
+                }
+            </Button>;
+        }
+
+        // Use a DropdownButton so the user can select their preferred alternative download
+
+        let dropdownDefault;
+        if (profileState.activeProfile.selectedAlternative === undefined) {
+            // dropdownDefault = profileState.activeProfile.version.alternatives.findLastIndex((alternative) => alternative.default === true);
+            dropdownDefault = profileState.activeProfile.version.alternatives.find(alternative => alternative.default === true)?.uuid;
+        } else {
+            dropdownDefault = profileState.activeProfile.selectedAlternative;
+            // dropdownDefault = profileState.activeProfile.version.alternatives.findIndex((alternative) => alternative.label === profileState.activeProfile.selectedAlternative.label);
+
+        }
+
+        const dropdownElements = profileState.activeProfile.version.alternatives.map((alternative) => {
+            return <DropdownRadioItem key={alternative.uuid} label={alternative.label} value={alternative.uuid} onClick={() => {
+                profileState.activeProfile.selectedAlternative = alternative.uuid;
+                saveProfile(profileState.activeProfile);
+            }}>
+                {alternative.label}
+                <DropdownRadioGroupIndicator />
+            </DropdownRadioItem>;
+        });
+
+        const dropdownItems = <><DropdownRadioGroup defaultValue={dropdownDefault} value={profileState.activeProfile.selectedAlternative} onValueChange={() => {}}>{dropdownElements}</DropdownRadioGroup></>;
+
+        return <DropdownButton color={ButtonColor.GREEN} rounded border
+            onClick={async () => await downloadAndInstall()}
+            dropdownChildren={dropdownItems}>
             {folderState === ProfileFolderState.UpdateRequired &&
                 <>
-                    <UpdateIcon /> Update {releaseName}
+                    <UpdateIcon/> Update {releaseName}
                 </>
             }
             {folderState === ProfileFolderState.FirstDownload &&
                 <>
-                    <UpdateIcon /> Install {releaseName}
+                    <UpdateIcon/> Install {releaseName}
                 </>
             }
-        </Button>;
+
+        </DropdownButton>;
     }
 
     // Launch/up-to-date button

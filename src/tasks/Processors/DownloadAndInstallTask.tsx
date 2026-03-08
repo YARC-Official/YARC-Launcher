@@ -21,13 +21,29 @@ export class DownloadAndInstallTask extends BaseTask implements IBaseTask {
     }
 
     async start(): Promise<void> {
+        // Default to old style content entry
+        let content = this.activeProfile.version.content;
+
+        // If a selected alternative is set, use that instead
+        const selectedAlternative = this.activeProfile.selectedAlternative;
+        const selectedContent = this.activeProfile.version.alternatives?.find(i => i.uuid === selectedAlternative)?.content;
+        if (selectedContent !== undefined) {
+            content = selectedContent;
+        } else if (this.activeProfile.version.alternatives !== undefined && this.activeProfile.version.alternatives.length > 0) {
+            // If there are alternatives, use the one marked as default in preference to old style single content entry
+            const defaultAlternative = this.activeProfile.version.alternatives.find(i => i.default);
+            if (defaultAlternative !== undefined) {
+                content = defaultAlternative.content;
+            }
+        }
+
         try {
             await invoke("download_and_install_profile", {
                 profilePath: this.profilePath,
                 uuid: this.activeProfile.uuid,
                 tag: this.activeProfile.version.tag,
                 tempPath: this.tempPath,
-                content: this.activeProfile.version.content
+                content: content,
             });
         } catch (e) {
             showErrorDialog(e as string);
