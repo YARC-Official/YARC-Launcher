@@ -4,8 +4,8 @@
     align-items: flex-start;
     gap: 5px;
     align-self: stretch;
-    padding: 12px;
-    margin: 8px 0px 8px 0px;
+    padding: 4px 12px;
+    margin: 2px 0;
 
     background: rgba(0, 0, 0, 0);
     border-radius: 20px;
@@ -18,10 +18,13 @@
 }
 
 .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
     color: #222;
     font-size: 16px;
     font-weight: 700;
-    margin-bottom: 5px;
 }
 
 .commitList {
@@ -41,4 +44,25 @@
     font-weight: 600;
     color: #666;
     margin-left: 5px;
+}
+
+ul {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-left: 1.5em;
+}
+
+.releaseDate {
+    color: #ACACAC;
+    font-size: 12px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: margin-right 0.1s;
+}
+
+.container:hover .releaseDate {
+    margin-right: 1em;
 }

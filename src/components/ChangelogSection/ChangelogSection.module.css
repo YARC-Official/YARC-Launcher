@@ -25,12 +25,12 @@
 
 .headerContainer {
     display: flex;
-    padding-bottom: 0px;
     justify-content: space-between;
     align-items: center;
     align-self: stretch;
 
     padding-bottom: 15px;
+    margin-bottom: 16px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
