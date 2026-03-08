@@ -4,11 +4,12 @@
     align-items: flex-start;
     gap: 5px;
     align-self: stretch;
-    padding: 4px 12px;
-    margin: 2px 0;
+    padding: 6px 12px 0;
+    margin: 6px 0;
 
-    background: rgba(0, 0, 0, 0);
-    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.01);
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
 
     transition: background 0.1s;
 }
@@ -25,6 +26,7 @@
     color: #222;
     font-size: 16px;
     font-weight: 700;
+    padding-top: 4px;
 }
 
 .commitList {
