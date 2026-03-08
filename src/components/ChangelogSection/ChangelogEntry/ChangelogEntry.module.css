@@ -29,6 +29,15 @@
     padding-top: 4px;
 }
 
+.releaseTag {
+    font-size: 14px;
+    font-weight: 700;
+    padding: 4px;
+    border-radius: 4px;
+    background: #E3E4E7;
+    color: #333;
+}
+
 .commitList {
     display: flex;
     flex-direction: column;

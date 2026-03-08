@@ -11,7 +11,7 @@ const NightlyChangelogEntry: React.FC<Props> = ({ release }: Props) => {
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                Nightly Release {release.tagName}
+                <span className={styles.releaseTag}>{release.tagName}</span>
                 {
                     release.publishedAt ? (
                         <div className={styles.releaseDate}>
