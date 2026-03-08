@@ -149,6 +149,24 @@ export interface ActiveProfile {
     version: Version,
 }
 
+export interface NightlyReleaseIndexEntry {
+    tagName: string,
+    publishedAt: string,
+}
+
+export interface NightlyRelease {
+    tagName: string,   /* This one we have to add during parsing because it isn't in the source JSON */
+    publishedAt: Date, /* And this one, too */
+    commits: Commit[]
+}
+
+export interface Commit {
+    sha: string,
+    author: string,
+    summary: string,
+    description: string,
+}
+
 export enum GraphicsApi {
     Default = "Default",
     D3D11 = "D3D11",

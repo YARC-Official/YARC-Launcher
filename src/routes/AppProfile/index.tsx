@@ -3,7 +3,7 @@ import { useProfileState } from "@app/hooks/useProfileState";
 import styles from "./AppProfile.module.css";
 import { ChartersIcon, GithubIcon, InformationIcon, LinkIcon, SettingsIcon, SongIcon, TimeIcon, VerifiedIcon } from "@app/assets/Icons";
 import { LaunchButton } from "./LaunchButton";
-import { localizeMetadata, processAssetUrl } from "@app/profiles/utils";
+import {isNightly, localizeMetadata, processAssetUrl} from "@app/profiles/utils";
 import Box from "@app/components/Box";
 import { ApplicationMetadata, SetlistMetadata } from "@app/profiles/types";
 import Button, { ButtonColor } from "@app/components/Button";
@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import Setlist from "../../components/Setlist";
 import TooltipWrapper from "@app/components/TooltipWrapper";
 import ScreenshotSection from "@app/components/ScreenshotSection";
+import ChangelogSection from "@app/components/ChangelogSection";
 
 function AppProfile() {
     const { uuid } = useParams();
@@ -124,9 +125,11 @@ function AppProfile() {
                     <Setlist profile={profile} />
                 }
 
-                {profile.type === "application" &&
-                    <NewsSection startingEntries={4}/>
-                }
+                {profile.type === "application" && (
+                    isNightly(profile)
+                        ? <ChangelogSection startingEntries={4} />
+                        : <NewsSection startingEntries={4}/>
+                )}
 
                 {(profile.type === "venue" && profile.metadata.screenshots !== undefined) &&
 

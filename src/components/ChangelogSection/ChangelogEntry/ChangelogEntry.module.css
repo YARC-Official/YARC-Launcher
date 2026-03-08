@@ -1,0 +1,44 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    align-self: stretch;
+    padding: 12px;
+    margin: 8px 0px 8px 0px;
+
+    background: rgba(0, 0, 0, 0);
+    border-radius: 20px;
+
+    transition: background 0.1s;
+}
+
+.container:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.header {
+    color: #222;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.commitList {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+}
+
+.commitEntry {
+    color: #494949;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.author {
+    font-weight: 600;
+    color: #666;
+    margin-left: 5px;
+}
