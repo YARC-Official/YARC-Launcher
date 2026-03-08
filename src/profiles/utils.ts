@@ -1,5 +1,5 @@
 import { localizeObject } from "@app/utils/localized";
-import { ActiveProfile, Metadata, Profile } from "./types";
+import {ActiveProfile, ApplicationProfile, Metadata, Profile} from "./types";
 import { path } from "@tauri-apps/api";
 import { DirectoriesStore } from "./directories";
 
@@ -38,4 +38,8 @@ export const processAssetUrl = (url: string): string => {
         return url.replace("@/", "/profileAssets/");
     }
     return url;
+};
+
+export const isNightly = (profile: ApplicationProfile): boolean => {
+    return profile.metadata.releaseName === "Nightly";
 };

@@ -1,0 +1,79 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    align-self: stretch;
+    padding: 6px 12px 0;
+    margin: 6px 0;
+
+    background: rgba(0, 0, 0, 0.01);
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+
+    transition: background 0.1s;
+}
+
+.container:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    color: #222;
+    font-size: 16px;
+    font-weight: 700;
+    padding-top: 4px;
+}
+
+.releaseTag {
+    font-size: 14px;
+    font-weight: 700;
+    padding: 4px;
+    border-radius: 4px;
+    background: #E3E4E7;
+    color: #333;
+}
+
+.commitList {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+}
+
+.commitEntry {
+    color: #494949;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.author {
+    font-weight: 600;
+    color: #666;
+    margin-left: 5px;
+}
+
+ul {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-left: 1.5em;
+}
+
+.releaseDate {
+    color: #ACACAC;
+    font-size: 12px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: margin-right 0.1s;
+}
+
+.container:hover .releaseDate {
+    margin-right: 1em;
+}

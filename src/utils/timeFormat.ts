@@ -42,7 +42,7 @@ export const isConsideredNewRelease = (releaseDate: string, newestInSetlist: str
 };
 
 export const distanceFromToday = (initial: string) => {
-    return formatDistance(new Date(initial), new Date());
+    return formatDistance(new Date(initial), new Date(), { addSuffix: true });
 };
 
 export const localizeDate = (date: string) => {
