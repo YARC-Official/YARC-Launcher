@@ -6,6 +6,7 @@ import { DriveIcon } from "@app/assets/Icons";
 interface Props {
     downloadLocation: string;
     downloadEmpty: boolean;
+    downloadWritable: boolean;
 
     askForFolder: () => Promise<void>;
 }
@@ -30,6 +31,11 @@ export const InstallFolderPage: React.FC<Props> = (props: Props) => {
         {!props.downloadEmpty &&
             <WarningBox>
                 The folder you selected is not empty. Please select an empty folder to continue.
+            </WarningBox>
+        }
+        {!props.downloadWritable &&
+            <WarningBox>
+                The folder you selected is not writable. Please select a writable folder to continue.
             </WarningBox>
         }
     </>;

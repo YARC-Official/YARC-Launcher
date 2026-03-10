@@ -17,11 +17,13 @@ export interface CustomDirs {
 export interface DirectoriesStore {
     importantDirs?: ImportantDirs,
     customDirs?: CustomDirs,
+    downloadLocationInvalid: boolean,
 
     setDirs: (downloadLocation?: string) => Promise<void>;
 }
 
 export const useDirectories = create<DirectoriesStore>()((set) => ({
+    downloadLocationInvalid: false,
     setDirs: async (downloadLocation?: string) => {
         const importantDirs: ImportantDirs = await invoke("get_important_dirs");
 
@@ -35,14 +37,22 @@ export const useDirectories = create<DirectoriesStore>()((set) => ({
                 downloadLocation = importantDirs.yarcFolder;
             }
 
-            const customDirs: CustomDirs = await invoke("get_custom_dirs", {
-                downloadLocation: downloadLocation
-            });
+            try {
+                const customDirs: CustomDirs = await invoke("get_custom_dirs", {
+                    downloadLocation: downloadLocation
+                });
 
-            set({
-                importantDirs,
-                customDirs
-            });
+                set({
+                    importantDirs,
+                    customDirs
+                });
+            } catch (e) {
+                set({
+                    importantDirs,
+                    customDirs: undefined,
+                    downloadLocationInvalid: true
+                });
+            }
         }
     }
 }));

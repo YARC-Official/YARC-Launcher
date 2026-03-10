@@ -43,6 +43,7 @@ const Onboarding: React.FC<Props> = (props: Props) => {
 
     const [downloadLocation, setDownloadLocation] = useState<string>(defaultDownload);
     const [downloadEmpty, setDownloadEmpty] = useState<boolean>(true);
+    const [downloadWritable, setDownloadWritable] = useState<boolean>(true);
 
     const [profileUrls, setProfileUrls] = useState<string[]>([]);
 
@@ -83,9 +84,11 @@ const Onboarding: React.FC<Props> = (props: Props) => {
         if (typeof select === "string") {
             const path: string = select;
             const empty: boolean = await invoke("is_dir_empty", { path: path });
+            const writable: boolean = await invoke("is_dir_writable", { path: path });
 
             setDownloadLocation(path);
             setDownloadEmpty(empty);
+            setDownloadWritable(writable);
         }
     }
 
@@ -159,6 +162,7 @@ const Onboarding: React.FC<Props> = (props: Props) => {
                                 <InstallFolderPage
                                     downloadLocation={downloadLocation}
                                     downloadEmpty={downloadEmpty}
+                                    downloadWritable={downloadWritable}
                                     askForFolder={askForFolder} />
                             }
                             {steps[stepIndex] === OnboardingStep.COMPONENTS &&
@@ -168,6 +172,9 @@ const Onboarding: React.FC<Props> = (props: Props) => {
                         <div className={styles.stepNavigation}>
                             <div className={styles.stepNavigationButtons}>
                                 <Button color={ButtonColor.DARK} border onClick={() => {
+                                    if (steps[stepIndex] === OnboardingStep.INSTALL_PATH && !downloadWritable) {
+                                        return;
+                                    }
                                     if (stepIndex > 0) {
                                         setStepIndex(stepIndex - 1);
                                     }
@@ -180,7 +187,7 @@ const Onboarding: React.FC<Props> = (props: Props) => {
                                     } else {
                                         setStepIndex(stepIndex + 1);
                                     }
-                                }}>
+                                }} disabled={steps[stepIndex] === OnboardingStep.INSTALL_PATH && !downloadWritable}>
                                     Next
                                 </Button>
                             </div>

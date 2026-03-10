@@ -99,6 +99,19 @@ fn get_custom_dirs(download_location: String) -> Result<CustomDirs, String> {
 }
 
 #[tauri::command]
+fn is_dir_writable(path: String) -> bool {
+    let probe = PathBuf::from(&path).join(".write_probe");
+    match fs::File::create(&probe) {
+        Ok(_) => {
+            let _ = fs::remove_file(&probe)
+                .map_err(|e| format!("Failed to remove write probe file.\n{:?}", e));
+            true
+        }
+        Err(_) => false,
+    }
+}
+
+#[tauri::command]
 fn is_dir_empty(path: String) -> bool {
     match fs::read_dir(path) {
         Ok(mut entries) => entries.next().is_none(),
@@ -433,6 +446,7 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             get_important_dirs,
             get_custom_dirs,
+            is_dir_writable,
             is_dir_empty,
             is_connected_to_internet,
             profile_folder_state,

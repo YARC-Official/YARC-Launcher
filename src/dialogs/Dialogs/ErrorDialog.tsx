@@ -46,6 +46,9 @@ export class ErrorDialog extends BaseDialog<Record<string, never>> {
     getButtons() {
         return <>
             <Button color={ButtonColor.LIGHT} rounded onClick={() => closeDialog()}>Okay</Button>
+            { this.props.showRetry &&
+                <Button color={ButtonColor.GREEN} rounded onClick={() => closeDialog("retry")}>Retry</Button>
+            }
         </>;
     }
 }

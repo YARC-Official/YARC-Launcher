@@ -52,6 +52,6 @@ export const setDialogOpen = (open: boolean) => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function showErrorDialog(error: any) {
-    await createAndShowDialog(ErrorDialog, { error });
+export async function showErrorDialog(error: any, showRetry = false): Promise<string | undefined> {
+    return await createAndShowDialog(ErrorDialog, { error, showRetry });
 }

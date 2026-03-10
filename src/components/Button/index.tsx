@@ -22,6 +22,7 @@ export type ButtonProps = React.PropsWithChildren<{
     border?: boolean,
     rounded?: boolean,
     color?: ButtonColor,
+    disabled?: boolean,
 
     width?: number,
     height?: number,
@@ -35,6 +36,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(props,
         border,
         rounded,
         color,
+        disabled,
 
         width,
         height,
@@ -78,6 +80,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(props,
         classes.push(styles.rounded);
     }
 
+    if (disabled) {
+        classes.push(styles.disabled);
+    }
+
     // Get the styles
     const newStyles = {
         width,
@@ -89,6 +95,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(props,
         className={[styles.button, ...classes, className].join(" ")}
         style={newStyles}
         ref={ref}
+        disabled={disabled}
         {...otherProps}>
 
         {children}

@@ -88,6 +88,35 @@ const LoadingScreen: React.FC<Props> = (props: Props) => {
                 await directories.setDirs(downloadLocation);
                 directories = useDirectories.getState();
 
+                await new Promise(r => setTimeout(r, 0));
+
+                let result: string | undefined;
+                if (directories.downloadLocationInvalid) {
+                    do {
+                        result = await showErrorDialog("The download location is invalid. This is likely because your download location is on a removable drive or the launcher does not have permission to write to it. If you are using a removable drive, please plug it in and click retry. Otherwise, click Okay to restart the onboarding process.",
+                            true);
+
+                        if (result == "retry") {
+                            await directories.setDirs(downloadLocation);
+                            directories = useDirectories.getState();
+                        }
+                    } while (result === "retry");
+
+                    // User gave up retrying and download location is still invalid, so restart onboarding
+                    if (directories.downloadLocationInvalid) {
+                        await showErrorDialog("Due to an invalid download location the launcher will be reinitialized. Once you click Okay all settings will be lost and you will restart the onboarding process. If your launcher was previously working and you want to attempt recovery, do not click Okay and instead close the launcher.");
+
+                        try {
+                            await remove(await join(await appConfigDir(), "settings.json"));
+                        } catch {
+                            // This may fail while in dev mode as this function may be ran twice
+                        }
+
+                        await settingsManager.initialize();
+                        window.location.reload();
+                    }
+                }
+
                 await profileStore.activateProfilesFromSettings(offline);
                 profileStore = useProfileStore.getState();
 

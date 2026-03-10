@@ -32,6 +32,13 @@
     padding: 15px 35px;
 }
 
+.disabled {
+    background: var(--buttonLightBorder);
+    color: var(--buttonLightText);
+    border: 2px solid var(--buttonDarkBorder);
+    cursor: not-allowed;
+}
+
 .colorsGreen {
     --background: var(--buttonGreen);
     --color: var(--buttonGreenText);

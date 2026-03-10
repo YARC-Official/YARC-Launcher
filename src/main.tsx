@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import ReactDOM from "react-dom/client";
 import "./styles.css";
 import TitleBar from "./components/TitleBar";
@@ -28,7 +28,7 @@ const App: React.FC = () => {
         return <React.StrictMode>
             <TitleBar />
             <p>
-                A fatal error has occurred when attempted to initalize the launcher.
+                A fatal error has occurred when attempted to initialize the launcher.
                 Please report this to our Discord or GitHub immediately.
             </p>
             <p>
@@ -38,25 +38,27 @@ const App: React.FC = () => {
     }
 
     // Show main screen
-    return <React.StrictMode>
+    return <>
         <ErrorBoundary FallbackComponent={ErrorScreen} onError={onError}>
             <DialogProvider>
-                <LoadingScreen setError={setError} setOnboarding={setOnboarding} setShowBody={setShowBody} />
+                <LoadingScreen setError={setError} setOnboarding={setOnboarding} setShowBody={setShowBody}/>
 
-                <TitleBar />
+                <React.StrictMode>
+                    <TitleBar />
 
-                <QueryClientProvider client={queryClient}>
-                    {onboarding &&
-                        <Onboarding setOnboarding={setOnboarding} />
-                    }
+                    <QueryClientProvider client={queryClient}>
+                        {onboarding &&
+                            <Onboarding setOnboarding={setOnboarding} />
+                        }
 
-                    {showBody &&
-                        <RouterProvider router={Router} />
-                    }
-                </QueryClientProvider>
+                        {showBody &&
+                            <RouterProvider router={Router} />
+                        }
+                    </QueryClientProvider>
+                </React.StrictMode>
             </DialogProvider>
         </ErrorBoundary>
-    </React.StrictMode>;
+    </>;
 };
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(<App />);
