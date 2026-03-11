@@ -104,7 +104,7 @@ fn is_dir_writable(path: String) -> bool {
     match fs::File::create(&probe) {
         Ok(_) => {
             let _ = fs::remove_file(&probe)
-                .map_err(|e| format!("Failed to remove write probe file.\n{:?}", e));
+                .inspect_err(|e| eprintln!("Failed to remove write probe file: {:?}", e));
             true
         }
         Err(_) => false,
