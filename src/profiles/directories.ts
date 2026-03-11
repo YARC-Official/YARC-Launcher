@@ -18,6 +18,7 @@ export interface DirectoriesStore {
     importantDirs?: ImportantDirs,
     customDirs?: CustomDirs,
     downloadLocationInvalid: boolean,
+    lastError?: string,
 
     setDirs: (downloadLocation?: string) => Promise<void>;
 }
@@ -44,13 +45,16 @@ export const useDirectories = create<DirectoriesStore>()((set) => ({
 
                 set({
                     importantDirs,
-                    customDirs
+                    customDirs,
+                    downloadLocationInvalid: false,
+                    lastError: undefined
                 });
             } catch (e) {
                 set({
                     importantDirs,
                     customDirs: undefined,
-                    downloadLocationInvalid: true
+                    downloadLocationInvalid: true,
+                    lastError: e as string
                 });
             }
         }
