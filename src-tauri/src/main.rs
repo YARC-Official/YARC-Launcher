@@ -366,7 +366,7 @@ fn launch_profile(
                 "Failed to launch profile! Is the executable installed?\n{:?}", e
             ))?;
     } else if !use_obs_vkcapture {
-        Command::new(path)
+        let mut child = Command::new(path)
             .args(arguments)
             .env_remove("LD_LIBRARY_PATH")
             .spawn()
@@ -376,14 +376,16 @@ fn launch_profile(
                     e
                 )
             })?;
+        std::thread::spawn(move || { let _ = child.wait(); });
     } else {
         let path_str = path_to_string(path)?;
 
-        Command::new("obs-gamecapture")
+        let mut child = Command::new("obs-gamecapture")
             .args([path_str].iter().chain(&arguments))
             .env_remove("LD_LIBRARY_PATH")
             .spawn()
             .map_err(|e| format!("Failed to launch profile! Is the executable installed? Is obs-vkcapture installed and pathed?\n{:?}", e))?;
+        std::thread::spawn(move || { let _ = child.wait(); });
     }
 
     Ok(())
