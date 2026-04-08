@@ -6,6 +6,7 @@ mod utils;
 
 use std::{
     fs::{self, File},
+    net::TcpStream,
     path::PathBuf,
     process::Command,
     sync::{LazyLock, Mutex},
@@ -119,11 +120,27 @@ fn is_dir_empty(path: String) -> bool {
     }
 }
 
+fn check_internet_with_tcp() -> Result<(), Box<dyn std::error::Error>> {
+    let endpoints = [
+        ("8.8.8.8", "Google DNS"),
+        ("1.1.1.1", "Cloudflare DNS"),
+        ("208.67.222.222", "OpenDNS"),
+    ];
+
+    for (ip, _name) in endpoints {
+        match TcpStream::connect_timeout(&format!("{}:53", ip).parse()?, std::time::Duration::from_secs(3)) {
+            Ok(_) => return Ok(()),
+            Err(_) => continue,
+        }
+    }
+    Err("All TCP endpoints failed".into())
+}
+
 #[tauri::command(async)]
 fn is_connected_to_internet() -> bool {
     match check(Some(7)) {
         Ok(()) => true,
-        Err(_) => false,
+        Err(_) => check_internet_with_tcp().is_ok(),
     }
 }
 
