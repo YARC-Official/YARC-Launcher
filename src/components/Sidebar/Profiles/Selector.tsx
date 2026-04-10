@@ -29,6 +29,8 @@ const Selector: React.FC<Props> = ({ name, uuid, iconUrl }: Props) => {
         }
     }
 
+    const hasTask = currentTask !== undefined;
+
     return <div className={styles.selector}>
         <div className={styles.left}>
             <ProfileIcon className={styles.icon} iconUrl={iconUrl} />
@@ -36,7 +38,9 @@ const Selector: React.FC<Props> = ({ name, uuid, iconUrl }: Props) => {
                 {name}
             </div>
         </div>
-        {tag}
+        <div key={hasTask ? "task" : "idle"}>
+            {tag}
+        </div>
     </div>;
 };
 
