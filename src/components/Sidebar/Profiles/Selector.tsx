@@ -1,7 +1,7 @@
 import { ProfileFolderState, useProfileState } from "@app/hooks/useProfileState";
 import styles from "./Selector.module.css";
 import ProfileIcon from "@app/components/ProfileIcon";
-import { SidebarInQueueIcon, SidebarUpdateIcon } from "@app/assets/Icons";
+import {PlayIcon, QueueIcon, SidebarInQueueIcon} from "@app/assets/Icons";
 import {useEffect, useRef, useState} from "react";
 
 interface Props {
@@ -38,21 +38,21 @@ const Selector: React.FC<Props> = ({ name, uuid, iconUrl }: Props) => {
     if (!loading) {
         if (currentTask !== undefined || launching) {
             tag = <div className={[styles.tagInQueue, styles.tag].join(" ")}>
-                <SidebarInQueueIcon width={10} height={10} />
+                <SidebarInQueueIcon width={14} height={14} />
             </div>;
         } else if (folderState === ProfileFolderState.FirstDownload || folderState === ProfileFolderState.UpdateRequired) {
             tag = <div className={[styles.tagUpdate, styles.tag].join(" ")} onClick={async (e) => {
                 e.preventDefault();
                 await downloadAndInstall();
             }}>
-                <SidebarUpdateIcon width={10} height={10} />
+                <QueueIcon width={18} height={18} />
             </div>;
         } else if (folderState === ProfileFolderState.UpToDate && activeProfile.profile.type === "application") {
-            tag = <button className={[styles.tagUpdate, styles.tag].join(" ")} onClick={async (e) => {
+            tag = <button className={[styles.tagLaunch, styles.tag].join(" ")} onClick={async (e) => {
                 e.preventDefault();
                 await launch();
             }}>
-                <SidebarUpdateIcon width={10} height={10} />
+                <PlayIcon width={18} height={18} />
             </button>;
         }
     }
