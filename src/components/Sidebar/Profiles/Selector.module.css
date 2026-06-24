@@ -34,6 +34,7 @@
 }
 
 .tagInQueue {
+    margin-right: 8px;
     border: 2px solid #FCD548;
     color: #FCD548;
     background: rgba(252, 213, 72, 0.10);
@@ -44,10 +45,15 @@
 }
 
 .tagUpdate {
-    border: 2px solid #17E289;
-    color: #17E289;
-    background: rgba(23, 226, 137, 0.10);
-    animation: 1s linear 0s infinite running fade;
+    border: 6px solid #17E289;
+    color: #0C0F1E;
+    background: #17E289;
+}
+
+.tagLaunch {
+    border: 6px solid #45D8FE;
+    color: #0C0F1E;
+    background: #45D8FE;
 }
 
 [aria-current="page"] > .selector,
