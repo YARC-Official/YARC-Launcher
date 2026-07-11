@@ -5,7 +5,7 @@ use lazy_static::lazy_static;
 use log::warn;
 use reqwest::header::{HeaderMap, HeaderValue, RANGE, USER_AGENT};
 use reqwest::{self, Client};
-use sevenz_rust::Password;
+use sevenz_rust::{default_entry_extract_fn, Password, SevenZReader};
 use std::fs::File;
 use std::io::{BufWriter, Write};
 use std::path::{Path, PathBuf};
@@ -29,6 +29,7 @@ lazy_static! {
 
 const LETTERS: &str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const EMIT_BUFFER_RATE: f64 = 1.0 / 15.0;
+pub const INSTALL_PROGRESS_SCALE: u64 = 10_000;
 
 pub fn path_to_string(p: PathBuf) -> Result<String, String> {
     p.into_os_string()
@@ -139,14 +140,83 @@ pub fn extract(from: &Path, to: &Path) -> Result<(), String> {
     Ok(())
 }
 
-pub fn extract_7z(from: &Path, to: &Path) -> Result<(), String> {
-    sevenz_rust::decompress_file(from, to)
-        .map_err(|e| format!("Error while extracting 7z.\n{:?}", e))?;
-    
+fn extract_seven(
+    from: &Path,
+    to: &Path,
+    password: Password,
+    app_handle: Option<&AppHandle>,
+    file_count: u64,
+    file_index: u64,
+) -> Result<(), String> {
+    let mut reader = SevenZReader::open(from, password)
+        .map_err(|e| format!("Failed to open archive `{}`.\n{:?}", from.display(), e))?;
+
+    // Total uncompressed size of this part, used to compute the extraction percentage.
+    let part_total = reader
+        .archive()
+        .files
+        .iter()
+        .map(|f| f.size())
+        .sum::<u64>()
+        .max(1);
+
+    let dest = PathBuf::from(to);
+    if !dest.exists() {
+        std::fs::create_dir_all(&dest)
+            .map_err(|e| format!("Failed to create install folder.\n{:?}", e))?;
+    }
+
+    let mut extracted: u64 = 0;
+    let mut emit_timer = Instant::now();
+
+    reader
+        .for_each_entries(|entry, entry_reader| {
+            let dest_path = dest.join(entry.name());
+            default_entry_extract_fn(entry, entry_reader, &dest_path)?;
+
+            extracted = extracted.saturating_add(entry.size());
+
+            if let Some(app) = app_handle {
+                if emit_timer.elapsed() >= Duration::from_secs_f64(EMIT_BUFFER_RATE) {
+                    // Aggregate across parts: each part spans one SCALE slot.
+                    let frac = (extracted.min(part_total) * INSTALL_PROGRESS_SCALE) / part_total;
+                    let _ = app.emit(
+                        "progress_info",
+                        ProgressPayload {
+                            state: "installing".to_string(),
+                            current: file_index * INSTALL_PROGRESS_SCALE + frac,
+                            total: file_count * INSTALL_PROGRESS_SCALE,
+                        },
+                    );
+
+                    emit_timer = Instant::now();
+                }
+            }
+
+            Ok(true)
+        })
+        .map_err(|e| format!("Failed to extract `{}`.\n{:?}", from.display(), e))?;
+
     Ok(())
 }
 
-pub fn extract_encrypted(from: &Path, to: &Path) -> Result<(), String> {
+pub fn extract_7z(
+    from: &Path,
+    to: &Path,
+    app_handle: Option<&AppHandle>,
+    file_count: u64,
+    file_index: u64,
+) -> Result<(), String> {
+    extract_seven(from, to, Password::empty(), app_handle, file_count, file_index)
+}
+
+pub fn extract_encrypted(
+    from: &Path,
+    to: &Path,
+    app_handle: Option<&AppHandle>,
+    file_count: u64,
+    file_index: u64,
+) -> Result<(), String> {
     // Idiot prevention
     let mut chars = Vec::new();
     for i in 0i32..64 {
@@ -163,13 +233,5 @@ pub fn extract_encrypted(from: &Path, to: &Path) -> Result<(), String> {
     }
 
     let p: &[u16] = &chars;
-    sevenz_rust::decompress_file_with_password(from, to, Password::from(p)).map_err(|e| {
-        format!(
-            "Failed to extract setlist part `{}`.\n{:?}",
-            from.display(),
-            e
-        )
-    })?;
-
-    Ok(())
+    extract_seven(from, to, Password::from(p), app_handle, file_count, file_index)
 }

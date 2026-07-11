@@ -289,21 +289,23 @@ async fn download_and_install_profile(
 
             // Extract/install
 
+            // Floor for this part; the 7z/encrypted extractors refine this with
+            // real byte progress while extracting.
             let _ = handle.emit(
                 "progress_info",
                 ProgressPayload {
                     state: "installing".to_string(),
-                    current: payload_current,
-                    total: file_count,
+                    current: index as u64 * INSTALL_PROGRESS_SCALE,
+                    total: file_count * INSTALL_PROGRESS_SCALE,
                 },
             );
 
             if file.file_type == "zip" {
                 extract(&temp_file, &install_path)?;
             } else if file.file_type == "7z" {
-                extract_7z(&temp_file, &install_path)?;
+                extract_7z(&temp_file, &install_path, Some(&handle), file_count, index as u64)?;
             } else if file.file_type == "encrypted" {
-                extract_encrypted(&temp_file, &install_path)?;
+                extract_encrypted(&temp_file, &install_path, Some(&handle), file_count, index as u64)?;
             } else {
                 return Err("Unhandled release file type.".to_string());
             }

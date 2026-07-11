@@ -1,7 +1,8 @@
 import { ProfileFolderState, useProfileState } from "@app/hooks/useProfileState";
 import styles from "./Selector.module.css";
 import ProfileIcon from "@app/components/ProfileIcon";
-import { SidebarInQueueIcon, SidebarUpdateIcon } from "@app/assets/Icons";
+import { DownloadIcon, InstallIcon, InstallingIcon, UpdateIcon } from "@app/assets/Icons";
+import { usePayload } from "@app/tasks/payload";
 
 interface Props {
     name: string,
@@ -16,15 +17,24 @@ const Selector: React.FC<Props> = ({ name, uuid, iconUrl }: Props) => {
         currentTask
     } = useProfileState(uuid);
 
+    const payload = usePayload(currentTask?.taskUUID);
+
     let tag = <></>;
     if (!loading) {
         if (currentTask !== undefined) {
+            const installing = payload?.state === "installing" || payload?.state === "verifying";
             tag = <div className={[styles.tagInQueue, styles.tag].join(" ")}>
-                <SidebarInQueueIcon width={10} height={10} />
+                {installing
+                    ? <InstallingIcon width={10} height={10} />
+                    : <DownloadIcon width={10} height={10} />}
             </div>;
-        } else if (folderState === ProfileFolderState.FirstDownload || folderState === ProfileFolderState.UpdateRequired) {
+        } else if (folderState === ProfileFolderState.UpdateRequired) {
             tag = <div className={[styles.tagUpdate, styles.tag].join(" ")}>
-                <SidebarUpdateIcon width={10} height={10} />
+                <UpdateIcon width={10} height={10} />
+            </div>;
+        } else if (folderState === ProfileFolderState.FirstDownload) {
+            tag = <div className={[styles.tagUpdate, styles.tag].join(" ")}>
+                <InstallIcon width={10} height={10} />
             </div>;
         }
     }

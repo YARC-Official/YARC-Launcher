@@ -41,12 +41,14 @@ const ProgressDownloading: React.FC<ProgressProps> = ({ payload, fullMode }: Pro
     </span>;
 };
 
-const ProgressInstalling: React.FC<ProgressProps> = ({ fullMode }: ProgressProps) => {
+const ProgressInstalling: React.FC<ProgressProps> = ({ payload, fullMode }: ProgressProps) => {
+    const percentage = payload?.total > 0 ? (payload.current / payload.total) * 100 : 0;
+
     return <span>
-        Installing
         {fullMode &&
-            <>&ensp;&ndash;&ensp;This could take a while...</>
+            "Installing "
         }
+        {percentage.toFixed(0)}%
     </span>;
 };
 
