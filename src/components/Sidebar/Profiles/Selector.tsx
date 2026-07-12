@@ -1,7 +1,7 @@
 import { ProfileFolderState, useProfileState } from "@app/hooks/useProfileState";
 import styles from "./Selector.module.css";
 import ProfileIcon from "@app/components/ProfileIcon";
-import { DownloadIcon, InstallIcon, InstallingIcon, UpdateIcon } from "@app/assets/Icons";
+import { DownloadIcon, InstallIcon, InstallingIcon, TimeIcon, UpdateIcon } from "@app/assets/Icons";
 import { usePayload } from "@app/tasks/payload";
 
 interface Props {
@@ -22,11 +22,15 @@ const Selector: React.FC<Props> = ({ name, uuid, iconUrl }: Props) => {
     let tag = <></>;
     if (!loading) {
         if (currentTask !== undefined) {
-            const installing = payload?.state === "installing" || payload?.state === "verifying";
+            let taskIcon = <TimeIcon width={10} height={10} />;
+            if (payload?.state === "downloading") {
+                taskIcon = <DownloadIcon width={10} height={10} />;
+            } else if (payload?.state === "installing" || payload?.state === "verifying") {
+                taskIcon = <InstallingIcon width={10} height={10} />;
+            }
+
             tag = <div className={[styles.tagInQueue, styles.tag].join(" ")}>
-                {installing
-                    ? <InstallingIcon width={10} height={10} />
-                    : <DownloadIcon width={10} height={10} />}
+                {taskIcon}
             </div>;
         } else if (folderState === ProfileFolderState.UpdateRequired) {
             tag = <div className={[styles.tagUpdate, styles.tag].join(" ")}>

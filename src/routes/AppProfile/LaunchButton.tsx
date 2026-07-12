@@ -1,5 +1,5 @@
 import { ButtonColor } from "@app/components/Button";
-import { DownloadIcon, InstallIcon, InstallingIcon, UpdateIcon } from "@app/assets/Icons";
+import { DownloadIcon, InstallIcon, InstallingIcon, TimeIcon, UpdateIcon } from "@app/assets/Icons";
 import Button from "@app/components/Button";
 import { ProfileFolderState, ProfileState } from "@app/hooks/useProfileState";
 import { localize } from "@app/utils/localized";
@@ -71,6 +71,7 @@ export function LaunchButton({ profileState }: Props) {
             </Button>;
         } else {
             return <Button color={ButtonColor.YELLOW} rounded border>
+                <TimeIcon />
                 In Queue
             </Button>;
         }
