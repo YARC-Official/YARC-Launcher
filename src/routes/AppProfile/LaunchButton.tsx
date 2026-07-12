@@ -1,5 +1,5 @@
 import { ButtonColor } from "@app/components/Button";
-import { InstallingIcon, UpdateIcon } from "@app/assets/Icons";
+import { DownloadIcon, InstallIcon, InstallingIcon, TimeIcon, UpdateIcon } from "@app/assets/Icons";
 import Button from "@app/components/Button";
 import { ProfileFolderState, ProfileState } from "@app/hooks/useProfileState";
 import { localize } from "@app/utils/localized";
@@ -63,13 +63,15 @@ export function LaunchButton({ profileState }: Props) {
     // Installing button
     if (currentTask !== undefined) {
         if (payload !== undefined) {
+            const downloading = payload.state === "downloading";
+
             return <Button color={ButtonColor.YELLOW} rounded border>
-                <InstallingIcon />
+                {downloading ? <DownloadIcon /> : <InstallingIcon />}
                 <PayloadProgress payload={payload} />
             </Button>;
         } else {
             return <Button color={ButtonColor.YELLOW} rounded border>
-                <InstallingIcon />
+                <TimeIcon />
                 In Queue
             </Button>;
         }
@@ -93,7 +95,7 @@ export function LaunchButton({ profileState }: Props) {
                 }
                 {folderState === ProfileFolderState.FirstDownload &&
                     <>
-                        <UpdateIcon/> Install {releaseName}
+                        <InstallIcon/> Install {releaseName}
                     </>
                 }
             </Button>;
@@ -133,7 +135,7 @@ export function LaunchButton({ profileState }: Props) {
             }
             {folderState === ProfileFolderState.FirstDownload &&
                 <>
-                    <UpdateIcon/> Install {releaseName}
+                    <InstallIcon/> Install {releaseName}
                 </>
             }
 

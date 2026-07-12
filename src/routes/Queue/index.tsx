@@ -27,7 +27,7 @@ function Queue() {
     }, []);
 
     function getProgressValue() {
-        if (payload?.state === "downloading") {
+        if ((payload?.state === "downloading" || payload?.state === "installing") && payload.total > 0) {
             return payload.current / payload.total * 100.0;
         } else {
             return 100;

@@ -15,6 +15,7 @@ import GithubIcon from "./Github.svg?react";
 import HomeIcon from "./Home.svg?react";
 import InformationIcon from "./Information.svg?react";
 import InstallingIcon from "./Installing.svg?react";
+import DownloadIcon from "./Download.svg?react";
 import LinkIcon from "./Link.svg?react";
 import MinimizeIcon from "./Minimize.svg?react";
 import NewsIcon from "./News.svg?react";
@@ -36,7 +37,7 @@ import VerifiedIcon from "./Verified.svg?react";
 import MarketplaceIcon from "./Marketplace.svg?react";
 import MoreIcon from "./More.svg?react";
 import SidebarInQueueIcon from "./SidebarInQueue.svg?react";
-import SidebarUpdateIcon from "./SidebarUpdate.svg?react";
+import InstallIcon from "./Install.svg?react";
 import RedditIcon from "./Reddit.svg?react";
 import YoutubeIcon from "./Youtube.svg?react";
 import RefreshIcon from "./Refresh.svg?react";
@@ -52,6 +53,7 @@ export {
     HomeIcon,
     InformationIcon,
     InstallingIcon,
+    DownloadIcon,
     LinkIcon,
     MinimizeIcon,
     NewsIcon,
@@ -73,7 +75,7 @@ export {
     MarketplaceIcon,
     MoreIcon,
     SidebarInQueueIcon,
-    SidebarUpdateIcon,
+    InstallIcon,
     RedditIcon,
     YoutubeIcon,
     RefreshIcon,

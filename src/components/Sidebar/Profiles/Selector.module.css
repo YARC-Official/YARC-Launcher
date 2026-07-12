@@ -37,10 +37,7 @@
     border: 2px solid #FCD548;
     color: #FCD548;
     background: rgba(252, 213, 72, 0.10);
-}
-
-.tagInQueue > * {
-    animation: 2s linear 0s infinite running spin;
+    animation: 1s linear 0s infinite running fade;
 }
 
 .tagUpdate {
@@ -66,15 +63,6 @@
 
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
 }
 
 @keyframes fade {
