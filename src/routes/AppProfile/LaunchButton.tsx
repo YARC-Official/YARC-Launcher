@@ -39,12 +39,17 @@ export function LaunchButton({ profileState }: Props) {
 
     const [launching, setLaunching] = useState<boolean>(false);
     const launchTimeoutRef = useRef<NodeJS.Timeout>();
-
-    // Make sure to reset the launching status when the profile changes
+    const lastPlayedChangeCount = useRef(0);
+    //count how often this triggers to skip the first 2 on initialization
     useEffect(() => {
-        setLaunching(false);
-        clearTimeout(launchTimeoutRef.current);
-    }, [activeProfile]);
+        if (lastPlayedChangeCount.current > 1 && activeProfile.profile.type === "application") {
+            setLaunching(true);
+            launchTimeoutRef.current = setTimeout(() => {
+                setLaunching(false);
+            }, 10 * 1000);
+        }
+        lastPlayedChangeCount.current++;
+    }, [activeProfile.lastPlayed]);
 
     const profile = activeProfile.profile;
 
@@ -143,13 +148,6 @@ export function LaunchButton({ profileState }: Props) {
     // Launch/up-to-date button
     if (folderState === ProfileFolderState.UpToDate) {
         return <Button color={ButtonColor.BLUE} rounded border onClick={async () => {
-            if (profile.type === "application") {
-                setLaunching(true);
-                launchTimeoutRef.current = setTimeout(() => {
-                    setLaunching(false);
-                }, 10 * 1000);
-            }
-
             await launch();
         }}>
             {profile.type === "application" &&
